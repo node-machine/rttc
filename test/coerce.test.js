@@ -61,6 +61,9 @@ describe('Runtime type checking', function() {
     });
 
     describe('to number', function (){
+      it('should coerce undefined to base type', function() {
+        assert.strictEqual(coerce('number', undefined), 0);
+      });
       it('should fail on null', function (){
         assert.throws(function (){
           coerce('number', null);
@@ -105,6 +108,9 @@ describe('Runtime type checking', function() {
     });
 
     describe('to boolean', function (){
+      it('should coerce undefined to base type', function() {
+        assert.strictEqual(coerce('boolean', undefined), false);
+      });
       it('should fail on null', function (){
         assert.throws(function (){
           coerce('boolean', null);
