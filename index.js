@@ -7,7 +7,7 @@ module.exports = {
   // (these are here for compatibility and will likely
   //  be removed in a future version)
   rttc: require('./lib/rttc'),
-  infer: require('./lib/rttc'),
+  infer: require('./lib/infer'),
 
   // Also expose `types` object for compatibility.
   types: require('./lib/types')
