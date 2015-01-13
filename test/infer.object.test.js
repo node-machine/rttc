@@ -12,14 +12,14 @@ describe('Inferring types from example', function() {
         baz: false
       };
 
-      var types = infer(obj);
+      var schema = infer(obj);
 
-      assert(types.foo);
-      assert(types.bar);
-      assert(types.baz);
-      assert.strictEqual(types.foo, 'string');
-      assert.strictEqual(types.bar, 'number');
-      assert.strictEqual(types.baz, 'boolean');
+      assert(schema.foo);
+      assert(schema.bar);
+      assert(schema.baz);
+      assert.strictEqual(schema.foo, 'string');
+      assert.strictEqual(schema.bar, 'number');
+      assert.strictEqual(schema.baz, 'boolean');
     });
 
     it('should parse a nested object', function() {
@@ -33,17 +33,17 @@ describe('Inferring types from example', function() {
         }
       };
 
-      var types = infer(obj);
+      var schema = infer(obj);
 
-      assert(types.foo);
-      assert(types.bar);
-      assert(types.bar.foo);
-      assert(types.bar.baz);
-      assert(types.bar.baz.foo);
+      assert(schema.foo);
+      assert(schema.bar);
+      assert(schema.bar.foo);
+      assert(schema.bar.baz);
+      assert(schema.bar.baz.foo);
 
-      assert.strictEqual(types.foo, 'string');
-      assert.strictEqual(types.bar.foo, 'boolean');
-      assert.strictEqual(types.bar.baz.foo, 'number');
+      assert.strictEqual(schema.foo, 'string');
+      assert.strictEqual(schema.bar.foo, 'boolean');
+      assert.strictEqual(schema.bar.baz.foo, 'number');
     });
 
   });
