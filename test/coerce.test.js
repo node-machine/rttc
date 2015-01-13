@@ -9,25 +9,17 @@ describe('Runtime type checking', function() {
       it('should coerce undefined to base type', function() {
         assert.strictEqual(coerce('string', undefined), '');
       });
-      it('should fail on null', function (){
-        assert.throws(function (){
-          coerce('string', null);
-        });
+      it('should coerce to base type when it gets: null', function (){
+        assert.strictEqual(coerce('string', null), '');
       });
-      it('should fail on NaN', function (){
-        assert.throws(function (){
-          coerce('string', NaN);
-        });
+      it('should coerce to base type when it gets: NaN', function (){
+        assert.strictEqual(coerce('string', NaN), '');
       });
-      it('should fail on Infinity', function (){
-        assert.throws(function (){
-          coerce('string', Infinity);
-        });
+      it('should coerce to base type when it gets: Infinity', function (){
+        assert.strictEqual(coerce('string', Infinity), '');
       });
-      it('should fail on -Infinity', function (){
-        assert.throws(function (){
-          coerce('string', -Infinity);
-        });
+      it('should coerce to base type when it gets: -Infinity', function (){
+        assert.strictEqual(coerce('string', -Infinity), '');
       });
       it('should not touch arbitrary string', function() {
         assert.strictEqual(coerce('string', 'foo'), 'foo');
@@ -64,25 +56,17 @@ describe('Runtime type checking', function() {
       it('should coerce undefined to base type', function() {
         assert.strictEqual(coerce('number', undefined), 0);
       });
-      it('should fail on null', function (){
-        assert.throws(function (){
-          coerce('number', null);
-        });
+      it('should coerce to base type when it gets: null', function (){
+        assert.strictEqual(coerce('number', null), 0);
       });
-      it('should fail on NaN', function (){
-        assert.throws(function (){
-          coerce('number', NaN);
-        });
+      it('should coerce to base type when it gets: NaN', function (){
+        assert.strictEqual(coerce('number', NaN), 0);
       });
-      it('should fail on Infinity', function (){
-        assert.throws(function (){
-          coerce('number', Infinity);
-        });
+      it('should coerce to base type when it gets: Infinity', function (){
+        assert.strictEqual(coerce('number', Infinity), 0);
       });
-      it('should fail on -Infinity', function (){
-        assert.throws(function (){
-          coerce('number', -Infinity);
-        });
+      it('should coerce to base type when it gets: -Infinity', function (){
+        assert.strictEqual(coerce('number', -Infinity), 0);
       });
       it('should not touch positive integer', function (){
         assert.strictEqual(coerce('number', 3), 3);
@@ -111,25 +95,17 @@ describe('Runtime type checking', function() {
       it('should coerce undefined to base type', function() {
         assert.strictEqual(coerce('boolean', undefined), false);
       });
-      it('should fail on null', function (){
-        assert.throws(function (){
-          coerce('boolean', null);
-        });
+      it('should coerce to base type when it gets: null', function (){
+        assert.strictEqual(coerce('boolean', null), false);
       });
-      it('should fail on NaN', function (){
-        assert.throws(function (){
-          coerce('boolean', NaN);
-        });
+      it('should coerce to base type when it gets: NaN', function (){
+        assert.strictEqual(coerce('boolean', NaN), false);
       });
-      it('should fail on Infinity', function (){
-        assert.throws(function (){
-          coerce('boolean', Infinity);
-        });
+      it('should coerce to base type when it gets: Infinity', function (){
+        assert.strictEqual(coerce('boolean', Infinity), false);
       });
-      it('should fail on -Infinity', function (){
-        assert.throws(function (){
-          coerce('boolean', -Infinity);
-        });
+      it('should coerce to base type when it gets: -Infinity', function (){
+        assert.strictEqual(coerce('boolean', Infinity), false);
       });
       it('should not touch true', function() {
         assert.strictEqual(coerce('boolean', true), true);
@@ -148,3 +124,30 @@ describe('Runtime type checking', function() {
   });
 
 });
+
+
+
+
+
+// TODO: harsh mode
+
+// it('should fail on null', function (){
+//   assert.throws(function (){
+//     coerce('string', null);
+//   });
+// });
+// it('should fail on NaN', function (){
+//   assert.throws(function (){
+//     coerce('string', NaN);
+//   });
+// });
+// it('should fail on Infinity', function (){
+//   assert.throws(function (){
+//     coerce('string', Infinity);
+//   });
+// });
+// it('should fail on -Infinity', function (){
+//   assert.throws(function (){
+//     coerce('string', -Infinity);
+//   });
+// });
