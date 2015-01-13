@@ -149,12 +149,12 @@ describe('Inferring schema from example', function() {
       var arr = [
         [{
           foo: {
+            bar: false,
             baz: 235,
             mom: {
               name: 'Melinda'
             }
-          },
-          bar: false
+          }
         }]
       ];
 
@@ -166,13 +166,13 @@ describe('Inferring schema from example', function() {
       assert(Array.isArray(schema[0]));
       assert.strictEqual(schema[0].length, 1);
 
-      assert(schema[0][0].bar);
       assert(schema[0][0].foo);
+      assert(schema[0][0].foo.bar);
       assert(schema[0][0].foo.baz);
       assert(schema[0][0].foo.mom);
       assert(schema[0][0].foo.mom.name);
 
-      assert.strictEqual(schema[0][0].bar, 'boolean');
+      assert.strictEqual(schema[0][0].foo.bar, 'boolean');
       assert.strictEqual(schema[0][0].foo.baz, 'number');
       assert.strictEqual(schema[0][0].foo.mom, 'string');
     });
