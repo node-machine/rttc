@@ -8,6 +8,19 @@ $ npm install rttc --save
 ```
 
 
+## Rules
+
+
+#### General
+
++ `null` is never allowed.
++ `NaN` is never allowed.
++ `Infinity` is never allowed.
++ `-Infinity` is never allowed.
+
+
+
+
 ## Legacy Usage
 
 The usage of this module is changing, but backwards compatibility will be maintained up until the first major version bump (v1.0.0).
