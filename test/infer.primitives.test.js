@@ -3,7 +3,7 @@ var infer = require('../lib/infer');
 
 describe('Inferring types from example', function() {
 
-  describe('when primative values are used', function() {
+  describe('when primitive values are used', function() {
 
     it('should set type "string"', function() {
       var type = infer('foo');

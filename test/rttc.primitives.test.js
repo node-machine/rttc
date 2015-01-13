@@ -5,7 +5,7 @@ var rttc = require('../lib/rttc');
 
 describe('Run-time type checking', function() {
 
-  describe('when primative values are used', function() {
+  describe('when primitive values are used', function() {
 
     // Build an example input schema
     var inputSchema = {

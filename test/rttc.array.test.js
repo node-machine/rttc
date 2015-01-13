@@ -141,7 +141,7 @@ describe('Run-time type checking', function() {
 
   describe('when an array with a star is used', function() {
 
-    describe('and primative values are given at run-time', function() {
+    describe('and primitive values are given at run-time', function() {
 
       ////////////////////////////////
       // Valid

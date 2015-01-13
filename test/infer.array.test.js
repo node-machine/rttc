@@ -54,7 +54,7 @@ describe('Inferring types from example', function() {
 
   });
 
-  describe('when an array of primatives is used', function() {
+  describe('when an array of primitives is used', function() {
 
     it('should parse an array with a single string', function() {
       var arr = ['foo'];
