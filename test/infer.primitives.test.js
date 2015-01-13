@@ -8,10 +8,25 @@ describe('Inferring types from example', function() {
     it('should set type "string"', function() {
       var type = infer('foo');
       assert.strictEqual(type, 'string');
+
+      type = infer('');
+      assert.strictEqual(type, 'string');
     });
 
     it('should set type "number"', function() {
       var type = infer(5);
+      assert.strictEqual(type, 'number');
+
+      infer(-5);
+      assert.strictEqual(type, 'number');
+
+      infer(0);
+      assert.strictEqual(type, 'number');
+
+      infer(5.3);
+      assert.strictEqual(type, 'number');
+
+      infer(-5.2);
       assert.strictEqual(type, 'number');
     });
 
