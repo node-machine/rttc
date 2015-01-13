@@ -129,6 +129,7 @@ describe('Inferring schema from example', function() {
       assert.strictEqual(schema[0].bar.baz.bar.baz, 'string');
     });
 
+
     it('should parse an array with a nested array', function() {
       var arr = [['foo']];
 
@@ -175,6 +176,83 @@ describe('Inferring schema from example', function() {
       assert.strictEqual(schema[0][0].foo.bar, 'boolean');
       assert.strictEqual(schema[0][0].foo.baz, 'number');
       assert.strictEqual(schema[0][0].foo.mom, 'string');
+    });
+
+
+    it('should parse an array with many nested objects containing more arrays', function() {
+      var arr = [{
+        foo: 'bar',
+        bar: {
+          foo: false,
+          baz: {
+            foo: 3,
+            bar: {
+              baz: ['hi']
+            }
+          }
+        }
+      }];
+
+      var schema = infer(arr);
+
+      assert(Array.isArray(schema));
+      assert.strictEqual(schema.length, 1);
+
+      assert(schema[0].foo);
+      assert(schema[0].bar);
+      assert(schema[0].bar.foo);
+      assert(schema[0].bar.baz);
+      assert(schema[0].bar.baz.foo);
+      assert(schema[0].bar.baz.bar);
+      assert(schema[0].bar.baz.bar.baz);
+      assert(schema[0].bar.baz.bar.baz[0]);
+
+      assert.strictEqual(schema[0].foo, 'string');
+      assert.strictEqual(schema[0].bar.foo, 'boolean');
+      assert.strictEqual(schema[0].bar.baz.foo, 'number');
+      assert(Array.isArray(schema[0].bar.baz.bar.baz));
+      assert.strictEqual(schema[0].bar.baz.bar.baz.length, 1);
+      assert.strictEqual(schema[0].bar.baz.bar.baz[0], 'string');
+    });
+
+
+    it('should parse an array with many nested objects containing more arrays of nested objects', function() {
+      var arr = [{
+        foo: 'bar',
+        bar: {
+          foo: false,
+          baz: {
+            foo: 3,
+            bar: {
+              baz: [{
+                message: 'hi'
+              }]
+            }
+          }
+        }
+      }];
+
+      var schema = infer(arr);
+
+      assert(Array.isArray(schema));
+      assert.strictEqual(schema.length, 1);
+
+      assert(schema[0].foo);
+      assert(schema[0].bar);
+      assert(schema[0].bar.foo);
+      assert(schema[0].bar.baz);
+      assert(schema[0].bar.baz.foo);
+      assert(schema[0].bar.baz.bar);
+      assert(schema[0].bar.baz.bar.baz);
+      assert(schema[0].bar.baz.bar.baz[0]);
+      assert(schema[0].bar.baz.bar.baz[0].message);
+
+      assert.strictEqual(schema[0].foo, 'string');
+      assert.strictEqual(schema[0].bar.foo, 'boolean');
+      assert.strictEqual(schema[0].bar.baz.foo, 'number');
+      assert(Array.isArray(schema[0].bar.baz.bar.baz));
+      assert.strictEqual(schema[0].bar.baz.bar.baz.length, 1);
+      assert.strictEqual(schema[0].bar.baz.bar.baz[0].message, 'string');
     });
 
   });
