@@ -262,6 +262,31 @@ describe('Runtime type checking', function() {
       });
     });
 
+    describe('and an array with objects containing more arrays is given at runtime', function() {
+
+      it('should validate', function (){
+        // Build an example input schema
+        var inputSchema = {
+          key: {
+            type: ['*'],
+            required: true
+          }
+        };
+
+        var test = {
+          key: [{
+            name: ['blah']
+          },{
+            name: ['blah']
+          }]
+        };
+
+        assert.doesNotThrow(function() {
+          rttc(inputSchema, test, {coerce: true});
+        });
+      });
+    });
+
   });
 
 });
