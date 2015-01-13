@@ -145,6 +145,38 @@ describe('Inferring schema from example', function() {
       assert.strictEqual(schema[0][0].foo, 'string');
     });
 
+    it('should parse an array with a nested array of nested objects', function() {
+      var arr = [
+        [{
+          foo: {
+            baz: 235,
+            mom: {
+              name: 'Melinda'
+            }
+          },
+          bar: false
+        }]
+      ];
+
+      var schema = infer(arr);
+
+      assert(Array.isArray(schema));
+      assert.strictEqual(schema.length, 1);
+
+      assert(Array.isArray(schema[0]));
+      assert.strictEqual(schema[0].length, 1);
+
+      assert(schema[0][0].bar);
+      assert(schema[0][0].foo);
+      assert(schema[0][0].foo.baz);
+      assert(schema[0][0].foo.mom);
+      assert(schema[0][0].foo.mom.name);
+
+      assert.strictEqual(schema[0][0].bar, 'boolean');
+      assert.strictEqual(schema[0][0].foo.baz, 'number');
+      assert.strictEqual(schema[0][0].foo.mom, 'string');
+    });
+
   });
 
 });
