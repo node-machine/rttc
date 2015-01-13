@@ -1,6 +1,6 @@
 var assert = require('assert');
-var infer = require('../lib/infer');
-var rttc = require('../lib/rttc');
+var infer = require('../../lib/infer');
+var rttc = require('../../lib/rttc');
 
 describe('Run-time type checking', function() {
 

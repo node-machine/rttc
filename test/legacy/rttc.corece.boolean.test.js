@@ -1,16 +1,16 @@
 var assert = require('assert');
-var infer = require('../lib/infer');
-var rttc = require('../lib/rttc');
+var infer = require('../../lib/infer');
+var rttc = require('../../lib/rttc');
 
 describe('Run-time type checking', function() {
   describe('input coercion', function() {
 
-    describe('with strings', function() {
+    describe('with boolean', function() {
 
       // Build an example input schema
       var inputSchema = {
         foo: {
-          type: 'string',
+          type: 'boolean',
         }
       };
 
@@ -30,7 +30,7 @@ describe('Run-time type checking', function() {
 
       it('should validate and coerce when the boolean false is used', function() {
         var test = {
-          foo: false
+          foo: true
         };
 
         assert.doesNotThrow(function() {
@@ -38,9 +38,9 @@ describe('Run-time type checking', function() {
         });
       });
 
-      it('should validate and coerce when the integer 2 is used', function() {
+      it('should validate and coerce when the string "true" is used', function() {
         var test = {
-          foo: 2
+          foo: 'true'
         };
 
         assert.doesNotThrow(function() {
@@ -48,9 +48,9 @@ describe('Run-time type checking', function() {
         });
       });
 
-      it('should validate and coerce when the integer -2 is used', function() {
+      it('should validate and coerce when the string "false" is used', function() {
         var test = {
-          foo: -2
+          foo: 'false'
         };
 
         assert.doesNotThrow(function() {
@@ -58,9 +58,49 @@ describe('Run-time type checking', function() {
         });
       });
 
-      it('should validate and coerce when the decimal 2.32 is used', function() {
+      it('should validate and coerce when the string "1" is used', function() {
         var test = {
-          foo: 2.32
+          foo: '1'
+        };
+
+        assert.doesNotThrow(function() {
+          rttc(inputSchema, test, {coerce: true});
+        });
+      });
+
+      it('should validate and coerce when the string "0" is used', function() {
+        var test = {
+          foo: '0'
+        };
+
+        assert.doesNotThrow(function() {
+          rttc(inputSchema, test, {coerce: true});
+        });
+      });
+
+      it('should validate and coerce when the number 1 is used', function() {
+        var test = {
+          foo: 1
+        };
+
+        assert.doesNotThrow(function() {
+          rttc(inputSchema, test, {coerce: true});
+        });
+      });
+
+      it('should validate and coerce when the number 0 is used', function() {
+        var test = {
+          foo: 0
+        };
+
+        assert.doesNotThrow(function() {
+          rttc(inputSchema, test, {coerce: true});
+        });
+      });
+
+      it('should validate and coerce when the number 1 is used', function() {
+        var test = {
+          foo: 1
         };
 
         assert.doesNotThrow(function() {
@@ -73,79 +113,9 @@ describe('Run-time type checking', function() {
       // Invalid
       ////////////////////////////////
 
-      it('should not validate when a function is used', function() {
+      it('should not validate when the number 2 is used', function() {
         var test = {
-          foo: function() {}
-        };
-
-        assert.throws(function() {
-          rttc(inputSchema, test, {coerce: true});
-        }, Error);
-      });
-
-      it('should not validate when an Error is used', function() {
-        var test = {
-          foo: Error
-        };
-
-        assert.throws(function() {
-          rttc(inputSchema, test, {coerce: true});
-        }, Error);
-      });
-
-      it('should not validate when a regexp is used', function() {
-        var test = {
-          foo: /hfsdkjhf/
-        };
-
-        assert.throws(function() {
-          rttc(inputSchema, test, {coerce: true});
-        }, Error);
-      });
-
-      it('should not validate when a date is used', function() {
-        var test = {
-          foo: new Date()
-        };
-
-        assert.throws(function() {
-          rttc(inputSchema, test, {coerce: true});
-        }, Error);
-      });
-
-      it('should not validate when an object is used', function() {
-        var test = {
-          foo: {}
-        };
-
-        assert.throws(function() {
-          rttc(inputSchema, test, {coerce: true});
-        }, Error);
-      });
-
-      it('should not validate when an array is used', function() {
-        var test = {
-          foo: []
-        };
-
-        assert.throws(function() {
-          rttc(inputSchema, test, {coerce: true});
-        }, Error);
-      });
-
-      it('should not validate when an array of objects is used', function() {
-        var test = {
-          foo: [{}]
-        };
-
-        assert.throws(function() {
-          rttc(inputSchema, test, {coerce: true});
-        }, Error);
-      });
-
-      it('should not validate when Infinity is used', function() {
-        var test = {
-          foo: Infinity
+          foo: 2
         };
 
         assert.throws(function() {
@@ -162,6 +132,67 @@ describe('Run-time type checking', function() {
           rttc(inputSchema, test, {coerce: true});
         }, Error);
       });
+
+      it('should not validate when the string "T" is used', function() {
+        var test = {
+          foo: 'T'
+        };
+
+        assert.throws(function() {
+          rttc(inputSchema, test, {coerce: true});
+        }, Error);
+      });
+
+      it('should not validate when the string "t" is used', function() {
+        var test = {
+          foo: 't'
+        };
+
+        assert.throws(function() {
+          rttc(inputSchema, test, {coerce: true});
+        }, Error);
+      });
+
+      it('should not validate when the string "F" is used', function() {
+        var test = {
+          foo: 'F'
+        };
+
+        assert.throws(function() {
+          rttc(inputSchema, test, {coerce: true});
+        }, Error);
+      });
+
+      it('should not validate when the string "f" is used', function() {
+        var test = {
+          foo: 'f'
+        };
+
+        assert.throws(function() {
+          rttc(inputSchema, test, {coerce: true});
+        }, Error);
+      });
+
+      it('should not validate when the string "TRUE" is used', function() {
+        var test = {
+          foo: 'TRUE'
+        };
+
+        assert.throws(function() {
+          rttc(inputSchema, test, {coerce: true});
+        }, Error);
+      });
+
+      it('should not validate when the string "FALSE" is used', function() {
+        var test = {
+          foo: 'FALSE'
+        };
+
+        assert.throws(function() {
+          rttc(inputSchema, test, {coerce: true});
+        }, Error);
+      });
+
 
     });
   });
