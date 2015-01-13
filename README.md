@@ -20,7 +20,6 @@ $ npm install rttc --save
 
 
 
-
 ## Legacy Usage
 
 The usage of this module is changing, but backwards compatibility will be maintained up until the first major version bump (v1.0.0).
