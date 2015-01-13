@@ -1,0 +1,37 @@
+{
+  "name": "rttc",
+  "version": "0.0.0",
+  "description": "Runtime type-checking for JavaScript.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ./node_modules/mocha/bin/mocha"
+  },
+  "keywords": [
+    "type-checking",
+    "validation",
+    "typed-javascript"
+  ],
+  "author": "Mike McNeil <@mikermcneil>",
+  "contributors": [
+    "Cody Stoltman <@particlebanana>",
+    "Scott Gress <@sgress454>"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/node-machine/rttc.git"
+  },
+  "bugs": {
+    "url": "http://github.com/node-machine/rttc/issues"
+  },
+  "engines": {
+    "node": ">= 0.10.0",
+    "npm": ">= 1.4.0"
+  },
+  "dependencies": {
+    "lodash": "~2.4.1"
+  },
+  "devDependencies": {
+    "mocha": "^2.1.0"
+  }
+}
