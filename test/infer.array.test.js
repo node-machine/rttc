@@ -205,7 +205,7 @@ describe('Inferring schema from example', function() {
       assert(schema[0].bar.baz);
       assert(schema[0].bar.baz.foo);
       assert(schema[0].bar.baz.bar);
-      assert(schema[0].bar.baz.bar.baz);
+      assert(schema[0].bar.baz.bar.baz, 'expected [0].bar.baz.bar.baz to exist in:'+util.inspect(schema, false, null));
       assert(schema[0].bar.baz.bar.baz[0]);
 
       assert.strictEqual(schema[0].foo, 'string');
