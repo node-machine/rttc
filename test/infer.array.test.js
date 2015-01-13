@@ -129,6 +129,22 @@ describe('Inferring schema from example', function() {
       assert.strictEqual(schema[0].bar.baz.bar.baz, 'string');
     });
 
+    it('should parse an array with a nested array', function() {
+      var arr = [['foo']];
+
+      var schema = infer(arr);
+
+      assert(Array.isArray(schema));
+      assert.strictEqual(schema.length, 1);
+
+      assert(Array.isArray(schema[0]));
+      assert.strictEqual(schema[0].length, 1);
+
+      assert(schema[0][0].foo);
+
+      assert.strictEqual(schema[0][0].foo, 'string');
+    });
+
   });
 
 });
