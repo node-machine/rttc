@@ -64,9 +64,13 @@ describe('Run-time type checking', function() {
         }]
       };
 
-      assert.doesNotThrow(function() {
+      try {
         rttc(inputSchema, test, {coerce: true});
-      });
+      }
+      catch (e){
+        assert(false, e);
+      }
+      assert(true);
     });
 
     it('should validate when all keys are valid', function() {
