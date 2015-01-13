@@ -1,3 +1,4 @@
+var util = require('util');
 var assert = require('assert');
 var infer = require('../lib/infer');
 
@@ -138,12 +139,12 @@ describe('Inferring schema from example', function() {
       assert(Array.isArray(schema));
       assert.strictEqual(schema.length, 1);
 
-      assert(Array.isArray(schema[0]));
+      assert(Array.isArray(schema[0]), 'expected [0] to exist in:'+util.inspect(schema, false, null));
       assert.strictEqual(schema[0].length, 1);
 
-      assert(schema[0][0].foo);
+      assert(schema[0][0],'expected [0][0] to exist in:'+util.inspect(schema, false, null));
 
-      assert.strictEqual(schema[0][0].foo, 'string');
+      assert.strictEqual(schema[0][0], 'string');
     });
 
     it('should parse an array with a nested array of nested objects', function() {
@@ -175,7 +176,7 @@ describe('Inferring schema from example', function() {
 
       assert.strictEqual(schema[0][0].foo.bar, 'boolean');
       assert.strictEqual(schema[0][0].foo.baz, 'number');
-      assert.strictEqual(schema[0][0].foo.mom, 'string');
+      assert.strictEqual(schema[0][0].foo.mom.name, 'string');
     });
 
 
