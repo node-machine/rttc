@@ -76,6 +76,26 @@ describe('Inferring types from example', function() {
       assert.strictEqual(types[0], 'number');
     });
 
+    it('should parse an array with a single `true`', function() {
+      var arr = [true];
+      var types = infer(arr);
+
+      assert(Array.isArray(types));
+      assert.strictEqual(types.length, 1);
+
+      assert.strictEqual(types[0], 'boolean');
+    });
+
+    it('should parse an array with a single `false`', function() {
+      var arr = [false];
+      var types = infer(arr);
+
+      assert(Array.isArray(types));
+      assert.strictEqual(types.length, 1);
+
+      assert.strictEqual(types[0], 'boolean');
+    });
+
   });
 
 });
