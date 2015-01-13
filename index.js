@@ -3,12 +3,12 @@ module.exports = {
   validate: require('./lib/validate'),
   coerce: require('./lib/coerce'),
 
-  // Support for rttc() and infer()
+  // Support for rttc() and infer().
   // (these are here for compatibility and will likely
   //  be removed in a future version)
   rttc: require('./lib/rttc'),
   infer: require('./lib/rttc'),
 
-  // Also expose `types` object for compat.
+  // Also expose `types` object for compatibility.
   types: require('./lib/types')
 };
