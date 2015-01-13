@@ -3,7 +3,7 @@ var infer = require('../../lib/infer');
 var rttc = require('../../lib/rttc');
 
 
-describe('Run-time type checking', function() {
+describe('Runtime type checking', function() {
 
   describe('when primitive values are used', function() {
 

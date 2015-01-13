@@ -1,7 +1,7 @@
 var assert = require('assert');
 var coerce = require('../lib/coerce');
 
-describe('Run-time type checking', function() {
+describe('Runtime type checking', function() {
 
   describe('.coerce()', function() {
 

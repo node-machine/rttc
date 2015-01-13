@@ -2,7 +2,7 @@ var assert = require('assert');
 var infer = require('../../lib/infer');
 var rttc = require('../../lib/rttc');
 
-describe('Run-time type checking', function() {
+describe('Runtime type checking', function() {
   describe('input coercion', function() {
 
     describe('with boolean', function() {
