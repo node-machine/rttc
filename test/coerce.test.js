@@ -6,6 +6,9 @@ describe('Runtime type checking', function() {
   describe('.coerce()', function() {
 
     describe('to string', function() {
+      it('should coerce undefined to base type', function() {
+        assert.strictEqual(coerce('string', undefined), '');
+      });
       it('should fail on null', function (){
         assert.throws(function (){
           coerce('string', null);
