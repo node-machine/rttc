@@ -1,5 +1,5 @@
 # rttc
-Runtime type-checking for JavaScript.
+Runtime (recursive) type-checking for JavaScript.
 
 ## Installation
 
@@ -7,9 +7,13 @@ Runtime type-checking for JavaScript.
 $ npm install rttc --save
 ```
 
+```js
+var rttc = require('rttc');
+```
 
-## Rules
 
+
+## Philosophy
 
 #### General
 
@@ -18,40 +22,57 @@ $ npm install rttc --save
 + `Infinity` is never allowed.
 + `-Infinity` is never allowed.
 
+#### Coercion vs. Validation
 
++ `.validate()` either returns a (potentially "lightly" coerced) version of the value that was accepted, or it throws.  The "lightly" coerced value might turn `"3"` into `3`, `"true"` into `true`, `-4.5` into `"-4.5"`, etc.
++ `.coerce()` ALWAYS returns an acceptable version of the value, even if it has to mangle it to get there.
 
-## Legacy Usage
+#### Dictionaries
 
-The usage of this module is changing, but backwards compatibility will be maintained up until the first major version bump (v1.0.0).
-See tests for more details.
-
-#### rttc.rttc(expectations, inputValues, [options])
-
-Validate and/or coerce a set of input values against a set of expectations (defined as input definitions.)
-
-Two options may be provided:
-+ `coerce` - before failing, attempt to coerce not-quite-right input values to their expected type.
-+ `base` - if an input value is missing, fill in its place in the result to the "base type" (falsy value)
++ Dictionaries (i.e. plain old JavaScript objects) in type schemas can be infinitely nested.  Type validation and coercion will proceed through the nested objects recursively.
 
 ```js
-require('rttc').rttc({
-  foo: {
-    type: 'string',
-    required: true
-  },
-  bar: {
-    type: { baz: {name: 'string'} },
-    required: false
-  }
-}, {
-  foo: 'hi',
-  bar: {
-    baz: {
-      name: 'Rick'
+{
+  id: 'number',
+  name: 'string',
+  isAdmin: 'boolean',
+  mom: {
+    id: 'number',
+    name: 'string',
+    occupation: {
+      title: 'string',
+      workplace: 'string'
     }
   }
-});
+}
 ```
+
+#### Arrays
+
++ Arrays in type schemas must be homogeneous and have exactly one item; that is, if you want to validate an array, you only need to provide the type/schema for the first item in the array, e.g.:
+
+```js
+[
+  {
+    id: 'number',
+    name: 'string',
+    email: 'string',
+    age: 'number',
+    isAdmin: 'boolean',
+    favoriteColors: ['string'],
+    friends: [
+      {
+        id: 'number',
+        name: 'string'
+      }
+    ]
+  }
+]
+```
+
+
+
+## Usage
 
 #### rttc.infer(value)
 
@@ -107,6 +128,156 @@ require('rttc').infer({
     }]
 }
 */
+```
+
+
+
+#### `.validate(expected, actual)`
+
+```js
+rttc.validate('string', 'foo');
+// => 'foo'
+
+rttc.validate('number', 4.5);
+// => 4.5
+
+rttc.validate('boolean', true);
+// => true
+
+rttc.validate('string', -2);
+// => '-2'
+
+rttc.validate('string', false);
+// => 'false'
+
+rttc.validate('number', '3');
+// => 3
+
+rttc.validate('boolean', 'true');
+// => true
+
+rttc.validate({
+  user: {
+    friends: [{
+      name: 'Lenny',
+      age: 77
+    }]
+}, {
+  user: {
+    friends: [{
+      name: 'Lenny',
+      age: '77'
+    }]
+  }
+});
+// =>
+/*
+{
+  user: {
+    friends: [{
+      name: 'Lenny',
+      age: 77
+    }]
+  }
+}
+ */
+```
+
+If value cannot be properly coerced, throws error with code=`E_INVALID_TYPE`:
+
+```js
+rttc.validate('number', 'asdf');
+// throws E_INVALID_TYPE
+```
+
+#### `.coerce(expected, actual)`
+
+
+```js
+rttc.validate('string', 'foo');
+// => 'foo'
+
+rttc.validate('number', 4.5);
+// => 4.5
+
+rttc.validate('boolean', true);
+// => true
+
+rttc.validate('string', -2);
+// => '-2'
+
+rttc.validate('string', false);
+// => 'false'
+
+rttc.validate('number', '3');
+// => 3
+
+rttc.validate('boolean', 'true');
+// => true
+```
+
+If value cannot be properly coerced, defaults to base type:
+```
+rttc.validate('number', 'asdf');
+// => 0
+
+rttc.validate('boolean', 'asdf');
+// => false
+
+rttc.validate({
+  user: {
+    friends: [{
+      name: 'Lenny',
+      age: 77
+    }]
+}, 'err... some dude who\'s friends with lenny?');
+// =>
+/*
+{
+  user: {
+    friends: [{
+      name: 'Lenny',
+      age: 77
+    }]
+  }
+}
+ */
+```
+
+
+
+
+## Legacy Usage
+
+The usage of this module is changing, but backwards compatibility will be maintained up until the first major version bump (v1.0.0).
+See tests for more details.
+
+#### rttc.rttc(expectations, inputValues, [options])
+
+Validate and/or coerce a set of input values against a set of expectations (defined as input definitions.)
+
+Two options may be provided:
++ `coerce` - before failing, attempt to coerce not-quite-right input values to their expected type.
++ `base` - if an input value is missing, fill in its place in the result to the "base type" (falsy value)
+
+```js
+require('rttc').rttc({
+  foo: {
+    type: 'string',
+    required: true
+  },
+  bar: {
+    type: { baz: {name: 'string'} },
+    required: false
+  }
+}, {
+  foo: 'hi',
+  bar: {
+    baz: {
+      name: 'Rick'
+    }
+  }
+});
 ```
 
 
