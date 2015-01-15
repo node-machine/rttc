@@ -148,7 +148,7 @@ require('rttc').infer({
 
 
 
-#### `.validate(expected, actual)`
+#### rttc.validate(expected, actual)
 
 ```js
 rttc.validate('string', 'foo');
@@ -206,7 +206,7 @@ rttc.validate('number', 'asdf');
 // throws E_INVALID_TYPE
 ```
 
-#### `.coerce(expected, actual)`
+#### rttc.coerce(expected, actual)
 
 
 ```js
