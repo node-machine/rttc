@@ -15,17 +15,33 @@ var rttc = require('rttc');
 
 ## Philosophy
 
-#### General
-
-+ `null` is never allowed.
-+ `NaN` is never allowed.
-+ `Infinity` is never allowed.
-+ `-Infinity` is never allowed.
-
 #### Coercion vs. Validation
 
 + `.validate()` either returns a (potentially "lightly" coerced) version of the value that was accepted, or it throws.  The "lightly" coerced value might turn `"3"` into `3`, `"true"` into `true`, `-4.5` into `"-4.5"`, etc.
-+ `.coerce()` ALWAYS returns an acceptable version of the value, even if it has to mangle it to get there.
++ `.coerce()` ALWAYS returns an acceptable version of the value, even if it has to mangle it to get there (i.e. by using the "base value" for the expected type.)
+
+#### Base values
+
++ For "string", base value is `""`
++ For "number", base value is `0`
++ For "boolean", base value is `false`
++ For any "dictionary" (`{}`), base value is `{}`, with whatever keys are expected (recursive)
++ For a generic "array" (`[]`), base value is `[]`, with a single archetypal item matching the expectation (recursive)
+
+<!--
+TODO:
++ For "stream", base value is an empty readable buffer stream (i.e. not in object mode)
++ For "machine", base value is a no-op machine that calls its success exit.
+-->
+
+#### Edge cases
+
++ `undefined` will always be coerced to the base value of the expected type.
++ `null` is never valid.
++ `NaN` is never valid.
++ `Infinity` is never valid.
++ `-Infinity` is never valid.
+
 
 #### Dictionaries
 
