@@ -194,37 +194,37 @@ rttc.validate('number', 'asdf');
 
 
 ```js
-rttc.validate('string', 'foo');
+rttc.coerce('string', 'foo');
 // => 'foo'
 
-rttc.validate('number', 4.5);
+rttc.coerce('number', 4.5);
 // => 4.5
 
-rttc.validate('boolean', true);
+rttc.coerce('boolean', true);
 // => true
 
-rttc.validate('string', -2);
+rttc.coerce('string', -2);
 // => '-2'
 
-rttc.validate('string', false);
+rttc.coerce('string', false);
 // => 'false'
 
-rttc.validate('number', '3');
+rttc.coerce('number', '3');
 // => 3
 
-rttc.validate('boolean', 'true');
+rttc.coerce('boolean', 'true');
 // => true
 ```
 
 If value cannot be properly coerced, defaults to base type:
 ```
-rttc.validate('number', 'asdf');
+rttc.coerce('number', 'asdf');
 // => 0
 
-rttc.validate('boolean', 'asdf');
+rttc.coerce('boolean', 'asdf');
 // => false
 
-rttc.validate({
+rttc.coerce({
   user: {
     friends: [{
       name: 'Lenny',
