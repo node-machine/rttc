@@ -249,7 +249,7 @@ rttc.coerce({
 
 ## Legacy Usage
 
-The usage of this module is changing, but backwards compatibility will be maintained up until the first major version bump (v1.0.0).
+The usage of this module has been extended considerably, but backwards compatibility will be maintained up until the first major version bump (v1.0.0).
 See tests for more details.
 
 #### rttc.rttc(expectations, inputValues, [options])
