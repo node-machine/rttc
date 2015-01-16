@@ -26,8 +26,10 @@ describe('Runtime type checking', function() {
           validate('string', -Infinity);
         });
       });
-      it('should coerce undefined to base type', function() {
-        assert.strictEqual(validate('string', undefined), '');
+      it('should choke on `undefined`', function() {
+        assert.throws(function (){
+          validate('string', undefined);
+        });
       });
       it('should not touch arbitrary string', function() {
         assert.strictEqual(validate('string', 'foo'), 'foo');
@@ -50,12 +52,25 @@ describe('Runtime type checking', function() {
       it('should not touch negative decimalish string', function() {
         assert.strictEqual(validate('string', '-1.325'), '-1.325');
       });
-      it('should coerce numbers to strings', function() {
-        assert.strictEqual(validate('string', 2382), '2382');
-        assert.strictEqual(validate('string', -2382), '-2382');
-        assert.strictEqual(validate('string', 0), '0');
-        assert.strictEqual(validate('string', 1.325), '1.325');
-        assert.strictEqual(validate('string', -1.325), '-1.325');
+      it('should choke on numbers', function() {
+        assert.throws(function (){
+          validate('string', undefined);
+        });
+        assert.throws(function (){
+          validate('string', 2382);
+        });
+        assert.throws(function (){
+          validate('string', -2382);
+        });
+        assert.throws(function (){
+          validate('string', 0);
+        });
+        assert.throws(function (){
+          validate('string', 1.325);
+        });
+        assert.throws(function (){
+          validate('string', -1.325);
+        });
       });
 
     });
@@ -81,8 +96,10 @@ describe('Runtime type checking', function() {
           validate('number', -Infinity);
         });
       });
-      it('should coerce undefined to base type', function() {
-        assert.strictEqual(validate('number', undefined), 0);
+      it('should choke on `undefined`', function() {
+        assert.throws(function (){
+          validate('number', undefined);
+        });
       });
       it('should not touch positive integer', function (){
         assert.strictEqual(validate('number', 3), 3);
@@ -96,14 +113,20 @@ describe('Runtime type checking', function() {
       it('should not touch zero', function (){
         assert.strictEqual(validate('number', 0), 0);
       });
-      it('should coerce "3.25" to 3.25', function() {
-        assert.strictEqual(validate('number', '3.25'), 3.25);
+      it('should choke on "3.25"', function() {
+        assert.throws(function(){
+          validate('number', '3.25');
+        });
       });
-      it('should coerce "-3.25" to -3.25', function() {
-        assert.strictEqual(validate('number', '-3.25'), -3.25);
+      it('should choke on "-3.25"', function() {
+        assert.throws(function(){
+          validate('number', '-3.25');
+        });
       });
-      it('should coerce "0" to 0', function() {
-        assert.strictEqual(validate('number', '0'), 0);
+      it('should choke on "0"', function() {
+        assert.throws(function(){
+          validate('number', '0');
+        });
       });
     });
 
@@ -128,8 +151,10 @@ describe('Runtime type checking', function() {
           validate('boolean', -Infinity);
         });
       });
-      it('should coerce undefined to base type', function() {
-        assert.strictEqual(validate('boolean', undefined), false);
+      it('should choke on `undefined`', function() {
+        assert.throws(function (){
+          validate('boolean', undefined);
+        });
       });
       it('should not touch true', function() {
         assert.strictEqual(validate('boolean', true), true);
@@ -137,11 +162,15 @@ describe('Runtime type checking', function() {
       it('should not touch false', function() {
         assert.strictEqual(validate('boolean', false), false);
       });
-      it('should coerce "true" to true', function() {
-        assert.strictEqual(validate('boolean', 'true'), true);
+      it('should choke on "true"', function() {
+        assert.throws(function (){
+          validate('boolean', 'true');
+        });
       });
-      it('should coerce "false" to false', function() {
-        assert.strictEqual(validate('boolean', 'false'), false);
+      it('should choke on "false"', function() {
+        assert.throws(function (){
+          validate('boolean', 'false');
+        });
       });
     });
 
