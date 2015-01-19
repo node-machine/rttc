@@ -1,9 +1,9 @@
-var assert = require('assert');
-var infer = require('../../lib/infer');
-var rttc = require('../../lib/rttc');
+// var assert = require('assert');
+// var infer = require('../../lib/infer');
+// var rttc = require('../../lib/rttc');
 
 
-describe('Runtime type checking', function() {
+xdescribe('Runtime type checking', function() {
 
   describe('when primitive values are used', function() {
 
