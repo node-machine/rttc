@@ -2,7 +2,7 @@ var assert = require('assert');
 var validate = require('../lib/validate');
 var coerce = require('../lib/coerce');
 
-describe('Simple coercion and validation', function() {
+describe('Acceptance: simple coercion and validation', function() {
 
   describe('.coerce()', function() {
 
