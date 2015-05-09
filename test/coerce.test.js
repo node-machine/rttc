@@ -271,10 +271,9 @@ describe('.coerce()', function (){
     { example: undefined, actual: [{}], result: [{}],  },
     { example: undefined, actual: [{foo:'bar'}], result: [{foo:'bar'}],  },
 
+    { example: undefined, actual: undefined, result: undefined,  },
 
     // Same problem as w/ validate() here:
-
-    // { example: undefined, actual: undefined, result: undefined,  },
 
     // { example: undefined, actual: NaN, result: NaN,  },
     // { example: undefined, actual: Infinity, result: Infinity,  },

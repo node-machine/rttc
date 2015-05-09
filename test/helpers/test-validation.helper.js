@@ -62,9 +62,6 @@ module.exports = function testValidation(expectations, cb){
     return cb(new Error('expected a validation error, but did not get one. Instead, returned '+util.inspect(validated, false, null))+'.' );
   }
 
-  // TODO: remove this hack.
-  if (_.isUndefined(expectations.result)) return cb();
-
   // Ensure that the actual result matches the test's expectations.
   if (_.isEqual(validated, expectations.result)) {
     return cb();

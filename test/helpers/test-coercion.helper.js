@@ -38,9 +38,6 @@ module.exports = function testCoercion(expectations, cb){
     return cb(new Error('did not expect coercion error, but got one:\n' + util.inspect(gotError)));
   }
 
-  // TODO: remove this hack.
-  // if (_.isUndefined(expectations.result)) return cb();
-
   // Ensure that the actual result matches the test's expectations.
   if (_.isEqual(coerced, expectations.result)) {
     return cb();
