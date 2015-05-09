@@ -438,6 +438,10 @@ function describeAndExecuteTest(test){
     if (test._meta) {
       msg += '['+test._meta+']';
     }
+    else {
+      msg += ' ';
+    }
+
     if (!_.isUndefined(test.example)) {
       msg += 'with a '+getDisplayType(test.example)+' example ('+util.inspect(test.example,false, null)+')';
     }
@@ -448,7 +452,7 @@ function describeAndExecuteTest(test){
     return msg;
   })(), function suite (){
     if (test.error) {
-      it(util.format('should error when %s is passed in', actualDisplayName), function (done){
+      it(util.format('should error when %s is provided', actualDisplayName), function (done){
         testValidation(test, done);
       });
       return;
