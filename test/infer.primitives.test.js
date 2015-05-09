@@ -38,6 +38,11 @@ describe('Inferring types from example', function() {
       assert.strictEqual(type, 'boolean');
     });
 
+    it('should set type "*"', function() {
+      var type = infer('*');
+      assert.strictEqual(type, '*');
+    });
+
   });
 
 });
