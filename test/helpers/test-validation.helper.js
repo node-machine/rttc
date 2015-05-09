@@ -24,11 +24,11 @@ module.exports = function testValidation(expectations, cb){
   else if (!_.isUndefined(expectations.example)) {
     typeSchema = rttc.infer(expectations.example);
   }
-  console.log('--------------------------');
-  console.log('expectations.example ::',expectations.example);
-  console.log('typeSchema ::',typeSchema);
-  console.log('expectations.actual ::',expectations.actual, '('+typeof expectations.actual+')');
-  console.log('expectations.result ::',expectations.result, '('+typeof expectations.result+')');
+  // console.log('--------------------------');
+  // console.log('expectations.example ::',expectations.example);
+  // console.log('typeSchema ::',typeSchema);
+  // console.log('expectations.actual ::',expectations.actual, '('+typeof expectations.actual+')');
+  // console.log('expectations.result ::',expectations.result, '('+typeof expectations.result+')');
 
 
   //
@@ -45,8 +45,9 @@ module.exports = function testValidation(expectations, cb){
   }
 
 
-  if (gotError) console.log('gotError? ::',gotError);
-  else console.log('post-validation ::',validated, '('+typeof validated+')');
+  // if (gotError) console.log('gotError? ::',gotError);
+  // else console.log('post-validation ::',validated, '('+typeof validated+')');
+  // console.log('post-validation ::',validated, '('+typeof validated+')');
 
   //
   // Finally, make sure the right thing happened and that we
@@ -64,12 +65,10 @@ module.exports = function testValidation(expectations, cb){
     return cb(new Error('expected a validation error, but did not get one. Instead, returned '+util.inspect(validated, false, null))+'.' );
   }
 
-  // If a `result` wasn't expected, we're done.
-  if (_.isUndefined(expectations.result)) {
-    return cb();
-  }
-  // But otherwise, we must ensure that the actual result matches the
-  // test's expectations.
+  // TODO: remove this hack.
+  if (_.isUndefined(expectations.result)) return cb();
+
+  // Ensure that the actual result matches the test's expectations.
   if (_.isEqual(validated, expectations.result)) {
     return cb();
   }
