@@ -281,6 +281,50 @@ describe('.coerce()', function (){
     // { example: undefined, actual: null, result: null,  },
 
 
+    { example: '*', actual: 'bar', result: 'bar',  },
+    { example: '*', actual: '', result: '',  },
+    { example: '*', actual: '-1.1', result: '-1.1',  },
+    { example: '*', actual: 'NaN', result: 'NaN',  },
+    { example: '*', actual: 'undefined', result: 'undefined',  },
+    { example: '*', actual: 'null', result: 'null',  },
+    { example: '*', actual: '-Infinity', result: '-Infinity',  },
+    { example: '*', actual: 'Infinity', result: 'Infinity',  },
+    { example: '*', actual: 'true', result: 'true',  },
+    { example: '*', actual: 'false', result: 'false',  },
+    { example: '*', actual: '0', result: '0',  },
+    { example: '*', actual: '1', result: '1',  },
+
+    { example: '*', actual: 0, result: 0,  },
+    { example: '*', actual: 1, result: 1,  },
+    { example: '*', actual: -1.1, result: -1.1,  },
+
+    { example: '*', actual: true, result: true,  },
+    { example: '*', actual: false, result: false,  },
+
+    { example: '*', actual: {}, result: {},  },
+    { example: '*', actual: {foo:'bar'}, result: {foo:'bar'},  },
+    { example: '*', actual: {foo:{bar:{baz:{}}}}, result: {foo:{bar:{baz:{}}}},  },
+    { example: '*', actual: {foo:['bar']}, result: {foo:['bar']},  },
+    { example: '*', actual: {foo:{bar:{baz:[{}]}}}, result: {foo:{bar:{baz:[{}]}}},  },
+
+    { example: '*', actual: [], result: [],  },
+    { example: '*', actual: ['asdf'], result: ['asdf'],  },
+    { example: '*', actual: [''], result: [''],  },
+    { example: '*', actual: [235], result: [235],  },
+    { example: '*', actual: [false], result: [false],  },
+    { example: '*', actual: [{}], result: [{}],  },
+    { example: '*', actual: [{foo:'bar'}], result: [{foo:'bar'}],  },
+
+    { example: '*', actual: undefined, result: undefined,  },
+
+    // Same problem as w/ validate() here:
+
+    // { example: '*', actual: NaN, result: NaN,  },
+    // { example: '*', actual: Infinity, result: Infinity,  },
+    // { example: '*', actual: -Infinity, result: -Infinity,  },
+    // { example: '*', actual: null, result: null,  },
+
+
     ////////////////////////////////////////////
     // RECURSIVE OBJECTS
     ////////////////////////////////////////////
