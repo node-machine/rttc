@@ -15,13 +15,10 @@ module.exports = function testValidation(expectations, cb){
   //
 
   var typeSchema;
-  if (!_.isUndefined(expectations.type) && !_.isUndefined(expectations.example)) {
-    return cb (new Error('invalid test: cannot specify both `type` and `example`'));
-  }
-  else if (!_.isUndefined(expectations.type)) {
+  if (!_.isUndefined(expectations.type)) {
     typeSchema = expectations.type;
   }
-  else if (!_.isUndefined(expectations.example)) {
+  else {
     typeSchema = rttc.infer(expectations.example);
   }
   // console.log('--------------------------');
