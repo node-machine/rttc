@@ -124,30 +124,3 @@ describe('Runtime type checking', function() {
   });
 
 });
-
-
-
-
-
-// TODO: harsh mode
-
-// it('should fail on null', function (){
-//   assert.throws(function (){
-//     coerce('string', null);
-//   });
-// });
-// it('should fail on NaN', function (){
-//   assert.throws(function (){
-//     coerce('string', NaN);
-//   });
-// });
-// it('should fail on Infinity', function (){
-//   assert.throws(function (){
-//     coerce('string', Infinity);
-//   });
-// });
-// it('should fail on -Infinity', function (){
-//   assert.throws(function (){
-//     coerce('string', -Infinity);
-//   });
-// });
