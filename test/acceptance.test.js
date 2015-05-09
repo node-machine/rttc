@@ -1,5 +1,5 @@
 var assert = require('assert');
-var validateStrict = require('../lib/validateStrict');
+var validateStrict = require('../lib/validate-strict');
 var coerce = require('../lib/coerce');
 
 describe('Acceptance: simple coercion and validation', function() {

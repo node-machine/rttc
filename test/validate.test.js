@@ -186,7 +186,7 @@ describe('.validate()', function (){
     { example: {}, actual: -Infinity, error: true },
     { example: {}, actual: null, error: true },
 
-    { example: {}, actual: /some regexp/, result: {} },
+    { example: {}, actual: /some regexp/, error: true },
     { example: {}, actual: function(){}, error: true },
     { example: {}, actual: new Date('November 5, 1605 GMT'), error: true },
 
