@@ -42,7 +42,7 @@ describe('.validate()', function (){
     { example: 'foo', actual: [{}], error: true },
     { example: 'foo', actual: [{foo:'bar'}], error: true },
 
-    { example: 'foo', actual: undefined, result: undefined },
+    { example: 'foo', actual: undefined, error: true },
 
     { example: 'foo', actual: NaN, error: true },
     { example: 'foo', actual: Infinity, error: true },
@@ -92,7 +92,7 @@ describe('.validate()', function (){
     { example: 123, actual: [{}], error: true },
     { example: 123, actual: [{foo:'bar'}], error: true },
 
-    { example: 123, actual: undefined, result: undefined },
+    { example: 123, actual: undefined, error: true },
 
     { example: 123, actual: NaN, error: true },
     { example: 123, actual: Infinity, error: true },
@@ -143,7 +143,7 @@ describe('.validate()', function (){
     { example: true, actual: [{}], error: true },
     { example: true, actual: [{foo:'bar'}], error: true },
 
-    { example: true, actual: undefined, result: undefined },
+    { example: true, actual: undefined, error: true },
 
     { example: true, actual: NaN, error: true },
     { example: true, actual: Infinity, error: true },
@@ -179,7 +179,7 @@ describe('.validate()', function (){
     { example: {}, actual: [{}], error: true },
     { example: {}, actual: [{foo:'bar'}], error: true },
 
-    { example: {}, actual: undefined, result: undefined },
+    { example: {}, actual: undefined, error: true },
 
     { example: {}, actual: NaN, error: true },
     { example: {}, actual: Infinity, error: true },
@@ -225,7 +225,7 @@ describe('.validate()', function (){
     { example: [], actual: [{}], result: [{}] },
     { example: [], actual: [{foo:'bar'}], result: [{foo: 'bar'}] },
 
-    { example: [], actual: undefined, result: undefined },
+    { example: [], actual: undefined, error: true },
 
     { example: [], actual: NaN, error: true },
     { example: [], actual: Infinity, error: true },
