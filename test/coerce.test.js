@@ -459,27 +459,23 @@ describe('.coerce()', function (){
   ];
 
 
-  // Now loop through the entire test suite in order to generate
-  // and inject more tests automatically.  Then append the newly
-  // generated tests to the end of the original test array.
-  var additionalTests = [];
-
-
   // For all `example: undefined` tests, also test `example: '*'`
+  var starTests = [];
   _.each(TEST_SUITE, function (test){
     if (_.isUndefined(test.example)) {
-      additionalTests.push({
+      starTests.push({
         example: '*',
         actual: _.cloneDeep(test.actual),
         result: _.cloneDeep(test.result)
       });
     }
   });
-  TEST_SUITE = TEST_SUITE.concat(additionalTests);
+  TEST_SUITE = TEST_SUITE.concat(starTests);
 
 
   // Inject an extra test for each existing test in order to ensure correct
   // behavior when recursive examples/values are provided
+  var recursiveTests = [];
   _.each(TEST_SUITE, function (test){
 
     // ...but skip:
@@ -490,7 +486,7 @@ describe('.coerce()', function (){
     if (!_.isUndefined(test.example) && !test.error && !_.isUndefined(test.result)) {
 
       // test one level of additional array nesting
-      additionalTests.push({
+      recursiveTests.push({
         example: [ _.cloneDeep(test.example) ],
         actual: [ _.cloneDeep(test.actual) ],
         result: [ _.cloneDeep(test.result) ],
@@ -498,7 +494,7 @@ describe('.coerce()', function (){
       });
 
       // test one level of additional dictionary nesting
-      additionalTests.push({
+      recursiveTests.push({
         example: { xtra: _.cloneDeep(test.example) },
         actual: { xtra: _.cloneDeep(test.actual) },
         result: { xtra: _.cloneDeep(test.result) },
@@ -506,7 +502,7 @@ describe('.coerce()', function (){
       });
 
       // test one level of additional dictionary nesting AND 1 level of additional array nesting
-      additionalTests.push({
+      recursiveTests.push({
         example: [ { xtra: _.cloneDeep(test.example) } ],
         actual: [ { xtra: _.cloneDeep(test.actual) } ],
         result: [ { xtra: _.cloneDeep(test.result) } ],
@@ -514,7 +510,7 @@ describe('.coerce()', function (){
       });
 
       // test two levels of additional dictionary nesting
-      additionalTests.push({
+      recursiveTests.push({
         example: { xtra: { xtra2: _.cloneDeep(test.example) } },
         actual: { xtra: { xtra2: _.cloneDeep(test.actual) } },
         result: { xtra:{ xtra2: _.cloneDeep(test.result) } },
@@ -522,7 +518,7 @@ describe('.coerce()', function (){
       });
 
       // test two levels of additional array nesting
-      additionalTests.push({
+      recursiveTests.push({
         example: [ [ _.cloneDeep(test.example) ] ],
         actual:  [ [ _.cloneDeep(test.actual) ] ],
         result:  [ [ _.cloneDeep(test.result) ] ],
@@ -530,7 +526,7 @@ describe('.coerce()', function (){
       });
 
       // test two levels of additional dictionary nesting AND 1 level of array nesting
-      additionalTests.push({
+      recursiveTests.push({
         example: [ { xtra: { xtra2: _.cloneDeep(test.example) } } ],
         actual: [ { xtra: { xtra2: _.cloneDeep(test.actual) } } ],
         result: [ { xtra:{ xtra2: _.cloneDeep(test.result) } } ],
@@ -538,7 +534,7 @@ describe('.coerce()', function (){
       });
 
       // test two levels of additional dictionary nesting and one level of array nesting, then WITHIN that, 1 level of array nesting
-      additionalTests.push({
+      recursiveTests.push({
         example: [ { xtra: { xtra2: [_.cloneDeep(test.example)] } } ],
         actual: [ { xtra: { xtra2: [_.cloneDeep(test.actual)] } } ],
         result: [ { xtra:{ xtra2: [_.cloneDeep(test.result)] } } ],
@@ -546,7 +542,7 @@ describe('.coerce()', function (){
       });
 
       // test two levels of additional dictionary nesting and one level of array nesting, then WITHIN that, 2 levels of array nesting
-      additionalTests.push({
+      recursiveTests.push({
         example: [ { xtra: { xtra2: [[_.cloneDeep(test.example)]] } } ],
         actual: [ { xtra: { xtra2: [[_.cloneDeep(test.actual)]] } } ],
         result: [ { xtra:{ xtra2: [[_.cloneDeep(test.result)]] } } ],
@@ -555,7 +551,7 @@ describe('.coerce()', function (){
     }
 
   });
-  TEST_SUITE = TEST_SUITE.concat(additionalTests);
+  TEST_SUITE = TEST_SUITE.concat(recursiveTests);
 
 
   // Now run each test.

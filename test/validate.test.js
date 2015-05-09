@@ -317,95 +317,111 @@ describe('.validate()', function (){
 
   ];
 
-  // Initially run all tests as-is.
-  _.each(TEST_SUITE, function runInitialTest(test){
-    describeAndExecuteTest(test);
+  //
+  // Now loop through the entire test suite in order to generate
+  // and inject more tests automatically.  Then append the newly
+  // generated tests to the end of the original test array.
+  //
+
+
+  // For all `example: undefined` tests, also test `example: '*'`
+  var starTests = [];
+  _.each(TEST_SUITE, function (test){
+    if (_.isUndefined(test.example)) {
+      starTests.push({
+        example: '*',
+        actual: _.cloneDeep(test.actual),
+        result: _.cloneDeep(test.result)
+      });
+    }
   });
-
-  ///////////////////////////////////////////////////////////////
-  // TODO: instead of running these extra-depth tests, concat
-  // them onto the main array of tests, then export that so that
-  // it can be shared as a reference spec / documented etc.
-  ///////////////////////////////////////////////////////////////
+  TEST_SUITE = TEST_SUITE.concat(starTests);
 
 
-  // Now loop through the entire suite again to inject extra tests
-  // to ensure correct behavior when recursive examples/values are provided.
+  // Inject an extra test for each existing test in order to ensure correct
+  // behavior when recursive examples/values are provided
+  var recursiveTests = [];
   _.each(TEST_SUITE, function (test){
 
-    // Skip tests without examples
-    if (_.isUndefined(test.example)) return;
+    // ...but skip:
+    //  • tests with example: `undefined`
+    //  • tests that expect errors
+    //  • tests that expect a result===`undefined`
+    // (nested behavior is different in these cases^)
+    if (!_.isUndefined(test.example) && !test.error && !_.isUndefined(test.result)) {
 
-    // Skip tests that expect errors
-    if (test.error) return;
+      // test one level of additional array nesting
+      recursiveTests.push({
+        example: [ _.cloneDeep(test.example) ],
+        actual: [ _.cloneDeep(test.actual) ],
+        result: [ _.cloneDeep(test.result) ],
+        _meta: '+1 array depth'
+      });
 
-    // Skip tests that expect `undefined`
-    // (nested behavior is different in this case)
-    if (test.result === undefined) return;
+      // test one level of additional dictionary nesting
+      recursiveTests.push({
+        example: { xtra: _.cloneDeep(test.example) },
+        actual: { xtra: _.cloneDeep(test.actual) },
+        result: { xtra: _.cloneDeep(test.result) },
+        _meta: '+1 dictionary depth'
+      });
 
-    // test one level of additional array nesting
-    describeAndExecuteTest({
-      example: [ test.example ],
-      actual: [ test.actual ],
-      result: [ test.result ],
-      _meta: '+1 array depth'
-    });
+      // test one level of additional dictionary nesting AND 1 level of additional array nesting
+      recursiveTests.push({
+        example: [ { xtra: _.cloneDeep(test.example) } ],
+        actual: [ { xtra: _.cloneDeep(test.actual) } ],
+        result: [ { xtra: _.cloneDeep(test.result) } ],
+        _meta: '+1 array depth, +1 dictionary depth'
+      });
 
-    // test one level of additional dictionary nesting
-    describeAndExecuteTest({
-      example: { xtra: test.example },
-      actual: { xtra: test.actual },
-      result: { xtra: test.result },
-      _meta: '+1 dictionary depth'
-    });
+      // test two levels of additional dictionary nesting
+      recursiveTests.push({
+        example: { xtra: { xtra2: _.cloneDeep(test.example) } },
+        actual: { xtra: { xtra2: _.cloneDeep(test.actual) } },
+        result: { xtra:{ xtra2: _.cloneDeep(test.result) } },
+        _meta: '+2 dictionary depth'
+      });
 
-    // test one level of additional dictionary nesting AND 1 level of additional array nesting
-    describeAndExecuteTest({
-      example: [ { xtra: test.example } ],
-      actual: [ { xtra: test.actual } ],
-      result: [ { xtra: test.result } ],
-      _meta: '+1 array depth, +1 dictionary depth'
-    });
+      // test two levels of additional array nesting
+      recursiveTests.push({
+        example: [ [ _.cloneDeep(test.example) ] ],
+        actual:  [ [ _.cloneDeep(test.actual) ] ],
+        result:  [ [ _.cloneDeep(test.result) ] ],
+        _meta: '+2 array depth'
+      });
 
-    // test two levels of additional dictionary nesting
-    describeAndExecuteTest({
-      example: { xtra: { xtra2: test.example } },
-      actual: { xtra: { xtra2: test.actual } },
-      result: { xtra:{ xtra2: test.result } },
-      _meta: '+2 dictionary depth'
-    });
+      // test two levels of additional dictionary nesting AND 1 level of array nesting
+      recursiveTests.push({
+        example: [ { xtra: { xtra2: _.cloneDeep(test.example) } } ],
+        actual: [ { xtra: { xtra2: _.cloneDeep(test.actual) } } ],
+        result: [ { xtra:{ xtra2: _.cloneDeep(test.result) } } ],
+        _meta: '+1 array depth, +2 dictionary depth'
+      });
 
-    // test two levels of additional array nesting
-    describeAndExecuteTest({
-      example: [ [ test.example ] ],
-      actual:  [ [ test.actual ] ],
-      result:  [ [ test.result ] ],
-      _meta: '+2 array depth'
-    });
+      // test two levels of additional dictionary nesting and one level of array nesting, then WITHIN that, 1 level of array nesting
+      recursiveTests.push({
+        example: [ { xtra: { xtra2: [_.cloneDeep(test.example)] } } ],
+        actual: [ { xtra: { xtra2: [_.cloneDeep(test.actual)] } } ],
+        result: [ { xtra:{ xtra2: [_.cloneDeep(test.result)] } } ],
+        _meta: '+1 array depth, +2 dictionary depth, +1 nested array depth'
+      });
 
-    // test two levels of additional dictionary nesting AND 1 level of array nesting
-    describeAndExecuteTest({
-      example: [ { xtra: { xtra2: test.example } } ],
-      actual: [ { xtra: { xtra2: test.actual } } ],
-      result: [ { xtra:{ xtra2: test.result } } ],
-      _meta: '+1 array depth, +2 dictionary depth'
-    });
+      // test two levels of additional dictionary nesting and one level of array nesting, then WITHIN that, 2 levels of array nesting
+      recursiveTests.push({
+        example: [ { xtra: { xtra2: [[_.cloneDeep(test.example)]] } } ],
+        actual: [ { xtra: { xtra2: [[_.cloneDeep(test.actual)]] } } ],
+        result: [ { xtra:{ xtra2: [[_.cloneDeep(test.result)]] } } ],
+        _meta: '+1 array depth, +2 dictionary depth, +2 nested array depth'
+      });
+    }
 
-    // test two levels of additional dictionary nesting and one level of array nesting, then WITHIN that, 1 level of array nesting
-    describeAndExecuteTest({
-      example: [ { xtra: { xtra2: [test.example] } } ],
-      actual: [ { xtra: { xtra2: [test.actual] } } ],
-      result: [ { xtra:{ xtra2: [test.result] } } ],
-      _meta: '+1 array depth, +2 dictionary depth, +1 nested array depth'
-    });
+  });
+  TEST_SUITE = TEST_SUITE.concat(recursiveTests);
 
-    // test two levels of additional dictionary nesting and one level of array nesting, then WITHIN that, 2 levels of array nesting
-    describeAndExecuteTest({
-      example: [ { xtra: { xtra2: [[test.example]] } } ],
-      actual: [ { xtra: { xtra2: [[test.actual]] } } ],
-      result: [ { xtra:{ xtra2: [[test.result]] } } ],
-      _meta: '+1 array depth, +2 dictionary depth, +2 nested array depth'
-    });
+
+  // Now run each test.
+  _.each(TEST_SUITE, function (test){
+    describeAndExecuteTest(test);
   });
 
 });
@@ -425,11 +441,8 @@ function describeAndExecuteTest(test){
     if (!_.isUndefined(test.example)) {
       msg += 'with a '+getDisplayType(test.example)+' example ('+util.inspect(test.example,false, null)+')';
     }
-    else if (!_.isUndefined(test.type)) {
-      msg +='with type: '+test.type;
-    }
     else {
-      msg +='with neither an example nor type';
+      msg +='with example===`undefined`';
     }
 
     return msg;
