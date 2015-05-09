@@ -9,11 +9,8 @@ var rttc = require('../../');
 
 module.exports = function testValidation(expectations, cb){
 
-  //
   // Determine type schema of the value.
   // (using inference to pull it from the `example`, if provided)
-  //
-
   var typeSchema;
   if (!_.isUndefined(expectations.type)) {
     typeSchema = expectations.type;
@@ -23,10 +20,7 @@ module.exports = function testValidation(expectations, cb){
   }
 
 
-  //
-  // Now validate the actual value against the type schema.
-  //
-
+  // Now validate and/or coerce the actual value against the type schema.
   var actualResult;
   var gotError;
   try {
@@ -37,17 +31,15 @@ module.exports = function testValidation(expectations, cb){
   }
 
 
-  //
   // Finally, make sure the right thing happened and that we
   // got the appropriate result.
   //
-
+  //
   // Ensure that if we got an error, we were expecting it.
   if (gotError){
     if (expectations.error) {return cb();}
     return cb(new Error('did not expect error, but got one:\n' + util.inspect(gotError)));
   }
-
   // Handle case where we were expecting an error, but we didn't get one.
   if (expectations.error) {
     return cb(new Error('expected a error, but did not get one. Instead, returned '+util.inspect(actualResult, false, null)+'.'));

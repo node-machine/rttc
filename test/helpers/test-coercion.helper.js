@@ -22,26 +22,36 @@ module.exports = function testCoercion(expectations, cb){
   }
 
 
-  // Now coerce the actual value using the type schema.
-  var coerced;
+  // Now validate and/or coerce the actual value against the type schema.
+  var actualResult;
   var gotError;
   try {
-    coerced = rttc.coerce(typeSchema, expectations.actual);
+    actualResult = rttc.coerce(typeSchema, expectations.actual);
   }
   catch (e) {
     gotError = e;
   }
 
 
-  // Handle case where we got an unexpected error.
-  if (gotError) {
-    return cb(new Error('did not expect coercion error, but got one:\n' + util.inspect(gotError)));
+
+  // Finally, make sure the right thing happened and that we
+  // got the appropriate result.
+  //
+  //
+  // Ensure that if we got an error, we were expecting it.
+  if (gotError){
+    if (expectations.error) {return cb();}
+    return cb(new Error('did not expect error, but got one:\n' + util.inspect(gotError)));
+  }
+  // Handle case where we were expecting an error, but we didn't get one.
+  if (expectations.error) {
+    return cb(new Error('expected a error, but did not get one. Instead, returned '+util.inspect(actualResult, false, null)+'.'));
   }
 
   // Ensure that the actual result matches the test's expectations.
-  if (_.isEqual(coerced, expectations.result)) {
+  if (_.isEqual(actualResult, expectations.result)) {
     return cb();
   }
-  return cb(new Error('.coerce() returned incorrect value: '+util.inspect(coerced, false, null)));
+  return cb(new Error('returned incorrect value: '+util.inspect(actualResult, false, null)));
 
 };
