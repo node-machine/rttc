@@ -7,7 +7,7 @@ var _ = require('lodash');
 var rttc = require('../../');
 
 
-module.exports = function testValidation(expectations, cb){
+module.exports = function testTransformation(expectations, transformationFn, cb){
 
   // Determine type schema of the value.
   // (using inference to pull it from the `example`, if provided)
@@ -24,7 +24,7 @@ module.exports = function testValidation(expectations, cb){
   var actualResult;
   var gotError;
   try {
-    actualResult = rttc.validate(typeSchema, expectations.actual);
+    actualResult = transformationFn(typeSchema, expectations.actual);
   }
   catch (e) {
     gotError = e;
