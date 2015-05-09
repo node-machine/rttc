@@ -4,7 +4,7 @@
 
 // var util = require('util');
 // var _ = require('lodash');
-// var testExitCoercion = require('./helpers/test-exit-coercion.helper');
+// var testCoercion = require('./helpers/test-coercion.helper');
 // var Readable = require('stream').Readable;
 
 
@@ -582,7 +582,7 @@
 //     }
 //     else {
 //       it(util.format('should coerce %s', actualDisplayName, 'into '+util.inspect(test.result, false, null)+''), function (done){
-//         testExitCoercion(test, done);
+//         testCoercion(test, done);
 //       });
 //     }
 //   });
