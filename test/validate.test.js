@@ -193,12 +193,12 @@ describe('.validate()', function (){
     // Skip Readable stream tests for now since the enumerable properties vary between Node.js versions.
     // { example: {}, actual: new Readable(), result: { _readableState: { highWaterMark: 16384, buffer: [], length: 0, pipes: null, pipesCount: 0, flowing: false, ended: false, endEmitted: false, reading: false, calledRead: false, sync: true, needReadable: false, emittedReadable: false, readableListening: false, objectMode: false, defaultEncoding: 'utf8', ranOut: false, awaitDrain: 0, readingMore: false, decoder: null, encoding: null }, readable: true, domain: null, _events: {}, _maxListeners: 10 } },
     // Note: we could bring back support for this by explicitly filtering properties of streams in `.exec()`...
-    // TODO: but actually, this should cause an error- use `typeclass: *` for things like this.
+    // TODO: but actually, this should cause an error- use `example: '*'` for things like this.
 
     // Skip Buffer tests for now since the enumerable properties vary between Node.js versions.
     // { example: {}, actual: new Buffer('asdf'), error: true },
     // Note: we could bring back support for this by explicitly filtering properties of buffers in `.exec()`
-    // TODO: but actually, this should cause an error- use `typeclass: *` for things like this.
+    // TODO: but actually, this should cause an error- use `example: '*'` for things like this.
 
     { example: {}, actual: new Error('asdf'), result: {} },  // TODO: consider enhancing this behavior to guarantee e.g. `.message` (string), `.stack` (string), `.code` (string), and `.status` (number).  Needs community discussion
 
@@ -239,7 +239,7 @@ describe('.validate()', function (){
     // Skip Buffer tests for now since the enumerable properties vary between Node.js versions.
     // { example: [], actual: new Buffer('asdf'), result: [ 97, 115, 100, 102 ] },
     // Note: we could bring back support for this by explicitly filtering properties of buffers in `.exec()`
-    // TODO: but actually, this should cause an error- use `typeclass: *` for things like this.
+    // TODO: but actually, this should cause an error- use `example: '*'` for things like this.
     { example: [], actual: new Error('asdf'), error: true },
 
     ////////////////////////////////////////////
