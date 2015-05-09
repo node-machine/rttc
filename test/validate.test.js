@@ -246,7 +246,9 @@ describe('.validate()', function (){
     // RECURSIVE OBJECTS
     ////////////////////////////////////////////
 
-    { example: {a:1, b:'hi', c: false}, actual: {a: 1}, error: true  },
+    // Missing keys:
+    { example: {a:1, b:'hi', c: false}, actual: {a: 11}, error: true  },
+    // Extra keys:
     { example: {a:1, b:'hi'}, actual: {a: 23, b: 'stuff', d: true}, result: {a: 23, b: 'stuff'}  },
 
     ////////////////////////////////////////////
@@ -289,29 +291,29 @@ describe('.validate()', function (){
 
     { example: '*', actual: undefined, result: undefined,  },
 
-    // { example: '*', actual: NaN, result: NaN,  },
-    // { example: '*', actual: Infinity, result: Infinity,  },
-    // { example: '*', actual: -Infinity, result: -Infinity,  },
-    // { example: '*', actual: null, result: null,  },
+    { example: '*', actual: NaN, result: NaN,  },
+    { example: '*', actual: Infinity, result: Infinity,  },
+    { example: '*', actual: -Infinity, result: -Infinity,  },
+    { example: '*', actual: null, result: null,  },
 
-    // (function (){
-    //   var regexp = /some regexp/;
-    //   return { example: '*', actual: regexp, result: regexp,  };
-    // })(),
-    // (function (){
-    //   var fn = function (){};
-    //   return { example: '*', actual: fn, result: fn,  };
-    // })(),
-    // { example: '*', actual: new Date('November 5, 1605 GMT'), result: new Date('November 5, 1605 GMT'),  },
-    // { example: '*', actual: new Readable(), result: new Readable(),  },
-    // (function (){
-    //   var buffer = new Buffer('asdf');
-    //   return { example: '*', actual: buffer, result: buffer  };
-    // })(),
-    // (function (){
-    //   var err = new Error('asdf');
-    //   return { example: '*', actual: err, result: err,  };
-    // })()
+    (function (){
+      var regexp = /some regexp/;
+      return { example: '*', actual: regexp, result: regexp,  };
+    })(),
+    (function (){
+      var fn = function (){};
+      return { example: '*', actual: fn, result: fn,  };
+    })(),
+    { example: '*', actual: new Date('November 5, 1605 GMT'), result: new Date('November 5, 1605 GMT'),  },
+    { example: '*', actual: new Readable(), result: new Readable(),  },
+    (function (){
+      var buffer = new Buffer('asdf');
+      return { example: '*', actual: buffer, result: buffer  };
+    })(),
+    (function (){
+      var err = new Error('asdf');
+      return { example: '*', actual: err, result: err,  };
+    })()
 
   ];
 

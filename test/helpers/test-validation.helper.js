@@ -59,7 +59,7 @@ module.exports = function testValidation(expectations, cb){
 
   // Handle case where we were expecting an error, but we didn't get one.
   if (expectations.error) {
-    return cb(new Error('expected a validation error, but did not get one. Instead, returned '+util.inspect(validated, false, null))+'.' );
+    return cb(new Error('expected a validation error, but did not get one. Instead, returned '+util.inspect(validated, false, null)+'.'));
   }
 
   // Ensure that the actual result matches the test's expectations.

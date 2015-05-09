@@ -28,6 +28,8 @@ var rttc = require('rttc');
 + For any "dictionary" (`{}`), base value is `{}`, with whatever keys are expected (recursive)
 + For a generic "array" (`[]`), base value is `[]`, with a single archetypal item matching the expectation (recursive)
 
+
+
 <!--
 TODO:
 + For "stream", base value is an empty readable buffer stream (i.e. not in object mode)
@@ -62,6 +64,9 @@ TODO:
   }
 }
 ```
+
+When validating against a dictionary schema with at least one key, extra keys in the actual value will be stripped out.  If the dictionary schema is empty, all actual keys will be left alone.
+
 
 #### Arrays
 
