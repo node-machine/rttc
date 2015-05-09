@@ -21,30 +21,21 @@ module.exports = function testValidation(expectations, cb){
   else {
     typeSchema = rttc.infer(expectations.example);
   }
-  // console.log('--------------------------');
-  // console.log('expectations.example ::',expectations.example);
-  // console.log('typeSchema ::',typeSchema);
-  // console.log('expectations.actual ::',expectations.actual, '('+typeof expectations.actual+')');
-  // console.log('expectations.result ::',expectations.result, '('+typeof expectations.result+')');
 
 
   //
   // Now validate the actual value against the type schema.
   //
 
-  var validated;
+  var actualResult;
   var gotError;
   try {
-    validated = rttc.validate(typeSchema, expectations.actual);
+    actualResult = rttc.validate(typeSchema, expectations.actual);
   }
   catch (e) {
     gotError = e;
   }
 
-
-  // if (gotError) console.log('gotError? ::',gotError);
-  // else console.log('post-validation ::',validated, '('+typeof validated+')');
-  // console.log('post-validation ::',validated, '('+typeof validated+')');
 
   //
   // Finally, make sure the right thing happened and that we
@@ -54,19 +45,19 @@ module.exports = function testValidation(expectations, cb){
   // Ensure that if we got an error, we were expecting it.
   if (gotError){
     if (expectations.error) {return cb();}
-    return cb(new Error('did not expect validation error, but got one:\n' + util.inspect(gotError)));
+    return cb(new Error('did not expect error, but got one:\n' + util.inspect(gotError)));
   }
 
   // Handle case where we were expecting an error, but we didn't get one.
   if (expectations.error) {
-    return cb(new Error('expected a validation error, but did not get one. Instead, returned '+util.inspect(validated, false, null)+'.'));
+    return cb(new Error('expected a error, but did not get one. Instead, returned '+util.inspect(actualResult, false, null)+'.'));
   }
 
   // Ensure that the actual result matches the test's expectations.
-  if (_.isEqual(validated, expectations.result)) {
+  if (_.isEqual(actualResult, expectations.result)) {
     return cb();
   }
-  return cb(new Error('.validate() returned incorrect value: '+util.inspect(validated, false, null)));
+  return cb(new Error('returned incorrect value: '+util.inspect(actualResult, false, null)));
 
 };
 

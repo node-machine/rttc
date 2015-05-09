@@ -5,7 +5,6 @@
 var util = require('util');
 var _ = require('lodash');
 var Readable = require('stream').Readable;
-var testValidation = require('./helpers/test-validation.helper');
 
 
 
@@ -428,6 +427,17 @@ describe('.validate()', function (){
 
 
 
+
+
+
+
+
+
+
+
+var runTest = require('./helpers/test-validation.helper');
+
+
 // Set up mocha test:
 function describeAndExecuteTest(test){
   var actualDisplayName = (_.isObject(test.actual)&&test.actual.constructor && test.actual.constructor.name !== 'Object' && test.actual.constructor.name !== 'Array')?test.actual.constructor.name:util.inspect(test.actual, false, null);
@@ -453,13 +463,13 @@ function describeAndExecuteTest(test){
   })(), function suite (){
     if (test.error) {
       it(util.format('should error when %s is provided', actualDisplayName), function (done){
-        testValidation(test, done);
+        runTest(test, done);
       });
       return;
     }
     else {
       it(util.format('should coerce %s', actualDisplayName, 'into '+util.inspect(test.result, false, null)+''), function (done){
-        testValidation(test, done);
+        runTest(test, done);
       });
     }
   });

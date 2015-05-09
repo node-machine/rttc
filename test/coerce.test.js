@@ -4,7 +4,6 @@
 
 var util = require('util');
 var _ = require('lodash');
-var testCoercion = require('./helpers/test-coercion.helper');
 var Readable = require('stream').Readable;
 
 
@@ -562,12 +561,22 @@ describe('.coerce()', function (){
 });
 
 
+
+
+
+
+
+
+var runTest = require('./helpers/test-coercion.helper');
+
+
 // Set up mocha test:
 function describeAndExecuteTest(test){
   var actualDisplayName = (_.isObject(test.actual)&&test.actual.constructor && test.actual.constructor.name !== 'Object' && test.actual.constructor.name !== 'Array')?test.actual.constructor.name:util.inspect(test.actual, false, null);
 
   describe((function _determineDescribeMsg(){
     var msg = '';
+
     if (test._meta) {
       msg += '['+test._meta+']';
     }
@@ -579,24 +588,24 @@ function describeAndExecuteTest(test){
       msg += 'with a '+getDisplayType(test.example)+' example ('+util.inspect(test.example,false, null)+')';
     }
     else {
-      msg +='with `example===undefined`';
+      msg +='with example===`undefined`';
     }
 
     return msg;
   })(), function suite (){
     if (test.error) {
-      it('should error', function (done){
-        testInputValidation(test, done);
+      it(util.format('should error when %s is provided', actualDisplayName), function (done){
+        runTest(test, done);
       });
       return;
     }
-    else {
-      it(util.format('should coerce %s', actualDisplayName, 'into '+util.inspect(test.result, false, null)+''), function (done){
-        testCoercion(test, done);
-      });
-    }
+
+    it(util.format('should coerce %s', actualDisplayName, 'into '+util.inspect(test.result, false, null)+''), function (done){
+      runTest(test, done);
+    });
   });
 }
+
 
 /**
  * private helper fn
