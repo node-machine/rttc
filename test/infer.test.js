@@ -2,7 +2,67 @@ var util = require('util');
 var assert = require('assert');
 var infer = require('../lib/infer');
 
-describe('Inferring schema from example', function() {
+describe('Inferring type schema from example', function() {
+
+
+  // ------------------------------------------------------------
+  // Primitive examples
+  // ------------------------------------------------------------
+
+  describe('when primitive values are used', function() {
+
+    it('should set type "string"', function() {
+      var type = infer('foo');
+      assert.strictEqual(type, 'string');
+
+      type = infer('');
+      assert.strictEqual(type, 'string');
+    });
+
+    it('should set type "number"', function() {
+      var type = infer(5);
+      assert.strictEqual(type, 'number');
+
+      infer(-5);
+      assert.strictEqual(type, 'number');
+
+      infer(0);
+      assert.strictEqual(type, 'number');
+
+      infer(5.3);
+      assert.strictEqual(type, 'number');
+
+      infer(-5.2);
+      assert.strictEqual(type, 'number');
+    });
+
+    it('should set type "boolean"', function() {
+      var type = infer(false);
+      assert.strictEqual(type, 'boolean');
+
+      type = infer(true);
+      assert.strictEqual(type, 'boolean');
+    });
+
+    it('should set type "*"', function() {
+      var type = infer('*');
+      assert.strictEqual(type, '*');
+    });
+
+  });
+
+
+
+
+
+
+
+
+
+
+  // ------------------------------------------------------------
+  // Array examples
+  // ------------------------------------------------------------
 
   describe('when an array of primitives is used', function() {
 
@@ -257,5 +317,61 @@ describe('Inferring schema from example', function() {
     });
 
   });
+
+
+
+
+
+
+  // ------------------------------------------------------------
+  // Other object examples
+  // ------------------------------------------------------------
+
+  describe('when an object is used', function() {
+
+    it('should parse a single level object', function() {
+      var obj = {
+        foo: 'bar',
+        bar: 3,
+        baz: false
+      };
+
+      var schema = infer(obj);
+
+      assert(schema.foo);
+      assert(schema.bar);
+      assert(schema.baz);
+      assert.strictEqual(schema.foo, 'string');
+      assert.strictEqual(schema.bar, 'number');
+      assert.strictEqual(schema.baz, 'boolean');
+    });
+
+    it('should parse a nested object', function() {
+      var obj = {
+        foo: 'bar',
+        bar: {
+          foo: false,
+          baz: {
+            foo: 3
+          }
+        }
+      };
+
+      var schema = infer(obj);
+
+      assert(schema.foo);
+      assert(schema.bar);
+      assert(schema.bar.foo);
+      assert(schema.bar.baz);
+      assert(schema.bar.baz.foo);
+
+      assert.strictEqual(schema.foo, 'string');
+      assert.strictEqual(schema.bar.foo, 'boolean');
+      assert.strictEqual(schema.bar.baz.foo, 'number');
+    });
+
+  });
+
+
 
 });
