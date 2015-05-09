@@ -1,10 +1,3 @@
-/**
- * Module dependencies
- */
-
-var Readable = require('stream').Readable;
-
-
 var TEST_SUITE = [
 
   ////////////////////////////////////////////
@@ -44,7 +37,7 @@ var TEST_SUITE = [
   { example: 'foo', actual: /some regexp/, result: '' },
   { example: 'foo', actual: function(){}, result: '' },
   { example: 'foo', actual: new Date('November 5, 1605 GMT'), result: '1605-11-05T00:00:00.000Z' },
-  { example: 'foo', actual: new Readable(), result: '' }, // TODO: consider buffering into a string..?  needs community discussion
+  { example: 'foo', actual: new (require('stream').Readable)(), result: '' }, // TODO: consider buffering into a string..?  needs community discussion
   { example: 'foo', actual: new Buffer('asdf'), result: '' }, // TODO: consider converting to string
   { example: 'foo', actual: new Error('asdf'), result: '' }, // TODO: consider converting to error stack trace
 
@@ -93,7 +86,7 @@ var TEST_SUITE = [
   { example: 123, actual: /some regexp/, result: 0 },
   { example: 123, actual: function(){}, result: 0 },
   { example: 123, actual: new Date('November 5, 1605 GMT'), result: 0 }, // TODO: consider enhancing this to return an epoch timestamp (number of miliseconds since Jan 1, 1970). In this case, would be: -11491606800000
-  { example: 123, actual: new Readable(), result: 0 }, // TODO: ??? maybe num bytes read so far?
+  { example: 123, actual: new (require('stream').Readable)(), result: 0 }, // TODO: ??? maybe num bytes read so far?
   { example: 123, actual: new Buffer('asdf'), result: 0 },  // TODO: ??? maybe size of the buffer in bytes?
   { example: 123, actual: new Error('asdf'), result: 0 }, // TODO: ??? maybe `.status`?
 
@@ -143,7 +136,7 @@ var TEST_SUITE = [
   { example: true, actual: /some regexp/, result: false },
   { example: true, actual: function(){}, result: false },
   { example: true, actual: new Date('November 5, 1605 GMT'), result: false },
-  { example: true, actual: new Readable(), result: false },
+  { example: true, actual: new (require('stream').Readable)(), result: false },
   { example: true, actual: new Buffer('asdf'), result: false },
   { example: true, actual: new Error('asdf'), result: false },
 
@@ -180,7 +173,7 @@ var TEST_SUITE = [
   { example: {}, actual: new Date('November 5, 1605 GMT'), result: {} },
   // Skip Readable stream tests for now since the enumerable properties vary between Node.js versions.
   // TODO: bring back support for this by explicitly filtering properties of streams in `.exec()`
-  // { example: {}, actual: new Readable(), result: { _readableState: { highWaterMark: 16384, buffer: [], length: 0, pipes: null, pipesCount: 0, flowing: false, ended: false, endEmitted: false, reading: false, calledRead: false, sync: true, needReadable: false, emittedReadable: false, readableListening: false, objectMode: false, defaultEncoding: 'utf8', ranOut: false, awaitDrain: 0, readingMore: false, decoder: null, encoding: null }, readable: true, domain: null, _events: {}, _maxListeners: 10 } },
+  // { example: {}, actual: new (require('stream').Readable)(), result: { _readableState: { highWaterMark: 16384, buffer: [], length: 0, pipes: null, pipesCount: 0, flowing: false, ended: false, endEmitted: false, reading: false, calledRead: false, sync: true, needReadable: false, emittedReadable: false, readableListening: false, objectMode: false, defaultEncoding: 'utf8', ranOut: false, awaitDrain: 0, readingMore: false, decoder: null, encoding: null }, readable: true, domain: null, _events: {}, _maxListeners: 10 } },
 
   // Skip Buffer tests for now since the enumerable properties vary between Node.js versions.
   // TODO: bring back support for this by explicitly filtering properties of buffers in `.exec()`
@@ -220,7 +213,7 @@ var TEST_SUITE = [
   { example: [], actual: /some regexp/, result: [] },
   { example: [], actual: function(){}, result: [] },
   { example: [], actual: new Date('November 5, 1605 GMT'), result: [] },
-  { example: [], actual: new Readable(), result: [] }, // TODO: consider enhancing this behavior to concat the stream contents? Needs community discussion.
+  { example: [], actual: new (require('stream').Readable)(), result: [] }, // TODO: consider enhancing this behavior to concat the stream contents? Needs community discussion.
 
   // Skip Buffer tests for now since the enumerable properties vary between Node.js versions.
   // TODO: bring back support for this by explicitly filtering properties of buffers in `.exec()`
@@ -455,7 +448,9 @@ var TEST_SUITE = [
 
 
 
-
+/**
+ * Module dependencies
+ */
 
 var runSuite = require('./helpers/run-suite');
 var coerce = require('../').coerce;

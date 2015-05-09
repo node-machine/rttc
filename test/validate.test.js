@@ -1,10 +1,3 @@
-/**
- * Module dependencies
- */
-
-var Readable = require('stream').Readable;
-
-
 var TEST_SUITE = [
 
 
@@ -46,7 +39,7 @@ var TEST_SUITE = [
   { example: 'foo', actual: /some regexp/, error: true },
   { example: 'foo', actual: function(){}, error: true },
   { example: 'foo', actual: new Date('November 5, 1605 GMT'), result: '1605-11-05T00:00:00.000Z' },
-  { example: 'foo', actual: new Readable(), error: true },
+  { example: 'foo', actual: new (require('stream').Readable)(), error: true },
   { example: 'foo', actual: new Buffer('asdf'), error: true },
   { example: 'foo', actual: new Error('asdf'), error: true },
 
@@ -96,7 +89,7 @@ var TEST_SUITE = [
   { example: 123, actual: /some regexp/, error: true },
   { example: 123, actual: function(){}, error: true },
   { example: 123, actual: new Date('November 5, 1605 GMT'), error: true },
-  { example: 123, actual: new Readable(), error: true },
+  { example: 123, actual: new (require('stream').Readable)(), error: true },
   { example: 123, actual: new Buffer('asdf'), error: true },
   { example: 123, actual: new Error('asdf'), error: true },
 
@@ -147,7 +140,7 @@ var TEST_SUITE = [
   { example: true, actual: /some regexp/, error: true },
   { example: true, actual: function(){}, error: true },
   { example: true, actual: new Date('November 5, 1605 GMT'), error: true },
-  { example: true, actual: new Readable(), error: true },
+  { example: true, actual: new (require('stream').Readable)(), error: true },
   { example: true, actual: new Buffer('asdf'), error: true },
   { example: true, actual: new Error('asdf'), error: true },
 
@@ -185,7 +178,7 @@ var TEST_SUITE = [
   { example: {}, actual: new Date('November 5, 1605 GMT'), error: true },
 
   // Skip Readable stream tests for now since the enumerable properties vary between Node.js versions.
-  // { example: {}, actual: new Readable(), result: { _readableState: { highWaterMark: 16384, buffer: [], length: 0, pipes: null, pipesCount: 0, flowing: false, ended: false, endEmitted: false, reading: false, calledRead: false, sync: true, needReadable: false, emittedReadable: false, readableListening: false, objectMode: false, defaultEncoding: 'utf8', ranOut: false, awaitDrain: 0, readingMore: false, decoder: null, encoding: null }, readable: true, domain: null, _events: {}, _maxListeners: 10 } },
+  // { example: {}, actual: new (require('stream').Readable)(), result: { _readableState: { highWaterMark: 16384, buffer: [], length: 0, pipes: null, pipesCount: 0, flowing: false, ended: false, endEmitted: false, reading: false, calledRead: false, sync: true, needReadable: false, emittedReadable: false, readableListening: false, objectMode: false, defaultEncoding: 'utf8', ranOut: false, awaitDrain: 0, readingMore: false, decoder: null, encoding: null }, readable: true, domain: null, _events: {}, _maxListeners: 10 } },
   // Note: we could bring back support for this by explicitly filtering properties of streams in `.exec()`...
   // TODO: but actually, this should cause an error- use `example: '*'` for things like this.
 
@@ -229,7 +222,7 @@ var TEST_SUITE = [
   { example: [], actual: /some regexp/, error: true },
   { example: [], actual: function(){}, error: true },
   { example: [], actual: new Date('November 5, 1605 GMT'), error: true },
-  { example: [], actual: new Readable(), error: true }, // TODO: consider enhancing this behavior to concat the stream contents? Needs community discussion.
+  { example: [], actual: new (require('stream').Readable)(), error: true }, // TODO: consider enhancing this behavior to concat the stream contents? Needs community discussion.
   // Skip Buffer tests for now since the enumerable properties vary between Node.js versions.
   // { example: [], actual: new Buffer('asdf'), result: [ 97, 115, 100, 102 ] },
   // Note: we could bring back support for this by explicitly filtering properties of buffers in `.exec()`
@@ -299,7 +292,7 @@ var TEST_SUITE = [
     return { example: '*', actual: fn, result: fn,  };
   })(),
   { example: '*', actual: new Date('November 5, 1605 GMT'), result: new Date('November 5, 1605 GMT'),  },
-  { example: '*', actual: new Readable(), result: new Readable(),  },
+  { example: '*', actual: new (require('stream').Readable)(), result: new (require('stream').Readable)(),  },
   (function (){
     var buffer = new Buffer('asdf');
     return { example: '*', actual: buffer, result: buffer  };
@@ -313,7 +306,9 @@ var TEST_SUITE = [
 
 
 
-
+/**
+ * Module dependencies
+ */
 
 var runSuite = require('./helpers/run-suite');
 var validate = require('../').validate;
