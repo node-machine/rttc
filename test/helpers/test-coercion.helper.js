@@ -39,7 +39,7 @@ module.exports = function testCoercion(expectations, cb){
   }
 
   // TODO: remove this hack.
-  if (_.isUndefined(expectations.result)) return cb();
+  // if (_.isUndefined(expectations.result)) return cb();
 
   // Ensure that the actual result matches the test's expectations.
   if (_.isEqual(coerced, expectations.result)) {

@@ -10,7 +10,7 @@ var Readable = require('stream').Readable;
 
 describe('.coerce()', function (){
 
-  var EXIT_TEST_SUITE = [
+  var TEST_SUITE = [
 
     ////////////////////////////////////////////
     // STRINGS
@@ -271,9 +271,10 @@ describe('.coerce()', function (){
     { example: undefined, actual: [{}], result: [{}],  },
     { example: undefined, actual: [{foo:'bar'}], result: [{foo:'bar'}],  },
 
-    { example: undefined, actual: undefined, result: undefined,  },
 
     // Same problem as w/ validate() here:
+
+    // { example: undefined, actual: undefined, result: undefined,  },
 
     // { example: undefined, actual: NaN, result: NaN,  },
     // { example: undefined, actual: Infinity, result: Infinity,  },
@@ -463,13 +464,13 @@ describe('.coerce()', function (){
 
 
   // Initially run all tests as-is.
-  _.each(EXIT_TEST_SUITE, function (test){
+  _.each(TEST_SUITE, function (test){
     describeAndExecuteTest(test);
   });
 
   // Now loop through the entire suite again to inject extra tests
   // to ensure correct behavior when recursive examples/values are provided.
-  _.each(EXIT_TEST_SUITE, function (test){
+  _.each(TEST_SUITE, function (test){
     // Skip tests without examples
     if (_.isUndefined(test.example)) return;
 
@@ -558,7 +559,7 @@ function describeAndExecuteTest(test){
       msg += '['+test._meta+']';
     }
     else {
-      msg += 'exit ';
+      msg += ' ';
     }
 
     if (!_.isUndefined(test.example)) {
