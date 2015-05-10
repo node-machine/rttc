@@ -1,4 +1,5 @@
 var assert = require('assert');
+var validate = require('../lib/validate');
 var validateStrict = require('../lib/validate-strict');
 var coerce = require('../lib/coerce');
 
@@ -153,25 +154,25 @@ describe('Acceptance: simple coercion and validation', function() {
         });
       });
       it('should not touch arbitrary string', function() {
-        assert.strictEqual(validateStrict('string', 'foo'), 'foo');
+        assert.strictEqual(validate('string', 'foo'), 'foo');
       });
       it('should not touch empty string', function() {
-        assert.strictEqual(validateStrict('string', ''), '');
+        assert.strictEqual(validate('string', ''), '');
       });
       it('should not touch integerish string', function() {
-        assert.strictEqual(validateStrict('string', '2382'), '2382');
+        assert.strictEqual(validate('string', '2382'), '2382');
       });
       it('should not touch negative integerish string', function() {
-        assert.strictEqual(validateStrict('string', '-2382'), '-2382');
+        assert.strictEqual(validate('string', '-2382'), '-2382');
       });
       it('should not touch negative zeroish string', function() {
-        assert.strictEqual(validateStrict('string', '0'), '0');
+        assert.strictEqual(validate('string', '0'), '0');
       });
       it('should not touch decimalish string', function() {
-        assert.strictEqual(validateStrict('string', '1.325'), '1.325');
+        assert.strictEqual(validate('string', '1.325'), '1.325');
       });
       it('should not touch negative decimalish string', function() {
-        assert.strictEqual(validateStrict('string', '-1.325'), '-1.325');
+        assert.strictEqual(validate('string', '-1.325'), '-1.325');
       });
       it('should choke on numbers', function() {
         assert.throws(function (){
@@ -223,16 +224,16 @@ describe('Acceptance: simple coercion and validation', function() {
         });
       });
       it('should not touch positive integer', function (){
-        assert.strictEqual(validateStrict('number', 3), 3);
+        assert.strictEqual(validate('number', 3), 3);
       });
       it('should not touch negative integer', function (){
-        assert.strictEqual(validateStrict('number', -3), -3);
+        assert.strictEqual(validate('number', -3), -3);
       });
       it('should not touch negative decimal', function (){
-        assert.strictEqual(validateStrict('number', -3.2), -3.2);
+        assert.strictEqual(validate('number', -3.2), -3.2);
       });
       it('should not touch zero', function (){
-        assert.strictEqual(validateStrict('number', 0), 0);
+        assert.strictEqual(validate('number', 0), 0);
       });
       it('should choke on "3.25"', function() {
         assert.throws(function(){
@@ -278,10 +279,10 @@ describe('Acceptance: simple coercion and validation', function() {
         });
       });
       it('should not touch true', function() {
-        assert.strictEqual(validateStrict('boolean', true), true);
+        assert.strictEqual(validate('boolean', true), true);
       });
       it('should not touch false', function() {
-        assert.strictEqual(validateStrict('boolean', false), false);
+        assert.strictEqual(validate('boolean', false), false);
       });
       it('should choke on "true"', function() {
         assert.throws(function (){
