@@ -1,4 +1,8 @@
-module.exports = [
+var expandSuite = require('../helpers/expand-suite');
+
+// Take the array of tests below, extend them with some derivative
+// tests automatically, and export the result.
+module.exports = expandSuite([
 
   ////////////////////////////////////////////
   // STRINGS
@@ -444,4 +448,4 @@ module.exports = [
     result: []
   },
 
-];
+]);
