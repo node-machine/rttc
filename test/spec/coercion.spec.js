@@ -286,6 +286,13 @@ module.exports = expandSuite([
     result: {a: 23, d: true}
   },
 
+  // Ensure that this allows arbitary arrays when coercing to `example: []`
+  {
+    example: [],
+    actual: [{a: 23, d: true}],
+    result: [{a: 23, d: true}]
+  },
+
 
   // Complex multi-item array test
   {
