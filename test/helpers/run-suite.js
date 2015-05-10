@@ -38,6 +38,9 @@ function describeAndExecuteTest(test, runTestFn){
     if (!_.isUndefined(test.example)) {
       msg += 'with a '+getDisplayType(test.example)+' example ('+util.inspect(test.example,false, null)+')';
     }
+    else if (!_.isUndefined(test.typeclass)) {
+      msg += 'with typeclass===`'+test.typeclass+'`';
+    }
     else {
       msg +='with example===`undefined`';
     }
