@@ -3,7 +3,7 @@ var validate = require('../lib/validate');
 var validateStrict = require('../lib/validate-strict');
 var coerce = require('../lib/coerce');
 
-describe('Acceptance: simple coercion and validation', function() {
+describe('Acceptance: simple coercion, validation, and strict validation', function() {
 
   describe('.coerce()', function() {
 
