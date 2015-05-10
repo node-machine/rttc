@@ -275,8 +275,18 @@ module.exports = expandSuite([
   // RECURSIVE OBJECTS
   ////////////////////////////////////////////
 
+  // Some basic deep objects
   { example: {a:1, b:'hi', c: false}, actual: {a: 23}, result: {a: 23, b: '', c: false}  },
   { example: {a:1, b:'hi', c: false}, actual: {a: 23, d: true}, result: {a: 23, b: '', c: false}  },
+
+  // Ensure that this allows extra keys when coercing to `example: {}`
+  {
+    example: {},
+    actual: {a: 23, d: true},
+    result: {a: 23, d: true}
+  },
+
+
   // Complex multi-item array test
   {
     example: [{
