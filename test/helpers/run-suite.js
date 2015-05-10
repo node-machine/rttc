@@ -65,6 +65,9 @@ function describeAndExecuteTest(test, runTestFn){
  */
 function getDisplayType(x){
   var displayType;
+  if (x === '*') {
+    return '*';
+  }
   displayType = typeof x;
   try {
     displayType = x.constructor.name;
