@@ -4,7 +4,7 @@
 
 var util = require('util');
 var _ = require('lodash');
-var runTest = require('./run-test-transformation');
+var runTest = require('./run-test');
 
 
 module.exports = function runSuite( testSuite, transformationFn ){

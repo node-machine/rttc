@@ -7,7 +7,7 @@ var _ = require('lodash');
 var rttc = require('../../');
 
 
-module.exports = function testTransformation(expectations, transformationFn, cb){
+module.exports = function runTest(expectations, transformationFn, cb){
 
   // Determine type schema of the value.
   // (using inference to pull it from the `example`, if provided)
