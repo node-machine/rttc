@@ -107,4 +107,5 @@ module.exports = function expandSuite ( testSuite ) {
   });
   testSuite = testSuite.concat(recursiveTests);
 
+  return testSuite;
 };
