@@ -1,4 +1,4 @@
-var expandSuite = require('../helpers/expand-suite');
+var expandSuite = require('../test/helpers/expand-suite');
 
 // Take the array of tests below, extend them with some derivative
 // tests automatically, and export the result.
