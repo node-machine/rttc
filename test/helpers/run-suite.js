@@ -4,14 +4,13 @@
 
 var util = require('util');
 var _ = require('lodash');
-var runTest = require('./run-test');
 
 
-module.exports = function runSuite( testSuite, transformationFn ){
+module.exports = function runSuite( testSuite, runTestFn ){
 
   // Run each test.
   _.each(testSuite, function (test){
-    describeAndExecuteTest(test, transformationFn);
+    describeAndExecuteTest(test, runTestFn);
   });
 
 };
@@ -22,7 +21,8 @@ module.exports = function runSuite( testSuite, transformationFn ){
  * @param  {[type]} test [description]
  * @return {[type]}      [description]
  */
-function describeAndExecuteTest(test, transformationFn){
+function describeAndExecuteTest(test, runTestFn){
+
   var actualDisplayName = (_.isObject(test.actual)&&test.actual.constructor && test.actual.constructor.name !== 'Object' && test.actual.constructor.name !== 'Array')?test.actual.constructor.name:util.inspect(test.actual, false, null);
 
   describe((function _determineDescribeMsg(){
@@ -46,13 +46,13 @@ function describeAndExecuteTest(test, transformationFn){
   })(), function suite (){
     if (test.error) {
       it(util.format('should error when %s is provided', actualDisplayName), function (done){
-        runTest(test, transformationFn, done);
+        runTestFn(test, done);
       });
       return;
     }
 
     it(util.format('should coerce %s', actualDisplayName, 'into '+util.inspect(test.result, false, null)+''), function (done){
-      runTest(test, transformationFn, done);
+      runTestFn(test, done);
     });
   });
 }
