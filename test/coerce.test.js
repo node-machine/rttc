@@ -3,7 +3,7 @@
  */
 
 var TEST_SUITE = require('../spec/coercion.spec');
-var runSuite = require('./helpers/run-suite');
+var runSuite = require('../spec/helpers/run-suite');
 var toRunTestWith = require('./helpers/to-run-test-with');
 var rttc = require('../');
 
