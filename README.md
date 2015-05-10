@@ -7,17 +7,43 @@ Runtime (recursive) type-checking for JavaScript.
 $ npm install rttc --save
 ```
 
+
+## Quick Start
+
 ```js
 var rttc = require('rttc');
-```
 
+rttc.coerce({ firstName: 'string'}, {firstName: 45});
+// => { firstName: "45" }
+
+rttc.coerce({ firstName: 'string'}, {something: 'totally incorrect'});
+// => { firstName: "" }
+// (when confronted with something totally weird, `.coerce()` returns the "base value" for the type)
+
+rttc.validate({ firstName: 'string'}, {something: 'totally incorrect'});
+// throws error
+
+rttc.validate({ firstName: 'string'}, {firstName: 45});
+// => "45"
+// (when confronted with minor differences, `.validate()` coerces as needed to make stuff fit)
+
+rttc.validateStrict({ firstName: 'string'}, {firstName: 45});
+// throws error
+// (`.validateStrict()` demands a value that is precisely the correct type)
+
+rttc.validateStrict({ firstName: 'string'}, {firstName: '45'});
+// does not throw, returns undefined
+```
 
 
 ## Philosophy
 
+All of the validation and coercion strategies used in this modules are recursive through the keys of plain old JavaScript objects and the indices of arrays.
+
 #### Coercion vs. Validation
 
-+ `.validate()` either returns a (potentially "lightly" coerced) version of the value that was accepted, or it throws.  The "lightly" coerced value might turn `"3"` into `3`, `"true"` into `true`, `-4.5` into `"-4.5"`, etc.
++ `.validateStrict()` throws if the provided value is not the right type (recursive).
++ `.validate()` either returns a (potentially "lightly" coerced) version of the value that was accepted, or it throws.  The "lightly" coerced value turns `"3"` into `3`, `"true"` into `true`, `-4.5` into `"-4.5"`, etc.
 + `.coerce()` ALWAYS returns an acceptable version of the value, even if it has to mangle it to get there (i.e. by using the "base value" for the expected type.)
 
 #### Base values
@@ -47,7 +73,7 @@ TODO:
 
 #### Dictionaries
 
-+ Dictionaries (i.e. plain old JavaScript objects) in type schemas can be infinitely nested.  Type validation and coercion will proceed through the nested objects recursively.
++ Dictionaries (i.e. plain old JavaScript objects like `{}`) in type schemas can be infinitely nested.  Type validation and coercion will proceed through the nested objects recursively.
 
 ```js
 {
