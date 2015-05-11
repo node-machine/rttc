@@ -187,6 +187,10 @@ module.exports = [
     var dict = {};
     return { example: {}, actual: dict, result: dict,  };
   })(),
+  (function someDictionaryWithContents(){
+    var dict = {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]};
+    return { example: undefined, actual: dict, result: dict,  };
+  })(),
 
 
   ////////////////////////////////////////////
@@ -229,6 +233,10 @@ module.exports = [
   // Pass-by-reference
   (function someArray(){
     var arr = [];
+    return { example: [], actual: arr, result: arr,  };
+  })(),
+  (function someArrayWithContents(){
+    var arr = [{a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}];
     return { example: [], actual: arr, result: arr,  };
   })(),
 
@@ -283,9 +291,17 @@ module.exports = [
     var dict = {};
     return { example: undefined, actual: dict, result: dict,  };
   })(),
+  (function someDictionaryWithContents(){
+    var dict = {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]};
+    return { example: undefined, actual: dict, result: dict,  };
+  })(),
   (function someArray(){
     var arr = [];
     return { example: undefined, actual: arr, result: arr,  };
+  })(),
+  (function someArrayWithContents(){
+    var arr = [{a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}];
+    return { example: [], actual: arr, result: arr,  };
   })(),
   (function someRegExp(){
     var regexp = /some regexp/;
@@ -504,5 +520,35 @@ module.exports = [
 
     result: []
   },
+
+  // Assert pass-by-reference behavior for specific array/dict examples
+  // (function someDictionary(){
+  //   var dict = {};
+  //   return {
+  //     example: [{
+  //       id: 123,
+  //       title: 'Scott',
+  //       body: 'Scott',
+  //       votes: 0,
+  //       resolved: true
+  //     }],
+  //     actual: dict,
+  //     result: dict,
+  //   };
+  // })(),
+  // (function someArray(){
+  //   var arr = [];
+  //   return {
+  //     example: [{
+  //       id: 123,
+  //       title: 'Scott',
+  //       body: 'Scott',
+  //       votes: 0,
+  //       resolved: true
+  //     }],
+  //     actual: arr,
+  //     result: arr,
+  //   };
+  // })(),
 
 ];
