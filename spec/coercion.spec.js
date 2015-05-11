@@ -559,11 +559,16 @@ module.exports = [
 
   // Assert pass-by-reference behavior for specific array/dict examples
   { example: { id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }, actual: {}, isNew: true },
-  { example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }], actual: [], isNew: true },
   { example: { id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }, actual: {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}, isNew: true },
+
+  { example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }], actual: [], isNew: true },
   { example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }], actual: [{a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}], isNew: true },
 
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+  // example: nested '*' in dictionaries/arrays
+  // TODO: needs to be tested some other way, since we'd be checking reference passing within another nested obj.
+  ////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 ];
