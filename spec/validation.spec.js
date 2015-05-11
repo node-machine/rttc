@@ -277,7 +277,7 @@ module.exports = [
   { example: '*', actual: [{}], result: [{}],  },
   { example: '*', actual: [{foo:'bar'}], result: [{foo:'bar'}],  },
 
-  { example: '*', actual: undefined, result: undefined,  },
+  { example: '*', actual: undefined, error: true  },
 
   { example: '*', actual: NaN, result: NaN,  },
   { example: '*', actual: Infinity, result: Infinity,  },
