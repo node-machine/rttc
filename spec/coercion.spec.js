@@ -182,6 +182,12 @@ module.exports = [
 
   { example: {}, actual: new Error('asdf'), result: {} },  // TODO: consider enhancing this behavior to guarantee e.g. `.message` (string), `.stack` (string), `.code` (string), and `.status` (number).  Needs community discussion
 
+  // Pass-by-reference
+  (function someDictionary(){
+    var dict = {};
+    return { example: {}, actual: dict, result: dict,  };
+  })(),
+
 
   ////////////////////////////////////////////
   // ARRAYS
@@ -215,11 +221,16 @@ module.exports = [
   { example: [], actual: function(){}, result: [] },
   { example: [], actual: new Date('November 5, 1605 GMT'), result: [] },
   { example: [], actual: new (require('stream').Readable)(), result: [] }, // TODO: consider enhancing this behavior to concat the stream contents? Needs community discussion.
-
   // Skip Buffer tests for now since the enumerable properties vary between Node.js versions.
   // TODO: bring back support for this by explicitly filtering properties of buffers in `.exec()`
   // { example: [], actual: new Buffer('asdf'), result: [ 97, 115, 100, 102 ] },
   { example: [], actual: new Error('asdf'), result: [] },
+
+  // Pass-by-reference
+  (function someArray(){
+    var arr = [];
+    return { example: [], actual: arr, result: arr,  };
+  })(),
 
 
   ////////////////////////////////////////////
@@ -267,36 +278,34 @@ module.exports = [
   { example: undefined, actual: -Infinity, result: -Infinity,  },
   { example: undefined, actual: null, result: null,  },
 
-  ////////////////////////////////////////////
   // Pass-by-reference
-  ////////////////////////////////////////////
-
-  // Plain objects and arrays
-  (function (){
-    var obj = {};
-    return { example: undefined, actual: obj, result: obj,  };
+  (function someDictionary(){
+    var dict = {};
+    return { example: undefined, actual: dict, result: dict,  };
   })(),
-  (function (){
+  (function someArray(){
     var arr = [];
     return { example: undefined, actual: arr, result: arr,  };
   })(),
-
-  // Special cases
-  (function (){
+  (function someRegExp(){
     var regexp = /some regexp/;
     return { example: undefined, actual: regexp, result: regexp,  };
   })(),
-  (function (){
+  (function someFunction(){
     var fn = function (){};
     return { example: undefined, actual: fn, result: fn,  };
   })(),
-  { example: undefined, actual: new Date('November 5, 1605 GMT'), result: new Date('November 5, 1605 GMT'),  },
-  { example: undefined, actual: new (require('stream').Readable)(), result: new (require('stream').Readable)(),  },
-  (function (){
+  (function someDate(){
+    return { example: undefined, actual: new Date('November 5, 1605 GMT'), result: new Date('November 5, 1605 GMT'),  };
+  })(),
+  (function someStream(){
+    return { example: undefined, actual: new (require('stream').Readable)(), result: new (require('stream').Readable)(),  };
+  })(),
+  (function someBuffer(){
     var buffer = new Buffer('asdf');
     return { example: undefined, actual: buffer, result: buffer  };
   })(),
-  (function (){
+  (function someError(){
     var err = new Error('asdf');
     return { example: undefined, actual: err, result: err,  };
   })(),
