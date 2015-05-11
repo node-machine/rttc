@@ -51,18 +51,22 @@ module.exports = function toRunTestWith(transformationFn) {
 
     // Test using strict equality (===) if explicitly requested
     if (expectations.strictEq) {
-      pass = (actualResult === expectations.result);
-    }
-    // Otherwise, use a lodash equality check
-    else {
-      pass = (_.isEqual(actualResult, expectations.result));
-    }
-
-    // Then trigger appropriate exit based on the test results.
-    if (pass) {
+      if (actualResult !== expectations.result) {
+        // Get more diagnostic info for test results
+        var isLodashEquivalent = _.isEqual(actualResult, expectations.result);
+        if (!isLodashEquivalent) {
+          return cb(new Error('returned incorrect (neither _.isEqual() NOR ===) value: '+util.inspect(actualResult, false, null)));
+        }
+        return cb(new Error('returned an equivalent copy which _.isEqual() but not ===.'));
+      }
       return cb();
     }
-    return cb(new Error('returned incorrect value: '+util.inspect(actualResult, false, null)));
+
+    // Otherwise, use a lodash equality check
+    if (!_.isEqual(actualResult, expectations.result)) {
+      return cb(new Error('returned incorrect value: '+util.inspect(actualResult, false, null)));
+    }
+    return cb();
 
   };
 };
