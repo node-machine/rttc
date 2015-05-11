@@ -508,7 +508,7 @@ module.exports = [
   // example: '*'
   ////////////////////////////////////////////////
 
-  // (function someDictionary(){
+  // (function someEmptyDictionary(){
   //   var dict = {};
   //   return { example: undefined, actual: dict, result: dict, strictEq: true };
   // })(),
@@ -516,7 +516,7 @@ module.exports = [
   //   var dict = {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]};
   //   return { example: undefined, actual: dict, result: dict, strictEq: true };
   // })(),
-  // (function someArray(){
+  // (function someEmptyArray(){
   //   var arr = [];
   //   return { example: undefined, actual: arr, result: arr, strictEq: true };
   // })(),
