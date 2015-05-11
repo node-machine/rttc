@@ -223,7 +223,7 @@ module.exports = [
 
 
   ////////////////////////////////////////////
-  // MISC
+  // example: * (aka undefined)
   ////////////////////////////////////////////
 
   { example: undefined, actual: 'bar', result: 'bar',  },
@@ -271,6 +271,17 @@ module.exports = [
   // Pass-by-reference
   ////////////////////////////////////////////
 
+  // Plain objects and arrays
+  (function (){
+    var obj = {};
+    return { example: undefined, actual: obj, result: obj,  };
+  })(),
+  (function (){
+    var arr = [];
+    return { example: undefined, actual: arr, result: arr,  };
+  })(),
+
+  // Special cases
   (function (){
     var regexp = /some regexp/;
     return { example: undefined, actual: regexp, result: regexp,  };
