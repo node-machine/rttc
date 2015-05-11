@@ -53,7 +53,7 @@ All of the validation and coercion strategies used in this modules are recursive
 + For "boolean", base value is `false`
 + For any "dictionary" (`{}`), base value is `{}`, with whatever keys are expected (recursive)
 + For a generic "array" (`[]`), base value is `[]`, with a single archetypal item matching the expectation (recursive)
-
++ For "*", base value is `"undefined"`.
 
 
 <!--
@@ -64,7 +64,7 @@ TODO:
 
 #### Edge cases
 
-+ `undefined` will always be coerced to the base value of the expected type.
++ `undefined` is never valid.
 + `null` is never valid.
 + `NaN` is never valid.
 + `Infinity` is never valid.
