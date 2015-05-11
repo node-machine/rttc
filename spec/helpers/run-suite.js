@@ -54,7 +54,7 @@ function describeAndExecuteTest(test, runTestFn){
 
     var itMsg = 'should ';
     if (test.strictEq) {
-      msg += 'maintain strict equality given ' + actualDisplayName;
+      itMsg+='maintain strict equality (===) when ' + actualDisplayName + ' is provided';
     }
     else {
       itMsg+='convert ' + actualDisplayName + ' into '+util.inspect(test.result, false, null);
