@@ -497,10 +497,17 @@ module.exports = [
   //                                                                              $$ |
   //                                                                              $$ |
   //                                                                              \__|
-  // PASS-BY-REFERENCE / STRICT EQUALITY CHECKS
+  // (pass-by-reference / strict equality checks)
+  //
   ////////////////////////////////////////////////
 
-  // * example
+
+
+
+  ////////////////////////////////////////////////
+  // example: '*'
+  ////////////////////////////////////////////////
+
   // (function someDictionary(){
   //   var dict = {};
   //   return { example: undefined, actual: dict, result: dict, strictEq: true };
@@ -542,17 +549,22 @@ module.exports = [
     return { example: undefined, actual: err, result: err, strictEq: true };
   })(),
 
-  // // Dictionary example
+
+  ////////////////////////////////////////////////
+  // example: {}
+  ////////////////////////////////////////////////
   // (function someDictionary(){
   //   var dict = {};
   //   return { example: {}, actual: dict, result: dict, strictEq: true };
   // })(),
   // (function someDictionaryWithContents(){
   //   var dict = {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]};
-  //   return { example: undefined, actual: dict, result: dict, strictEq: true };
+  //   return { example: {}, actual: dict, result: dict, strictEq: true };
   // })(),
 
-  // // Array example
+  ////////////////////////////////////////////////
+  // example: ['*']
+  ////////////////////////////////////////////////
   // (function strictEqSomeArray(){
   //   var arr = [];
   //   return { example: [], actual: arr, result: arr, strictEq: true };
@@ -561,6 +573,11 @@ module.exports = [
   //   var arr = [{a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}];
   //   return { example: [], actual: arr, result: arr, strictEq: true };
   // })(),
+
+
+  ////////////////////////////////////////////////
+  // example: nested dictionaries + arrays
+  ////////////////////////////////////////////////
 
   // // Assert pass-by-reference behavior for specific array/dict examples
   // // (versus the generic ['*']/{})
@@ -594,6 +611,18 @@ module.exports = [
   //   };
   // })(),
 
-  // // TODO: also check === between nested things...
+
+
+
+  ////////////////////////////////////////////////
+  // TODO:
+  // also check strict equality between sub-values
+  // (`===` between nested things...)
+  //
+  // This is prbly eaiest if we just pull it out
+  // into a separate test; ie. don't make the test
+  // declarative.
+  ////////////////////////////////////////////////
+
 
 ];
