@@ -182,16 +182,6 @@ module.exports = [
 
   { example: {}, actual: new Error('asdf'), result: {} },  // TODO: consider enhancing this behavior to guarantee e.g. `.message` (string), `.stack` (string), `.code` (string), and `.status` (number).  Needs community discussion
 
-  // Pass-by-reference
-  (function someDictionary(){
-    var dict = {};
-    return { example: {}, actual: dict, result: dict,  };
-  })(),
-  (function someDictionaryWithContents(){
-    var dict = {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]};
-    return { example: undefined, actual: dict, result: dict,  };
-  })(),
-
 
   ////////////////////////////////////////////
   // ARRAYS
@@ -229,16 +219,6 @@ module.exports = [
   // TODO: bring back support for this by explicitly filtering properties of buffers in `.exec()`
   // { example: [], actual: new Buffer('asdf'), result: [ 97, 115, 100, 102 ] },
   { example: [], actual: new Error('asdf'), result: [] },
-
-  // Pass-by-reference
-  (function someArray(){
-    var arr = [];
-    return { example: [], actual: arr, result: arr,  };
-  })(),
-  (function someArrayWithContents(){
-    var arr = [{a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}];
-    return { example: [], actual: arr, result: arr,  };
-  })(),
 
 
   ////////////////////////////////////////////
@@ -286,49 +266,10 @@ module.exports = [
   { example: undefined, actual: -Infinity, result: -Infinity,  },
   { example: undefined, actual: null, result: null,  },
 
-  // Pass-by-reference
-  (function someDictionary(){
-    var dict = {};
-    return { example: undefined, actual: dict, result: dict, strictEq: true };
-  })(),
-  (function someDictionaryWithContents(){
-    var dict = {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]};
-    return { example: undefined, actual: dict, result: dict, strictEq: true };
-  })(),
-  (function someArray(){
-    var arr = [];
-    return { example: undefined, actual: arr, result: arr,  };
-  })(),
-  (function someArrayWithContents(){
-    var arr = [{a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}];
-    return { example: [], actual: arr, result: arr,  };
-  })(),
-  (function someRegExp(){
-    var regexp = /some regexp/;
-    return { example: undefined, actual: regexp, result: regexp,  };
-  })(),
-  (function someFunction(){
-    var fn = function (){};
-    return { example: undefined, actual: fn, result: fn,  };
-  })(),
-  (function someDate(){
-    return { example: undefined, actual: new Date('November 5, 1605 GMT'), result: new Date('November 5, 1605 GMT'),  };
-  })(),
-  (function someStream(){
-    return { example: undefined, actual: new (require('stream').Readable)(), result: new (require('stream').Readable)(),  };
-  })(),
-  (function someBuffer(){
-    var buffer = new Buffer('asdf');
-    return { example: undefined, actual: buffer, result: buffer  };
-  })(),
-  (function someError(){
-    var err = new Error('asdf');
-    return { example: undefined, actual: err, result: err,  };
-  })(),
 
 
   ////////////////////////////////////////////
-  // RECURSIVE OBJECTS
+  // RECURSIVE COERCION
   ////////////////////////////////////////////
 
   // Some basic deep objects
@@ -521,7 +462,75 @@ module.exports = [
     result: []
   },
 
-  // Assert pass-by-reference behavior for specific array/dict examples
+
+
+  ////////////////////////////////////////////////
+  // PASS-BY-REFERENCE / STRICT EQUALITY CHECKS
+  ////////////////////////////////////////////////
+
+
+  // * example
+  // (function someDictionary(){
+  //   var dict = {};
+  //   return { example: undefined, actual: dict, result: dict, strictEq: true };
+  // })(),
+  // (function someDictionaryWithContents(){
+  //   var dict = {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]};
+  //   return { example: undefined, actual: dict, result: dict, strictEq: true };
+  // })(),
+  // (function someArray(){
+  //   var arr = [];
+  //   return { example: undefined, actual: arr, result: arr, strictEq: true };
+  // })(),
+  // (function someArrayWithContents(){
+  //   var arr = [{a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}];
+  //   return { example: [], actual: arr, result: arr, strictEq: true };
+  // })(),
+  (function someRegExp(){
+    var regexp = /some regexp/;
+    return { example: undefined, actual: regexp, result: regexp, strictEq: true };
+  })(),
+  (function someFunction(){
+    var fn = function (){};
+    return { example: undefined, actual: fn, result: fn, strictEq: true };
+  })(),
+  (function someDate(){
+    return { example: undefined, actual: new Date('November 5, 1605 GMT'), result: new Date('November 5, 1605 GMT'), strictEq: true };
+  })(),
+  (function someStream(){
+    return { example: undefined, actual: new (require('stream').Readable)(), result: new (require('stream').Readable)(), strictEq: true };
+  })(),
+  (function someBuffer(){
+    var buffer = new Buffer('asdf');
+    return { example: undefined, actual: buffer, result: buffer, strictEq: true  };
+  })(),
+  (function someError(){
+    var err = new Error('asdf');
+    return { example: undefined, actual: err, result: err, strictEq: true };
+  })(),
+
+  // // Dictionary example
+  // (function someDictionary(){
+  //   var dict = {};
+  //   return { example: {}, actual: dict, result: dict, strictEq: true };
+  // })(),
+  // (function someDictionaryWithContents(){
+  //   var dict = {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]};
+  //   return { example: undefined, actual: dict, result: dict, strictEq: true };
+  // })(),
+
+  // // Array example
+  // (function strictEqSomeArray(){
+  //   var arr = [];
+  //   return { example: [], actual: arr, result: arr, strictEq: true };
+  // })(),
+  // (function strictEqSomeArrayWithContents(){
+  //   var arr = [{a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}];
+  //   return { example: [], actual: arr, result: arr, strictEq: true };
+  // })(),
+
+  // // Assert pass-by-reference behavior for specific array/dict examples
+  // // (versus the generic ['*']/{})
   // (function someDictionary(){
   //   var example = {
   //     id: 123,
@@ -551,5 +560,7 @@ module.exports = [
   //     result: arr,
   //   };
   // })(),
+
+  // // TODO: also check === between nested things...
 
 ];
