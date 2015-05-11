@@ -5,8 +5,14 @@
 var TEST_SUITE = require('../spec/coercion.spec');
 var runSuite = require('../spec/helpers/run-suite');
 var toRunTestWith = require('./helpers/to-run-test-with');
+var expandSuite = require('../spec/helpers/expand-suite');
 var rttc = require('../');
 
+
 describe('.coerce()', function (){
-  runSuite(TEST_SUITE, toRunTestWith(rttc.coerce) );
+
+  // Take the array of tests and extend them with some derivative
+  // tests automatically.  Then run them.
+  runSuite(expandSuite(TEST_SUITE), toRunTestWith(rttc.coerce) );
+
 });
