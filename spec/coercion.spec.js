@@ -535,66 +535,35 @@ module.exports = [
 
 
   ////////////////////////////////////////////////
-  // example: {}
+  // example: {} should copy things
   ////////////////////////////////////////////////
   { example: {}, actual: {}, isNew: true },
   { example: {}, actual: {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}, isNew: true },
+  // TODO:
+  // also check against strict equality between sub-values (`!==` between nested things...)
+  // This is prbly eaiest if we just pull it out into a separate test; ie. don't make the test declarative.
+
 
   ////////////////////////////////////////////////
-  // example: []
+  // example: [] should copy things
   ////////////////////////////////////////////////
   { example: [], actual: [], isNew: true },
   { example: [], actual: [{a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}], isNew: true },
-
-
-  ////////////////////////////////////////////////
-  // example: nested dictionaries + arrays
-  ////////////////////////////////////////////////
-
-  // // Assert pass-by-reference behavior for specific array/dict examples
-  // // (versus the generic ['*']/{})
-  // (function someDictionary(){
-  //   var example = {
-  //     id: 123,
-  //     title: 'Scott',
-  //     body: 'Scott',
-  //     votes: 0,
-  //     resolved: true
-  //   };
-  //   var dict = {};
-  //   return {
-  //     example: example,
-  //     actual: dict,
-  //     result: example,
-  //   };
-  // })(),
-  // (function someArray(){
-  //   var arr = [];
-  //   return {
-  //     example: [{
-  //       id: 123,
-  //       title: 'Scott',
-  //       body: 'Scott',
-  //       votes: 0,
-  //       resolved: true
-  //     }],
-  //     actual: arr,
-  //     result: arr,
-  //   };
-  // })(),
-
-
-
-
-  ////////////////////////////////////////////////
   // TODO:
-  // also check strict equality between sub-values
-  // (`===` between nested things...)
-  //
-  // This is prbly eaiest if we just pull it out
-  // into a separate test; ie. don't make the test
-  // declarative.
-  ////////////////////////////////////////////////
+  // also check against strict equality between sub-values (`!==` between nested things...)
+  // This is prbly eaiest if we just pull it out into a separate test; ie. don't make the test declarative.
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+  // example: nested dictionaries + arrays should copy things
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // Assert pass-by-reference behavior for specific array/dict examples
+  { example: { id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }, actual: {}, isNew: true },
+  { example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }], actual: [], isNew: true },
+  { example: { id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }, actual: {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}, isNew: true },
+  { example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }], actual: [{a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}], isNew: true },
+
+
 
 
 ];
