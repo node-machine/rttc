@@ -34,7 +34,6 @@ function describeAndExecuteTest(test, runTestFn){
     else {
       msg += ' ';
     }
-
     if (!_.isUndefined(test.example)) {
       msg += 'with a '+getDisplayType(test.example)+' example ('+util.inspect(test.example,false, null)+')';
     }
@@ -44,7 +43,6 @@ function describeAndExecuteTest(test, runTestFn){
     else {
       msg +='with example===`undefined`';
     }
-
     return msg;
   })(), function suite (){
     if (test.error) {
@@ -54,7 +52,14 @@ function describeAndExecuteTest(test, runTestFn){
       return;
     }
 
-    it(util.format('should coerce %s', actualDisplayName, 'into '+util.inspect(test.result, false, null)+''), function (done){
+    var itMsg = 'should ';
+    if (test.strictEq) {
+      msg += 'maintain strict equality given ' + actualDisplayName;
+    }
+    else {
+      itMsg+='convert ' + actualDisplayName + ' into '+util.inspect(test.result, false, null);
+    }
+    it(itMsg, function (done){
       runTestFn(test, done);
     });
   });

@@ -47,7 +47,19 @@ module.exports = function toRunTestWith(transformationFn) {
     }
 
     // Ensure that the actual result matches the test's expectations.
-    if (_.isEqual(actualResult, expectations.result)) {
+    var pass;
+
+    // Test using strict equality (===) if explicitly requested
+    if (expectations.strictEq) {
+      pass = (actualResult === expectations.result);
+    }
+    // Otherwise, use a lodash equality check
+    else {
+      pass = (_.isEqual(actualResult, expectations.result));
+    }
+
+    // Then trigger appropriate exit based on the test results.
+    if (pass) {
       return cb();
     }
     return cb(new Error('returned incorrect value: '+util.inspect(actualResult, false, null)));

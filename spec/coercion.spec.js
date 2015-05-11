@@ -289,11 +289,11 @@ module.exports = [
   // Pass-by-reference
   (function someDictionary(){
     var dict = {};
-    return { example: undefined, actual: dict, result: dict,  };
+    return { example: undefined, actual: dict, result: dict, strictEq: true };
   })(),
   (function someDictionaryWithContents(){
     var dict = {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]};
-    return { example: undefined, actual: dict, result: dict,  };
+    return { example: undefined, actual: dict, result: dict, strictEq: true };
   })(),
   (function someArray(){
     var arr = [];
@@ -523,17 +523,18 @@ module.exports = [
 
   // Assert pass-by-reference behavior for specific array/dict examples
   // (function someDictionary(){
+  //   var example = {
+  //     id: 123,
+  //     title: 'Scott',
+  //     body: 'Scott',
+  //     votes: 0,
+  //     resolved: true
+  //   };
   //   var dict = {};
   //   return {
-  //     example: [{
-  //       id: 123,
-  //       title: 'Scott',
-  //       body: 'Scott',
-  //       votes: 0,
-  //       resolved: true
-  //     }],
+  //     example: example,
   //     actual: dict,
-  //     result: dict,
+  //     result: example,
   //   };
   // })(),
   // (function someArray(){
