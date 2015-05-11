@@ -526,10 +526,12 @@ module.exports = [
     return { example: undefined, actual: fn, result: fn, strictEq: true };
   })(),
   (function someDate(){
-    return { example: undefined, actual: new Date('November 5, 1605 GMT'), result: new Date('November 5, 1605 GMT'), strictEq: true };
+    var date = new Date('November 5, 1605 GMT');
+    return { example: undefined, actual: date, result: date, strictEq: true };
   })(),
   (function someStream(){
-    return { example: undefined, actual: new (require('stream').Readable)(), result: new (require('stream').Readable)(), strictEq: true };
+    var stream = new (require('stream').Readable)();
+    return { example: undefined, actual: stream, result: stream, strictEq: true };
   })(),
   (function someBuffer(){
     var buffer = new Buffer('asdf');
