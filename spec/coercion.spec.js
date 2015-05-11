@@ -267,6 +267,29 @@ module.exports = [
   { example: undefined, actual: -Infinity, result: -Infinity,  },
   { example: undefined, actual: null, result: null,  },
 
+  ////////////////////////////////////////////
+  // Pass-by-reference
+  ////////////////////////////////////////////
+
+  (function (){
+    var regexp = /some regexp/;
+    return { example: undefined, actual: regexp, result: regexp,  };
+  })(),
+  (function (){
+    var fn = function (){};
+    return { example: undefined, actual: fn, result: fn,  };
+  })(),
+  { example: undefined, actual: new Date('November 5, 1605 GMT'), result: new Date('November 5, 1605 GMT'),  },
+  { example: undefined, actual: new (require('stream').Readable)(), result: new (require('stream').Readable)(),  },
+  (function (){
+    var buffer = new Buffer('asdf');
+    return { example: undefined, actual: buffer, result: buffer  };
+  })(),
+  (function (){
+    var err = new Error('asdf');
+    return { example: undefined, actual: err, result: err,  };
+  })(),
+
 
   ////////////////////////////////////////////
   // RECURSIVE OBJECTS
