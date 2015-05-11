@@ -497,8 +497,10 @@ module.exports = [
   //                                                                              $$ |
   //                                                                              $$ |
   //                                                                              \__|
-  // (pass-by-reference / strict equality checks)
   //
+  // (strictEq / isNew checks to assert for and
+  //  against passing-by-reference in different
+  //  situations)
   ////////////////////////////////////////////////
 
 
@@ -524,55 +526,25 @@ module.exports = [
   //   var arr = [{a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}];
   //   return { example: [], actual: arr, result: arr, strictEq: true };
   // })(),
-  (function someRegExp(){
-    var regexp = /some regexp/;
-    return { example: undefined, actual: regexp, result: regexp, strictEq: true };
-  })(),
-  (function someFunction(){
-    var fn = function (){};
-    return { example: undefined, actual: fn, result: fn, strictEq: true };
-  })(),
-  (function someDate(){
-    var date = new Date('November 5, 1605 GMT');
-    return { example: undefined, actual: date, result: date, strictEq: true };
-  })(),
-  (function someStream(){
-    var stream = new (require('stream').Readable)();
-    return { example: undefined, actual: stream, result: stream, strictEq: true };
-  })(),
-  (function someBuffer(){
-    var buffer = new Buffer('asdf');
-    return { example: undefined, actual: buffer, result: buffer, strictEq: true  };
-  })(),
-  (function someError(){
-    var err = new Error('asdf');
-    return { example: undefined, actual: err, result: err, strictEq: true };
-  })(),
+  { example: undefined, actual: /some regexp/, strictEq: true },
+  { example: undefined, actual: function (){}, strictEq: true },
+  { example: undefined, actual: new Date('November 5, 1605 GMT'), strictEq: true },
+  { example: undefined, actual: new (require('stream').Readable)(), strictEq: true },
+  { example: undefined, actual: new Buffer('asdf'), strictEq: true  },
+  { example: undefined, actual: new Error('asdf'), strictEq: true },
 
 
   ////////////////////////////////////////////////
   // example: {}
   ////////////////////////////////////////////////
-  (function someDictionary(){
-    var dict = {};
-    return { example: {}, actual: dict, result: dict, isNew: true };
-  })(),
-  // (function someDictionaryWithContents(){
-  //   var dict = {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]};
-  //   return { example: {}, actual: dict, result: dict, strictEq: true };
-  // })(),
+  { example: {}, actual: {}, isNew: true },
+  { example: {}, actual: {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}, isNew: true },
 
   ////////////////////////////////////////////////
-  // example: ['*']
+  // example: []
   ////////////////////////////////////////////////
-  // (function strictEqSomeArray(){
-  //   var arr = [];
-  //   return { example: [], actual: arr, result: arr, strictEq: true };
-  // })(),
-  // (function strictEqSomeArrayWithContents(){
-  //   var arr = [{a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}];
-  //   return { example: [], actual: arr, result: arr, strictEq: true };
-  // })(),
+  { example: [], actual: [], isNew: true },
+  { example: [], actual: [{a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}], isNew: true },
 
 
   ////////////////////////////////////////////////

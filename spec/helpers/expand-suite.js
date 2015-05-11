@@ -17,11 +17,20 @@ module.exports = function expandSuite ( testSuite ) {
   var starTests = [];
   _.each(testSuite, function (test){
     if (_.isUndefined(test.example)) {
-      starTests.push({
+      var newTest = {
         example: '*',
-        actual: _.cloneDeep(test.actual),
-        result: _.cloneDeep(test.result)
-      });
+        actual: test.actual
+      };
+      if (test.hasOwnProperty('result')) {
+        newTest.result = test.result;
+      }
+      if (test.hasOwnProperty('strictEq')) {
+        newTest.strictEq = _.cloneDeep(test.strictEq);
+      }
+      if (test.hasOwnProperty('isNew')) {
+        newTest.isNew = _.cloneDeep(test.isNew);
+      }
+      starTests.push(newTest);
     }
   });
   testSuite = testSuite.concat(starTests);
@@ -36,8 +45,9 @@ module.exports = function expandSuite ( testSuite ) {
     //  • tests with example: `undefined`
     //  • tests that expect errors
     //  • tests that expect a result===`undefined`
+    //  • tests that verify `strictEq` or `isNew`
     // (nested behavior is different in these cases^)
-    if (!_.isUndefined(test.example) && !test.error && !_.isUndefined(test.result)) {
+    if (!test.error && !_.isUndefined(test.result) && !test.hasOwnProperty('strictEq') && !test.hasOwnProperty('isNew')) {
 
       // test one level of additional array nesting
       recursiveTests.push({
