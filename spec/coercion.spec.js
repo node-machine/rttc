@@ -553,10 +553,10 @@ module.exports = [
   ////////////////////////////////////////////////
   // example: {}
   ////////////////////////////////////////////////
-  // (function someDictionary(){
-  //   var dict = {};
-  //   return { example: {}, actual: dict, result: dict, strictEq: true };
-  // })(),
+  (function someDictionary(){
+    var dict = {};
+    return { example: {}, actual: dict, result: dict, isNew: true };
+  })(),
   // (function someDictionaryWithContents(){
   //   var dict = {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]};
   //   return { example: {}, actual: dict, result: dict, strictEq: true };

@@ -23,6 +23,10 @@ module.exports = function runSuite( testSuite, runTestFn ){
  */
 function describeAndExecuteTest(test, runTestFn){
 
+  if (test.strictEq && test.isNew) {
+    throw new Error('INVALID TEST: `isNew` and `strictEq` are mutually exclusive opposites- cannot use them together.  For reference, this is test:\n'+util.inspect(test, false, null));
+  }
+
   var actualDisplayName = (_.isObject(test.actual)&&test.actual.constructor && test.actual.constructor.name !== 'Object' && test.actual.constructor.name !== 'Array')?test.actual.constructor.name:util.inspect(test.actual, false, null);
 
   describe((function _determineDescribeMsg(){
@@ -55,6 +59,9 @@ function describeAndExecuteTest(test, runTestFn){
     var itMsg = 'should ';
     if (test.strictEq) {
       itMsg+='maintain strict equality (===) when ' + actualDisplayName + ' is provided';
+    }
+    else if (test.isNew) {
+      itMsg+='take ' + actualDisplayName + ' and yield a new (!==) value '+util.inspect(test.result, false, null);
     }
     else {
       itMsg+='convert ' + actualDisplayName + ' into '+util.inspect(test.result, false, null);

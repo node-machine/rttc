@@ -55,9 +55,9 @@ module.exports = function toRunTestWith(transformationFn) {
         // Get more diagnostic info for test results
         var isLodashEquivalent = _.isEqual(actualResult, expectations.result);
         if (!isLodashEquivalent) {
-          return cb(new Error('returned incorrect value (which is neither _.isEqual() nor ===): '+util.inspect(actualResult, false, null)));
+          return cb(new Error('returned incorrect value (neither equivalent nor ===): '+util.inspect(actualResult, false, null)));
         }
-        return cb(new Error('returned an equivalent copy which _.isEqual() but not ==='));
+        return cb(new Error('returned value is equivalent, but not === to expected result'));
       }
       return cb();
     }
@@ -67,9 +67,9 @@ module.exports = function toRunTestWith(transformationFn) {
       return cb(new Error('returned incorrect value: '+util.inspect(actualResult, false, null)));
     }
 
-    // And finally, if requested, also guarantee this is not a clone (i.e. !==)
-    if (expectations.isCopy && actualResult === expectations.result) {
-      return cb(new Error('returned a copy- but should have been the original (===)'));
+    // And finally, if requested, also guarantee this is a new value (i.e. !==)
+    if (expectations.isNew && actualResult === expectations.result) {
+      return cb(new Error('returned value === expected result instead of being a new value'));
     }
     return cb();
 
