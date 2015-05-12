@@ -522,10 +522,10 @@ module.exports = [
   // result value should always be strictly equal (===)
   ////////////////////////////////////////////////
 
-  // { example: undefined, actual: {}, strictEq: true },
-  // { example: undefined, actual: {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}, strictEq: true },
-  // { example: undefined, actual: [], strictEq: true },
-  // { example: undefined, actual: [{a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}], strictEq: true },
+  { example: undefined, actual: {}, strictEq: true },
+  { example: undefined, actual: {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}, strictEq: true },
+  { example: undefined, actual: [], strictEq: true },
+  { example: undefined, actual: [{a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}], strictEq: true },
   { example: undefined, actual: /some regexp/, strictEq: true },
   { example: undefined, actual: function (){}, strictEq: true },
   { example: undefined, actual: new Date('November 5, 1605 GMT'), strictEq: true },
