@@ -183,6 +183,7 @@ module.exports = [
   { example: {}, actual: new Error('asdf'), result: {} },  // TODO: consider enhancing this behavior to guarantee e.g. `.message` (string), `.stack` (string), `.code` (string), and `.status` (number).  Needs community discussion
 
 
+
   ////////////////////////////////////////////
   // ARRAYS
   // (all of the tests below pass w/ either [] or ['*']
@@ -222,6 +223,46 @@ module.exports = [
   // { example: [], actual: new Buffer('asdf'), result: [ 97, 115, 100, 102 ] },
   { example: [], actual: new Error('asdf'), result: [] },
 
+
+  //////////////////////////////////////////////////////
+  // nested contents of `example: []` and `example: {}`
+  //////////////////////////////////////////////////////
+
+  // Follow JSON-serialization rules for nested objects within `example: []` and `example: {}`
+  // with the following exceptions:
+  // • convert Error instances to their `.stack` property (a string)
+  // • convert RegExp instances to a string
+  // • convert functions to a string
+  // • after doing the rest of the things, prune undefined/null items
+  // • after doing the rest of the things, strip keys w/ undefined/null values
+  { example: {}, actual: { x: undefined }, result: {} },
+  { example: {}, actual: { x: NaN }, result: {} },
+  { example: {}, actual: { x: Infinity }, result: {} },
+  { example: {}, actual: { x: -Infinity }, result: {} },
+  { example: {}, actual: { x: null }, result: {} },
+  { example: {}, actual: { x: function(){} }, result: {} },
+  // { example: {}, actual: { x: undefined, null, NaN, -Infinity, Infinity, function(){} }, result: [] },
+  { example: {}, actual: { x: /some regexp/ }, result: {x:{}} },
+  { example: {}, actual: { x: new Date('November 5, 1605 GMT') }, result: {x: '1605-11-05T00:00:00.000Z'} },
+  // Skip Readable stream tests for now since the enumerable properties vary between Node.js versions.
+  // { example: {}, actual: { x: new (require('stream').Readable)() }, result: { x: { _readableState: {},readable: true,_events: {},_maxListeners: 10 } } },
+  // Skip Buffer stream tests for now since the enumerable properties vary between Node.js versions.
+  // { example: {}, actual: { x: new Buffer('asdf') } , result: {x: {}} },
+  { example: {}, actual: { x: new Error('asdf') }, result: {x:{}} },
+
+  { example: [], actual: [undefined], result: [] },
+  { example: [], actual: [null], result: [] },
+  { example: [], actual: [NaN], result: [] },
+  { example: [], actual: [Infinity], result: [] },
+  { example: [], actual: [-Infinity], result: [] },
+  { example: [], actual: [function(){}], result: [] },
+  { example: [], actual: [/some regexp/], result: [{}] },
+  { example: [], actual: [new Date('November 5, 1605 GMT')], result: ['1605-11-05T00:00:00.000Z'] },
+  // Skip Readable stream tests for now since the enumerable properties vary between Node.js versions.
+  // { example: [], actual: [new (require('stream').Readable)()], result: [ { _readableState: {},readable: true,_events: {},_maxListeners: 10 }] },
+  // Skip Buffer stream tests for now since the enumerable properties vary between Node.js versions.
+  // { example: [], actual: [new Buffer('asdf')], result: [{}] },
+  { example: [], actual: [new Error('asdf')], result: [{}] },
 
 
   ////////////////////////////////////////////

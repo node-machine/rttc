@@ -59,16 +59,18 @@ All of the validation and coercion strategies used in this modules are recursive
 <!--
 TODO:
 + For "stream", base value is an empty readable buffer stream (i.e. not in object mode)
-+ For "machine", base value is a no-op machine that calls its success exit.
 -->
+
+
+
 
 #### Edge cases
 
 + `undefined` is never valid.
-+ `null` is never valid.
-+ `NaN` is never valid.
-+ `Infinity` is never valid.
-+ `-Infinity` is never valid.
++ `null` is only valid against `example: '*'`.
++ `NaN` is only valid against `example: '*'`.
++ `Infinity` is only valid against `example: '*'`.
++ `-Infinity` is only valid against `example: '*'`.
 
 
 #### Dictionaries
