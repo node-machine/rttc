@@ -302,6 +302,17 @@ module.exports = [
     result: {a: 23, d: true}
   },
 
+  // Coerce missing/undefined required keys to base value
+  { example: {b: 235}, actual: {b: undefined}, result: {b: 0}  },
+  { example: {b: 235}, actual: {}, result: {b: 0}  },
+
+  // Strip keys with `undefined` values (`{...}` case)
+  { example: {b: 235}, actual: {a: undefined, b: 3}, result: {b: 3}  },
+  // Strip keys with `undefined` values (`{}` case)
+  { example: {}, actual: {a: undefined, b: 3}, result: {b: 3}  },
+  // Don't strip keys with `undefined` values (`*` case)
+  { example: '*', actual: {a: undefined, b: 3}, result: {a: undefined, b: 3}  },
+
   // Ensure that this allows arbitary arrays when coercing to `example: []`
   {
     example: [],
@@ -522,6 +533,11 @@ module.exports = [
   { example: undefined, actual: new Buffer('asdf'), strictEq: true  },
   { example: undefined, actual: new Error('asdf'), strictEq: true },
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+  // example: nested '*' in dictionaries/arrays
+  // TODO: needs to be tested some other way, since we'd be checking reference passing within another nested obj.
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+
 
   ////////////////////////////////////////////////
   // example: {} should copy things
@@ -531,6 +547,10 @@ module.exports = [
   // TODO:
   // also check against strict equality between sub-values (`!==` between nested things...)
   // This is prbly eaiest if we just pull it out into a separate test; ie. don't make the test declarative.
+
+  // Assert pass-by-reference behavior for more specific `example` values
+  { example: { id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }, actual: {}, result:  { id: 0, title: '', body: '', votes: 0, resolved: false }, isNew: true },
+  { example: { id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }, actual: {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}, result:  { id: 0, title: '', body: '', votes: 0, resolved: false }, isNew: true },
 
 
   ////////////////////////////////////////////////
@@ -542,22 +562,10 @@ module.exports = [
   // also check against strict equality between sub-values (`!==` between nested things...)
   // This is prbly eaiest if we just pull it out into a separate test; ie. don't make the test declarative.
 
-  ////////////////////////////////////////////////////////////////////////////////////////////////
-  // example: nested dictionaries + arrays should copy things
-  ////////////////////////////////////////////////////////////////////////////////////////////////
-
-  // Assert pass-by-reference behavior for specific array/dict examples
-  { example: { id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }, actual: {}, result:  { id: 0, title: '', body: '', votes: 0, resolved: false }, isNew: true },
-  { example: { id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }, actual: {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}, result:  { id: 0, title: '', body: '', votes: 0, resolved: false }, isNew: true },
-
+  // Assert pass-by-reference behavior for more specific `example` values
   { example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }], actual: [], result: [], isNew: true },
   { example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }], actual: [{a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}], result: [{ id: 0, title: '', body: '', votes: 0, resolved: false }], isNew: true },
 
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////
-  // example: nested '*' in dictionaries/arrays
-  // TODO: needs to be tested some other way, since we'd be checking reference passing within another nested obj.
-  ////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 ];

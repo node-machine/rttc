@@ -246,7 +246,6 @@ module.exports = [
 
   // Strip keys with `undefined` values (`{}` case)
   { example: {}, actual: {a: undefined, b: 3}, result: {b: 3}  },
-  // Strip keys with `undefined` values (nested `{}` case)
   { example: [{}], actual: [{a: undefined, b: 3}], result: [{b: 3}]  },
   { example: {x:{}}, actual: {x:{a: undefined, b: 3}}, result: {x:{b: 3}}  },
 
