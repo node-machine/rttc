@@ -185,6 +185,8 @@ module.exports = [
 
   ////////////////////////////////////////////
   // ARRAYS
+  // (all of the tests below pass w/ either [] or ['*']
+  //  however note they do have subtle differences re: strictEq)
   ////////////////////////////////////////////
 
   { example: [], actual: 'bar', result: [] },
@@ -219,6 +221,7 @@ module.exports = [
   // TODO: bring back support for this by explicitly filtering properties of buffers in `.exec()`
   // { example: [], actual: new Buffer('asdf'), result: [ 97, 115, 100, 102 ] },
   { example: [], actual: new Error('asdf'), result: [] },
+
 
 
   ////////////////////////////////////////////
@@ -315,10 +318,16 @@ module.exports = [
 
   // Strip keys with `undefined` values (`{...}` case)
   { example: {b: 235}, actual: {a: undefined, b: 3}, result: {b: 3}  },
+  // Strip nested keys with `undefined` values (`{...}` case)
+  { example: {a: {}, b: 235}, actual: {a: {x: undefined}, b: 3}, result: {a: {}, b: 3}  },
+
   // Strip keys with `undefined` values (`{}` case)
   { example: {}, actual: {a: undefined, b: 3}, result: {b: 3}  },
-  // Don't strip keys with `undefined` values (`*` case)
-  { example: '*', actual: {a: undefined, b: 3}, result: {a: undefined, b: 3}  },
+  // Strip nested keys with `undefined` values (`{}` case)
+  // { example: {}, actual: {a: {x: undefined}, b: 3}, result: {a: {}, b: 3}  },
+
+  // Don't strip keys or nested keys with `undefined` values (`*` case)
+  { example: '*', actual: {a: undefined, b: 3, c: {x: undefined}}, result: {a: undefined, b: 3, c: {x: undefined}}  },
 
   // Ensure that this allows arbitary arrays when coercing to `example: []`
   {

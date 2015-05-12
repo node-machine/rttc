@@ -193,6 +193,8 @@ module.exports = [
 
   ////////////////////////////////////////////
   // ARRAYS
+  // (all of the tests below pass w/ either [] or ['*']
+  //  however note they do have subtle differences re: strictEq)
   ////////////////////////////////////////////
 
   { example: [], actual: 'bar', error: true },
