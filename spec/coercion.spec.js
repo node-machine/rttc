@@ -508,21 +508,13 @@ module.exports = [
 
   ////////////////////////////////////////////////
   // example: '*'
+  // result value should always be strictly equal (===)
   ////////////////////////////////////////////////
 
   // { example: undefined, actual: {}, strictEq: true },
-  // (function someDictionaryWithContents(){
-  //   var dict = {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]};
-  //   return { example: undefined, actual: dict, result: dict, strictEq: true };
-  // })(),
-  // (function someEmptyArray(){
-  //   var arr = [];
-  //   return { example: undefined, actual: arr, result: arr, strictEq: true };
-  // })(),
-  // (function someArrayWithContents(){
-  //   var arr = [{a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}];
-  //   return { example: [], actual: arr, result: arr, strictEq: true };
-  // })(),
+  // { example: undefined, actual: {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}, strictEq: true },
+  // { example: undefined, actual: [], strictEq: true },
+  // { example: undefined, actual: [{a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}], strictEq: true },
   { example: undefined, actual: /some regexp/, strictEq: true },
   { example: undefined, actual: function (){}, strictEq: true },
   { example: undefined, actual: new Date('November 5, 1605 GMT'), strictEq: true },

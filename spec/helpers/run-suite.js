@@ -61,7 +61,12 @@ function describeAndExecuteTest(test, runTestFn){
       itMsg+='maintain strict equality (===) when ' + actualDisplayName + ' is provided';
     }
     else if (test.isNew) {
-      itMsg+='take ' + actualDisplayName + ' and yield a new (!==) value '+util.inspect(test.result, false, null);
+      if (test.hasOwnProperty('result')) {
+        itMsg+='convert ' + actualDisplayName + ' into a new value which is !== the original: '+util.inspect(test.result, false, null);
+      }
+      else {
+        itMsg+='take ' + actualDisplayName + ' and yield a copy (which !== original)';
+      }
     }
     else {
       itMsg+='convert ' + actualDisplayName + ' into '+util.inspect(test.result, false, null);
