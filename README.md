@@ -62,15 +62,15 @@ TODO:
 -->
 
 
+## Types
+
+#### Strings
 
 
-#### Edge cases
+#### Numbers
 
-+ `undefined` is never valid.
-+ `null` is only valid against `example: '*'`.
-+ `NaN` is only valid against `example: '*'`.
-+ `Infinity` is only valid against `example: '*'`.
-+ `-Infinity` is only valid against `example: '*'`.
+#### Booleans
+
 
 
 #### Dictionaries
@@ -96,9 +96,29 @@ TODO:
 When validating against a dictionary schema with at least one key, extra keys in the actual value will be stripped out.  If the dictionary schema is empty, all actual keys will be left alone.
 
 
-#### Arrays
+#### Generic arrays
 
-+ Arrays in type schemas must be homogeneous and have exactly one item; that is, if you want to validate an array, you only need to provide the type/schema for the first item in the array, e.g.:
+`example: []`
+
+Arrays that have been validated/coerced against the generic array type:
++ _may_ be heterogeneous (have items with different types) - but it is generally best practice to avoid heterogeneous arrays in general.
++ are guaranteed to be JSON-serializable, with a few additional affordances:
+  + normally, stringified JSON may contain `null` values.  Instead, rttc removes `null` items from arrays and removes keys with `null` values from objects.
+  + normally, `Error` instances get stringified into empty objects.  Instead, rttc turns them into human-readable strings by reducing them to their `.stack` property (this includes the error message and the stack trace w/ line numbers)
+  + normally, `RegExp` instances get stringified into empty objects.  Instead, rttc turns them into human-readable strings like `'/some regexp/gi'`
+  + normally, `function()` instances get stringified into empty objects.  Instead, rttc turns them into human-readable strings like `'function doStuff (a,b) { console.log(\'wow I can actually read this!\'); }'`
+
+#### Homogeneous arrays
+
+`example: ['Margaret']`
+`example: [123]`
+`example: [true]`
+`example: [[...]]`
+`example: [{...}]`
+
+Arrays being validated/coerced against array type schemas will be homogeneous (meaning every item in the array will have the same type).
+
+> Also note that, because of this, when providing a type schema or type-inference-able example for an array, you only need to provide one item in the array, e.g.:
 
 ```js
 [
@@ -119,6 +139,23 @@ When validating against a dictionary schema with at least one key, extra keys in
 ]
 ```
 
+#### Anything
+
+`example: '*'`
+
+This special type allows anything except `undefined`.  It also _does not rebuild objects_, which means it maintains the original reference (i.e. is `===`).  It also does not guarantee JSON-serializability.
+
+
+
+#### Edge cases
+
++ `undefined` is never valid.
++ `null` is only valid against `example: '*'`.
++ `NaN` is only valid against `example: '*'`.
++ `Infinity` is only valid against `example: '*'`.
++ `-Infinity` is only valid against `example: '*'`.
++ `-0` is understood as 0
++ `+0` is understood as 0
 
 
 ## Usage

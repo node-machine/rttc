@@ -11,6 +11,8 @@ module.exports = [
   { example: 'foo', actual: 0, result: '0' },
   { example: 'foo', actual: 1, result: '1' },
   { example: 'foo', actual: -1.1, result: '-1.1' },
+  { example: 'foo', actual: -0, result: '0' },
+  { example: 'foo', actual: +0, result: '0' },
 
   { example: 'foo', actual: true, result: 'true' },
   { example: 'foo', actual: false, result: 'false' },
@@ -60,6 +62,8 @@ module.exports = [
   { example: 123, actual: 0, result: 0 },
   { example: 123, actual: 1, result: 1 },
   { example: 123, actual: -1.1, result: -1.1 },
+  { example: 123, actual: +0, result: 0 },
+  { example: 123, actual: -0, result: 0 },
 
   { example: 123, actual: true, result: 1 },
   { example: 123, actual: false, result: 0 },
@@ -110,6 +114,8 @@ module.exports = [
   { example: true, actual: 0, result: false },
   { example: true, actual: 1, result: true },
   { example: true, actual: -1.1, result: false },
+  { example: true, actual: +0, result: false },
+  { example: true, actual: -0, result: false },
 
   { example: true, actual: true, result: true },
   { example: true, actual: false, result: false },
@@ -147,6 +153,8 @@ module.exports = [
 
   { example: {}, actual: 'bar', result: {} },
   { example: {}, actual: 123, result: {} },
+  { example: {}, actual: -0, result: {} },
+  { example: {}, actual: +0, result: {} },
   { example: {}, actual: true, result: {} },
 
   { example: {}, actual: {}, result: {} },
@@ -191,6 +199,8 @@ module.exports = [
 
   { example: [], actual: 'bar', result: [] },
   { example: [], actual: 123, result: [] },
+  { example: [], actual: -0, result: [] },
+  { example: [], actual: +0, result: [] },
   { example: [], actual: true, result: [] },
 
   { example: [], actual: {}, result: [] },
