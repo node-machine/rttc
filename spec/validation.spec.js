@@ -146,7 +146,7 @@ module.exports = [
   { example: true, actual: new Error('asdf'), error: true },
 
   ////////////////////////////////////////////
-  // DICTIONARIES
+  // DICTIONARIES (json-serializable)
   ////////////////////////////////////////////
 
   { example: {}, actual: 'bar', error: true },
@@ -188,13 +188,12 @@ module.exports = [
   // Note: we could bring back support for this by explicitly filtering properties of buffers in `.exec()`
   // TODO: but actually, this should cause an error- use `example: '*'` for things like this.
 
-  { example: {}, actual: new Error('asdf'), result: {} },  // TODO: consider enhancing this behavior to guarantee e.g. `.message` (string), `.stack` (string), `.code` (string), and `.status` (number).  Needs community discussion
+  { example: {}, actual: new Error('asdf'), error: true },
 
 
   ////////////////////////////////////////////
-  // ARRAYS
-  // (all of the tests below pass w/ either [] or ['*']
-  //  however note they do have subtle differences re: strictEq)
+  // ARRAYS (json-serializable)
+  // (all of the tests below pass w/ [], not necessarily ['*'])
   ////////////////////////////////////////////
 
   { example: [], actual: 'bar', error: true },

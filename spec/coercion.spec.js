@@ -142,7 +142,7 @@ module.exports = [
   { example: true, actual: new Error('asdf'), result: false },
 
   ////////////////////////////////////////////
-  // DICTIONARIES
+  // DICTIONARIES (json-serializable)
   ////////////////////////////////////////////
 
   { example: {}, actual: 'bar', result: {} },
@@ -185,9 +185,8 @@ module.exports = [
 
 
   ////////////////////////////////////////////
-  // ARRAYS
-  // (all of the tests below pass w/ either [] or ['*']
-  //  however note they do have subtle differences re: strictEq)
+  // ARRAYS (json-serializable)
+  // (all of the tests below pass w/ [], not necessarily ['*'])
   ////////////////////////////////////////////
 
   { example: [], actual: 'bar', result: [] },
