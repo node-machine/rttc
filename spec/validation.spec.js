@@ -301,24 +301,35 @@ module.exports = [
   { example: '*', actual: -Infinity, result: -Infinity,  },
   { example: '*', actual: null, result: null,  },
 
-  (function (){
-    var regexp = /some regexp/;
-    return { example: '*', actual: regexp, result: regexp,  };
-  })(),
-  (function (){
-    var fn = function (){};
-    return { example: '*', actual: fn, result: fn,  };
-  })(),
-  { example: '*', actual: new Date('November 5, 1605 GMT'), result: new Date('November 5, 1605 GMT'),  },
-  { example: '*', actual: new (require('stream').Readable)(), result: new (require('stream').Readable)(),  },
-  (function (){
-    var buffer = new Buffer('asdf');
-    return { example: '*', actual: buffer, result: buffer  };
-  })(),
-  (function (){
-    var err = new Error('asdf');
-    return { example: '*', actual: err, result: err,  };
-  })()
+
+
+
+
+
+  //              $$\               $$\             $$\                                       $$$\               $$$\
+  //              $$ |              \__|            $$ |                                     $$  _|               \$$\
+  //   $$$$$$$\ $$$$$$\    $$$$$$\  $$\  $$$$$$$\ $$$$$$\          $$$$$$\   $$$$$$\        $$  /$$$$\ $$$$\ $$$$\ \$$\
+  //  $$  _____|\_$$  _|  $$  __$$\ $$ |$$  _____|\_$$  _|        $$  __$$\ $$  __$$\       $$ | \____|\____|\____| $$ |
+  //  \$$$$$$\    $$ |    $$ |  \__|$$ |$$ /        $$ |          $$$$$$$$ |$$ /  $$ |      $$ | $$$$\ $$$$\ $$$$\  $$ |
+  //   \____$$\   $$ |$$\ $$ |      $$ |$$ |        $$ |$$\       $$   ____|$$ |  $$ |      \$$\ \____|\____|\____|$$  |
+  //  $$$$$$$  |  \$$$$  |$$ |      $$ |\$$$$$$$\   \$$$$  |      \$$$$$$$\ \$$$$$$$ |       \$$$\               $$$  /
+  //  \_______/    \____/ \__|      \__| \_______|   \____/        \_______| \____$$ |        \___|              \___/
+  //                                                                              $$ |
+  //                                                                              $$ |
+  //                                                                              \__|
+  //
+  // (strictEq / isNew checks to assert for and
+  //  against passing-by-reference in different
+  //  situations)
+  ////////////////////////////////////////////////
+
+  { example: '*', actual: /some regexp/, strictEq: true },
+  { example: '*', actual: function (){}, strictEq: true },
+  { example: '*', actual: new Date('November 5, 1605 GMT'), strictEq: true },
+  { example: '*', actual: new (require('stream').Readable)(), strictEq: true },
+  { example: '*', actual: new Buffer('asdf'), strictEq: true },
+  { example: '*', actual: new Error('asdf'), strictEq: true },
+
 
 ];
 
