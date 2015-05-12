@@ -388,6 +388,56 @@ module.exports = [
   },
 
 
+  // Ensure the recursive cloning / undefined-key-stripping doesn't get
+  // stumped by circular dictionaries/arrays.
+  // • dict keys whose values point to a past reference should be deleted
+  // • array items that point to past references should be pruned
+  (function (){
+    var someDict = {};
+    var someArray = [];
+    someDict.x = {z: someDict, foo: undefined};
+    someDict.y = someArray;
+    someArray.push(someDict);
+    someArray.push(someDict.x);
+    var test = {
+      example: {},
+      actual: {
+        someDict: someDict,
+        someArray: someArray
+      },
+      result: {
+        someDict: {
+          x: {
+            z: '[Circular ~.someDict]'
+          },
+          y: [
+            '[Circular ~.someDict]',
+            {
+              z: '[Circular ~.someDict]'
+            }
+          ]
+        },
+        someArray: [
+          {
+            x: {
+              z: '[Circular ~.someArray.0]'
+            },
+            y: '[Circular ~.someArray]'
+          },
+          {
+            z: {
+              x: '[Circular ~.someArray.1]',
+              y: '[Circular ~.someArray]'
+            }
+          }
+        ]
+      }
+    };
+    return test;
+  })(),
+
+
+
 
   //              $$\               $$\             $$\                                       $$$\               $$$\
   //              $$ |              \__|            $$ |                                     $$  _|               \$$\
