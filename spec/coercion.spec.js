@@ -302,6 +302,13 @@ module.exports = [
     result: {a: 23, d: true}
   },
 
+  // Omit extra keys when coercing to `example: {...}`
+  {
+    example: { a:23 },
+    actual: {a: 23, d: true},
+    result: {a: 23}
+  },
+
   // Coerce missing/undefined required keys to base value
   { example: {b: 235}, actual: {b: undefined}, result: {b: 0}  },
   { example: {b: 235}, actual: {}, result: {b: 0}  },
@@ -536,36 +543,104 @@ module.exports = [
   ////////////////////////////////////////////////////////////////////////////////////////////////
   // example: nested '*' in dictionaries/arrays
   // TODO: needs to be tested some other way, since we'd be checking reference passing within another nested obj.
+  // also check against strict equality between sub-values (`!==` between nested things...)
+  // This is prbly eaiest if we just pull it out into a separate test; ie. don't make the test declarative.
   ////////////////////////////////////////////////////////////////////////////////////////////////
 
 
   ////////////////////////////////////////////////
-  // example: {} should copy things
+  // example: {} should perform a deep copy on things
   ////////////////////////////////////////////////
   { example: {}, actual: {}, isNew: true },
   { example: {}, actual: {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}, isNew: true },
-  // TODO:
-  // also check against strict equality between sub-values (`!==` between nested things...)
-  // This is prbly eaiest if we just pull it out into a separate test; ie. don't make the test declarative.
 
-  // Assert pass-by-reference behavior for more specific `example` values
-  { example: { id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }, actual: {}, result:  { id: 0, title: '', body: '', votes: 0, resolved: false }, isNew: true },
-  { example: { id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }, actual: {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}, result:  { id: 0, title: '', body: '', votes: 0, resolved: false }, isNew: true },
-
+  ////////////////////////////////////////////////
+  // example: {...} should perform a shallow copy
+  // Assert pass-by-reference behavior for more specific `example`
+  ////////////////////////////////////////////////
+  {
+    example: { id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true },
+    actual: {},
+    result:  { id: 0, title: '', body: '', votes: 0, resolved: false },
+    isNew: true
+  },
+  {
+    example: { id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true },
+    actual: {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]},
+    result:  { id: 0, title: '', body: '', votes: 0, resolved: false },
+    isNew: true
+  },
+  {
+    example: { id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '*' },
+    actual: {},
+    result:  { id: 0, title: '', body: '', votes: 0, resolved: false, something: undefined },
+    isNew: true
+  },
+  {
+    example: { id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '*' },
+    actual: {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]},
+    result:  { id: 0, title: '', body: '', votes: 0, resolved: false, something: undefined },
+    isNew: true
+  },
+  {
+    example: { id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '*' },
+    actual: { something: new Date('November 5, 1605 GMT')},
+    result:  { id: 0, title: '', body: '', votes: 0, resolved: false, something: new Date('November 5, 1605 GMT') },
+    isNew: true
+  },
+  {
+    example: { id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '*' },
+    actual: { something: new Date('November 5, 1605 GMT'), a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]},
+    result:  { id: 0, title: '', body: '', votes: 0, resolved: false, something: new Date('November 5, 1605 GMT') },
+    isNew: true
+  },
 
   ////////////////////////////////////////////////
   // example: [] should copy things
   ////////////////////////////////////////////////
   { example: [], actual: [], isNew: true },
   { example: [], actual: [{a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}], isNew: true },
-  // TODO:
-  // also check against strict equality between sub-values (`!==` between nested things...)
-  // This is prbly eaiest if we just pull it out into a separate test; ie. don't make the test declarative.
 
-  // Assert pass-by-reference behavior for more specific `example` values
-  { example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }], actual: [], result: [], isNew: true },
-  { example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }], actual: [{a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}], result: [{ id: 0, title: '', body: '', votes: 0, resolved: false }], isNew: true },
-
+  ////////////////////////////////////////////////
+  // example: {...} should perform a shallow copy
+  // Assert pass-by-reference behavior for more specific `example`s
+  ////////////////////////////////////////////////
+  {
+    example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }],
+    actual: [],
+    result: [],
+    isNew: true
+  },
+  {
+    example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }],
+    actual: [{a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}],
+    result: [{ id: 0, title: '', body: '', votes: 0, resolved: false }],
+    isNew: true
+  },
+  {
+    example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '*' }],
+    actual: [],
+    result:  [],
+    isNew: true
+  },
+  {
+    example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '*' }],
+    actual: [{a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}],
+    result:  [{ id: 0, title: '', body: '', votes: 0, resolved: false, something: undefined }],
+    isNew: true
+  },
+  {
+    example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '*' }],
+    actual: [{ something: new Date('November 5, 1605 GMT')}],
+    result:  [{ id: 0, title: '', body: '', votes: 0, resolved: false, something: new Date('November 5, 1605 GMT') }],
+    isNew: true
+  },
+  {
+    example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '*' }],
+    actual: [{ something: new Date('November 5, 1605 GMT'), a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}],
+    result:  [{ id: 0, title: '', body: '', votes: 0, resolved: false, something: new Date('November 5, 1605 GMT') }],
+    isNew: true
+  },
 
 
 ];
