@@ -66,16 +66,43 @@ TODO:
 
 #### Strings
 
+`example: 'stuff'`
+
 
 #### Numbers
 
+`example: 323`
+
+
 #### Booleans
 
+`example: {}`
 
 
-#### Dictionaries
+#### Generic dictionaries
 
-+ Dictionaries (i.e. plain old JavaScript objects like `{}`) in type schemas can be infinitely nested.  Type validation and coercion will proceed through the nested objects recursively.
+`example: {}`
+
+The **generic dictionary** type is a dictionary type schema with no keys.
+
+
+Dictionaries that have been validated/coerced against the generic dictionary type:
++ will have no prototypal properties, getters, or setters, as well as a complete deficit of any other sort of deceit, lies, or magic
++ are guaranteed to be JSON-serializable, with a few additional affordances:
+  + normally, stringified JSON may contain `null` values.  Instead, rttc removes `null` items from arrays and removes keys with `null` values from objects.
+  + normally, `Error` instances get stringified into empty objects.  Instead, rttc turns them into human-readable strings by reducing them to their `.stack` property (this includes the error message and the stack trace w/ line numbers)
+  + normally, `RegExp` instances get stringified into empty objects.  Instead, rttc turns them into human-readable strings like `'/some regexp/gi'`
+  + normally, `function()` instances get stringified into empty objects.  Instead, rttc turns them into human-readable strings like `'function doStuff (a,b) { console.log(\'wow I can actually read this!\'); }'`
+
+
+#### Faceted dictionaries
+
+`example: {...}`
+
+The **faceted dictionary** type is any dictionary type schema with at least one key.
+Extra keys in the actual value that are not in the type schema will be stripped out.
+
+Dictionary type schemas (i.e. plain old JavaScript objects nested like `{a:{}}`) can be infinitely nested.  Type validation and coercion will proceed through the nested objects recursively.
 
 ```js
 {
@@ -93,7 +120,6 @@ TODO:
 }
 ```
 
-When validating against a dictionary schema with at least one key, extra keys in the actual value will be stripped out.  If the dictionary schema is empty, all actual keys will be left alone.
 
 
 #### Generic arrays
@@ -116,7 +142,9 @@ Arrays that have been validated/coerced against the generic array type:
 `example: [[...]]`
 `example: [{...}]`
 
-Arrays being validated/coerced against array type schemas will be homogeneous (meaning every item in the array will have the same type).
+Array type schemas may be infinitely nested and combined with dictionaries or any other types.
+
+Runtime arrays being validated/coerced against array type schemas will be homogeneous (meaning every item in the array will have the same type).
 
 > Also note that, because of this, when providing a type schema or type-inference-able example for an array, you only need to provide one item in the array, e.g.:
 
@@ -139,7 +167,7 @@ Arrays being validated/coerced against array type schemas will be homogeneous (m
 ]
 ```
 
-#### Anything
+#### Wildcards
 
 `example: '*'`
 
@@ -149,7 +177,7 @@ This special type allows anything except `undefined`.  It also _does not rebuild
 
 #### Edge cases
 
-+ `undefined` is never valid.
++ `undefined` is _never_ valid as a _top-level value_, but it is allowed as an item or value in a nested array or dictionary validated/coerced against `example: *`.
 + `null` is only valid against `example: '*'`.
 + `NaN` is only valid against `example: '*'`.
 + `Infinity` is only valid against `example: '*'`.
@@ -158,7 +186,8 @@ This special type allows anything except `undefined`.  It also _does not rebuild
 + `+0` is understood as 0
 
 
-## Usage
+
+## Examples
 
 #### rttc.infer(value)
 
