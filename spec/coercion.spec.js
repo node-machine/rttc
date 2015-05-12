@@ -351,6 +351,28 @@ module.exports = [
     result: [{a: 3, someStuff: [{y:'foo'}, {x:'bar'}]}, {a: 5}]
   },
 
+  // Leave `undefined` items from arrays and nested arrays alone (`*` case)
+  {
+    example: '*',
+    actual: [{a:3}, undefined, {a: 5}, undefined, {a: 7}, {a:9, b: [undefined, 9,2,4,undefined,8]}],
+    result: [{a:3}, undefined, {a: 5}, undefined, {a: 7}, {a:9, b: [undefined, 9,2,4,undefined,8]}]
+  },
+
+  // Leave `undefined` items from arrays and nested arrays (`[*]` case)
+  // (because '*' leaves them there)
+  {
+    example: ['*'],
+    actual: [{a:3}, undefined, {a: 5}, undefined, {a: 7}, {a:9, b: [undefined, 9,2,4,undefined,8]}],
+    result: [{a:3}, undefined, {a: 5}, undefined, {a: 7}, {a:9, b: [undefined, 9,2,4,undefined,8]}]
+  },
+
+  // Prune `undefined` items from arrays and nested arrays (`[]` case)
+  // {
+  //   example: [],
+  //   actual: [{a:3}, undefined, {a: 5}, undefined, {a: 7}, {a:9, b: [undefined, 9,2,4,undefined,8]}],
+  //   result: [{a: 3}, {a: 5}, {a:7}, {a:9, b:[9,2,4,8]}]
+  // },
+
   // Ensure that nested dictionaries inside of an array passed
   // through `example: ['*']` are NOT stripped of keys with undefined values--
   // and are left utterly alone
