@@ -388,11 +388,11 @@ module.exports = [
   },
 
   // Prune `undefined` items from arrays and nested arrays (`[]` case)
-  // {
-  //   example: [],
-  //   actual: [{a:3}, undefined, {a: 5}, undefined, {a: 7}, {a:9, b: [undefined, 9,2,4,undefined,8]}],
-  //   result: [{a: 3}, {a: 5}, {a:7}, {a:9, b:[9,2,4,8]}]
-  // },
+  {
+    example: [],
+    actual: [{a:3}, undefined, {a: 5}, undefined, {a: 7}, {a:9, b: [undefined, 9,2,4,undefined,8]}],
+    result: [{a: 3}, {a: 5}, {a:7}, {a:9, b:[9,2,4,8]}]
+  },
 
   // DO allow `undefined` items from arrays and nested arrays (`*` case)
   {
