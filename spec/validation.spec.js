@@ -238,14 +238,20 @@ module.exports = [
   { example: {a:1, b:'hi', c: false}, actual: {a: 11}, error: true  },
   { example: {a:1, b:'hi', c: false}, actual: {a: 23, b: undefined, c: undefined}, error: true  },
   { example: {a:1}, actual: {a: undefined}, error: true  },
+  { example: {a:1}, actual: {}, error: true  },
 
   // Missing keys (`*` case)
   { example: {a:'*'}, actual: {a: undefined}, error: true  },
+  { example: {a:'*'}, actual: {}, error: true  },
 
-  // Keys with `undefined` values (`{}` case)
+  // Strip keys with `undefined` values (`{}` case)
   { example: {}, actual: {a: undefined, b: 3}, result: {b: 3}  },
-  // Keys with `undefined` values (`*` case)
-  { example: '*', actual: {a: undefined, b: 3}, result: {b: 3}  },
+  // Strip keys with `undefined` values (nested `{}` case)
+  { example: [{}], actual: [{a: undefined, b: 3}], result: [{b: 3}]  },
+  { example: {x:{}}, actual: {x:{a: undefined, b: 3}}, result: {x:{b: 3}}  },
+
+  // Don't strip keys with `undefined` values (`*` case)
+  { example: '*', actual: {a: undefined, b: 3}, result: {a: undefined, b: 3}  },
 
   // Extra keys:
   { example: {a:1, b:'hi'}, actual: {a: 23, b: 'stuff', d: true}, result: {a: 23, b: 'stuff'}  },

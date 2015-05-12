@@ -66,6 +66,9 @@ module.exports = function toRunTestWith(transformationFn) {
     // Test AGAINST strict equality using `isNew` if requested
     // (i.e. guarantees this is a new value and is !== what was passed in)
     if (expectations.isNew) {
+
+      // Check both the expected result and the actual value, just to be safe.
+      // (should never even be possible for it to be a direct reference to the expected result)
       if (actualResult === compareTo || actualResult === expectations.actual) {
         return cb(new Error('returned value === value that was passed in -- but should have been a new value!'));
       }

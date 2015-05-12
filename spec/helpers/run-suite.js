@@ -62,7 +62,7 @@ function describeAndExecuteTest(test, runTestFn){
     }
     else if (test.isNew) {
       if (test.hasOwnProperty('result')) {
-        itMsg+='convert ' + actualDisplayName + ' into a new value which is !== the original: '+util.inspect(test.result, false, null);
+        itMsg+='convert ' + actualDisplayName + ' into a new (!== original) value '+util.inspect(test.result, false, null);
       }
       else {
         itMsg+='take ' + actualDisplayName + ' and yield a copy (which !== original)';
