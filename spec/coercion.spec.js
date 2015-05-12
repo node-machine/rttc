@@ -248,7 +248,12 @@ module.exports = [
   // { example: {}, actual: { x: new (require('stream').Readable)() }, result: { x: { _readableState: {},readable: true,_events: {},_maxListeners: 10 } } },
   // Skip Buffer stream tests for now since the enumerable properties vary between Node.js versions.
   // { example: {}, actual: { x: new Buffer('asdf') } , result: {x: {}} },
-  { example: {}, actual: { x: new Error('asdf') }, result: {x:{}} },
+  (function buildFakeError(){
+    // Hard-code a fake `.stack` to avoid differences between computers that would cause tests to fail
+    var e = new Error('asdf');
+    e.stack = 'fake_error';
+    return { example: {}, actual: { x: e }, result: {x:'fake_error'} };
+  })(),
 
   { example: [], actual: [undefined], result: [] },
   { example: [], actual: [null], result: [] },
@@ -262,7 +267,11 @@ module.exports = [
   // { example: [], actual: [new (require('stream').Readable)()], result: [ { _readableState: {},readable: true,_events: {},_maxListeners: 10 }] },
   // Skip Buffer stream tests for now since the enumerable properties vary between Node.js versions.
   // { example: [], actual: [new Buffer('asdf')], result: [{}] },
-  { example: [], actual: [new Error('asdf')], result: [{}] },
+  (function (){
+    var e = new Error('asdf');
+    e.stack = 'fake_error';
+    return { example: [], actual: [e], result: ['fake_error'] };
+  })(),
 
 
   ////////////////////////////////////////////
