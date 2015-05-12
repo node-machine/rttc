@@ -240,15 +240,15 @@ module.exports = [
   { example: {}, actual: { x: Infinity }, result: {} },
   { example: {}, actual: { x: -Infinity }, result: {} },
   { example: {}, actual: { x: null }, result: {} },
-  { example: {}, actual: { x: function(){} }, result: {} },
+  { example: {}, actual: { x: function foo(a,b){return a+' '+b;} }, result: { x: 'function foo(a,b){return a+\' \'+b;}' } },
   // { example: {}, actual: { x: undefined, null, NaN, -Infinity, Infinity, function(){} }, result: [] },
-  { example: {}, actual: { x: /some regexp/ }, result: {x:{}} },
+  { example: {}, actual: { x: /some regexp/ig }, result: {x:'/some regexp/gi' }},
   { example: {}, actual: { x: new Date('November 5, 1605 GMT') }, result: {x: '1605-11-05T00:00:00.000Z'} },
   // Skip Readable stream tests for now since the enumerable properties vary between Node.js versions.
   // { example: {}, actual: { x: new (require('stream').Readable)() }, result: { x: { _readableState: {},readable: true,_events: {},_maxListeners: 10 } } },
   // Skip Buffer stream tests for now since the enumerable properties vary between Node.js versions.
   // { example: {}, actual: { x: new Buffer('asdf') } , result: {x: {}} },
-  (function buildFakeError(){
+  (function (){
     // Hard-code a fake `.stack` to avoid differences between computers that would cause tests to fail
     var e = new Error('asdf');
     e.stack = 'fake_error';
@@ -260,8 +260,8 @@ module.exports = [
   { example: [], actual: [NaN], result: [] },
   { example: [], actual: [Infinity], result: [] },
   { example: [], actual: [-Infinity], result: [] },
-  { example: [], actual: [function(){}], result: [] },
-  { example: [], actual: [/some regexp/], result: [{}] },
+  { example: [], actual: [function foo(a,b){return a+' '+b;}], result: ['function foo(a,b){return a+\' \'+b;}'] },
+  { example: [], actual: [/some regexp/gi], result: ['/some regexp/gi'] },
   { example: [], actual: [new Date('November 5, 1605 GMT')], result: ['1605-11-05T00:00:00.000Z'] },
   // Skip Readable stream tests for now since the enumerable properties vary between Node.js versions.
   // { example: [], actual: [new (require('stream').Readable)()], result: [ { _readableState: {},readable: true,_events: {},_maxListeners: 10 }] },
@@ -319,7 +319,7 @@ module.exports = [
   { example: undefined, actual: -Infinity, result: -Infinity,  },
   { example: undefined, actual: null, result: null,  },
 
-  { example: undefined, actual: /some regexp/, result: /some regexp/ },
+  { example: undefined, actual: /some regexp/gi, result: /some regexp/gi },
   { example: undefined, actual: new Date('November 5, 1605 GMT'), result: new Date('November 5, 1605 GMT') },
 
 

@@ -232,6 +232,58 @@ module.exports = [
   // TODO: but actually, this should cause an error- use `example: '*'` for things like this.
   { example: [], actual: new Error('asdf'), error: true },
 
+
+  //////////////////////////////////////////////////////
+  // nested contents of `example: []` and `example: {}`
+  //////////////////////////////////////////////////////
+
+  // Follow JSON-serialization rules for nested objects within `example: []` and `example: {}`
+  // with the following exceptions:
+  // • convert Error instances to their `.stack` property (a string)
+  // • convert RegExp instances to a string
+  // • convert functions to a string
+  // • after doing the rest of the things, prune undefined/null items
+  // • after doing the rest of the things, strip keys w/ undefined/null values
+  { example: {}, actual: { x: undefined }, result: {} },
+  { example: {}, actual: { x: NaN }, result: {} },
+  { example: {}, actual: { x: Infinity }, result: {} },
+  { example: {}, actual: { x: -Infinity }, result: {} },
+  { example: {}, actual: { x: null }, result: {} },
+  { example: {}, actual: { x: function foo(a,b){return a+' '+b;} }, result: { x: 'function foo(a,b){return a+\' \'+b;}' } },
+  // { example: {}, actual: { x: undefined, null, NaN, -Infinity, Infinity, function(){} }, result: [] },
+  { example: {}, actual: { x: /some regexp/ig }, result: {x:'/some regexp/gi' }},
+  { example: {}, actual: { x: new Date('November 5, 1605 GMT') }, result: {x: '1605-11-05T00:00:00.000Z'} },
+  // Skip Readable stream tests for now since the enumerable properties vary between Node.js versions.
+  // { example: {}, actual: { x: new (require('stream').Readable)() }, result: { x: { _readableState: {},readable: true,_events: {},_maxListeners: 10 } } },
+  // Skip Buffer stream tests for now since the enumerable properties vary between Node.js versions.
+  // { example: {}, actual: { x: new Buffer('asdf') } , result: {x: {}} },
+  (function (){
+    // Hard-code a fake `.stack` to avoid differences between computers that would cause tests to fail
+    var e = new Error('asdf');
+    e.stack = 'fake_error';
+    return { example: {}, actual: { x: e }, result: {x:'fake_error'} };
+  })(),
+
+  { example: [], actual: [undefined], result: [] },
+  { example: [], actual: [null], result: [] },
+  { example: [], actual: [NaN], result: [] },
+  { example: [], actual: [Infinity], result: [] },
+  { example: [], actual: [-Infinity], result: [] },
+  { example: [], actual: [function foo(a,b){return a+' '+b;}], result: ['function foo(a,b){return a+\' \'+b;}'] },
+  { example: [], actual: [/some regexp/gi], result: ['/some regexp/gi'] },
+  { example: [], actual: [new Date('November 5, 1605 GMT')], result: ['1605-11-05T00:00:00.000Z'] },
+  // Skip Readable stream tests for now since the enumerable properties vary between Node.js versions.
+  // { example: [], actual: [new (require('stream').Readable)()], result: [ { _readableState: {},readable: true,_events: {},_maxListeners: 10 }] },
+  // Skip Buffer stream tests for now since the enumerable properties vary between Node.js versions.
+  // { example: [], actual: [new Buffer('asdf')], result: [{}] },
+  (function (){
+    var e = new Error('asdf');
+    e.stack = 'fake_error';
+    return { example: [], actual: [e], result: ['fake_error'] };
+  })(),
+
+
+
   ////////////////////////////////////////////
   // RECURSIVE OBJECTS
   ////////////////////////////////////////////
