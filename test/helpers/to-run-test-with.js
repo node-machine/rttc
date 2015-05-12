@@ -46,39 +46,32 @@ module.exports = function toRunTestWith(transformationFn) {
       return cb(new Error('expected a error, but did not get one. Instead, returned '+util.inspect(actualResult, false, null)+'.'));
     }
 
-    // Ensure that the actual result matches the test's expectations.
-    var pass;
+
+    // If an expected `result` is provided, compare the actual result against that.
+    // Otherwise compare it against the original value (`actual`)
+    var compareTo = expectations.hasOwnProperty('result') ? expectations.result : expectations.actual;
+
+    // if `result` is set, use a lodash equality check
+    if (!_.isEqual(actualResult, compareTo)) {
+      return cb(new Error('returned incorrect value: '+util.inspect(actualResult, false, null)));
+    }
 
     // Test using strict equality (===) if explicitly requested
     if (expectations.strictEq) {
-      if (actualResult !== expectations.actual) {
-        // Get more diagnostic info for test results if possible
-        if (expectations.hasOwnProperty('result')) {
-          if (!_.isEqual(actualResult, expectations.result)) {
-            return cb(new Error('returned incorrect value: '+util.inspect(actualResult, false, null)));
-          }
-          return cb(new Error('returned value is equivalent to expected result, but it is not === to the value that was passed in'));
-        }
-        // Or return a generic answer
-        return cb(new Error('returned value is not === to the value that was passed in'));
-      }
-      return cb();
-    }
-
-    // Otherwise...
-
-
-    // if `result` is set, use a lodash equality check
-    if (expectations.hasOwnProperty('result')) {
-      if (!_.isEqual(actualResult, expectations.result)) {
-        return cb(new Error('returned incorrect value: '+util.inspect(actualResult, false, null)));
+      if (actualResult !== compareTo) {
+        return cb(new Error('returned value is equivalent (but not ===)'));
       }
     }
 
-    // And finally, if requested, also guarantee this is a new value (i.e. !== what was passed in)
-    if (expectations.isNew && actualResult === expectations.actual) {
-      return cb(new Error('returned value === value that was passed in -- but should have been a new value!'));
+    // Test AGAINST strict equality using `isNew` if requested
+    // (i.e. guarantees this is a new value and is !== what was passed in)
+    if (expectations.isNew) {
+      if (actualResult === compareTo || actualResult === expectations.actual) {
+        return cb(new Error('returned value === value that was passed in -- but should have been a new value!'));
+      }
     }
+
+    // If we made it here, everything's good!
     return cb();
 
   };

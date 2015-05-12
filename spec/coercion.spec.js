@@ -510,10 +510,7 @@ module.exports = [
   // example: '*'
   ////////////////////////////////////////////////
 
-  // (function someEmptyDictionary(){
-  //   var dict = {};
-  //   return { example: undefined, actual: dict, result: dict, strictEq: true };
-  // })(),
+  // { example: undefined, actual: {}, strictEq: true },
   // (function someDictionaryWithContents(){
   //   var dict = {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]};
   //   return { example: undefined, actual: dict, result: dict, strictEq: true };
@@ -558,11 +555,11 @@ module.exports = [
   ////////////////////////////////////////////////////////////////////////////////////////////////
 
   // Assert pass-by-reference behavior for specific array/dict examples
-  { example: { id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }, actual: {}, isNew: true },
-  { example: { id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }, actual: {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}, isNew: true },
+  { example: { id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }, actual: {}, result:  { id: 0, title: '', body: '', votes: 0, resolved: false }, isNew: true },
+  { example: { id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }, actual: {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}, result:  { id: 0, title: '', body: '', votes: 0, resolved: false }, isNew: true },
 
-  { example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }], actual: [], isNew: true },
-  { example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }], actual: [{a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}], isNew: true },
+  { example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }], actual: [], result: [], isNew: true },
+  { example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 0, resolved: true }], actual: [{a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}], result: [{ id: 0, title: '', body: '', votes: 0, resolved: false }], isNew: true },
 
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
