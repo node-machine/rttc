@@ -308,6 +308,87 @@ module.exports = [
 
 
 
+
+
+  //                                                              $$\
+  //                                                              \__|
+  //   $$$$$$\   $$$$$$\   $$$$$$$\ $$\   $$\  $$$$$$\   $$$$$$$\ $$\ $$\    $$\  $$$$$$\
+  //  $$  __$$\ $$  __$$\ $$  _____|$$ |  $$ |$$  __$$\ $$  _____|$$ |\$$\  $$  |$$  __$$\
+  //  $$ |  \__|$$$$$$$$ |$$ /      $$ |  $$ |$$ |  \__|\$$$$$$\  $$ | \$$\$$  / $$$$$$$$ |
+  //  $$ |      $$   ____|$$ |      $$ |  $$ |$$ |       \____$$\ $$ |  \$$$  /  $$   ____|
+  //  $$ |      \$$$$$$$\ \$$$$$$$\ \$$$$$$  |$$ |      $$$$$$$  |$$ |   \$  /   \$$$$$$$\
+  //  \__|       \_______| \_______| \______/ \__|      \_______/ \__|    \_/     \_______|
+  //
+  //
+  //
+
+  // Some basic deep dicts and array
+  {
+    example: {a:1, b:'hi', c: false},
+    actual: {a: 23},
+    error: true
+  },
+  {
+    example: {a:1, b:'hi', c: false},
+    actual: {a: 23, d: true},
+    error: true
+  },
+
+  // Ensure that this allows extra keys when coercing to `example: {}`
+  {
+    example: {},
+    actual: {a: 23, d: true},
+    result: {a: 23, d: true}
+  },
+
+  // Omit extra keys when coercing to `example: {...}`
+  {
+    example: { a:23 },
+    actual: {a: 23, d: true},
+    result: {a: 23}
+  },
+
+  // Reject when there are missing or undefined required keys
+  { example: {b: 235}, actual: {b: undefined}, error: true  },
+  { example: {b: 235}, actual: {}, error: true  },
+
+  // Strip extra keys with `undefined` values (`{...}` case)
+  { example: {b: 235}, actual: {a: undefined, b: 3}, result: {b: 3}  },
+  // Strip extra nested keys with `undefined` values (`{...}` case)
+  { example: {a: {}, b: 235}, actual: {a: {x: undefined}, b: 3}, result: {a: {}, b: 3}  },
+
+  // Strip keys with `undefined` values (`{}` case)
+  { example: {}, actual: {a: undefined, b: 3}, result: {b: 3}  },
+  // Strip nested keys with `undefined` values (`{}` case)
+  { example: {}, actual: {a: {x: undefined}, b: 3}, result: {a: {}, b: 3}  },
+
+  // Don't strip keys or nested keys with `undefined` values (`*` and nested `*` cases)
+  { example: '*', actual: {a: undefined, b: 3, c: {x: undefined}}, result: {a: undefined, b: 3, c: {x: undefined}}  },
+  { example: {c:'*'}, actual: {a: undefined, b: 3, c: {x: undefined}}, result: { c: {x: undefined}}  },
+
+
+  // Ensure that this allows arbitary arrays when coercing to `example: []`
+  {
+    example: [],
+    actual: [{a: 23, d: true}],
+    result: [{a: 23, d: true}]
+  },
+
+  // Ensure that dictionaries nested dictionaries inside of an array passed
+  // through `example: []` are stripped of keys with undefined values
+  {
+    example: [],
+    actual: [{a:3, b: undefined}, {a: undefined}],
+    result: [{a: 3},{}]
+  },
+  {
+    example: [],
+    actual: [{a:3,someStuff: [{x: undefined, y: 'foo'}, {x: 'bar', y: undefined}]},{a: 5, b: undefined}],
+    result: [{a: 3, someStuff: [{y:'foo'}, {x:'bar'}]}, {a: 5}]
+  },
+
+
+
   //              $$\               $$\             $$\                                       $$$\               $$$\
   //              $$ |              \__|            $$ |                                     $$  _|               \$$\
   //   $$$$$$$\ $$$$$$\    $$$$$$\  $$\  $$$$$$$\ $$$$$$\          $$$$$$\   $$$$$$\        $$  /$$$$\ $$$$\ $$$$\ \$$\
