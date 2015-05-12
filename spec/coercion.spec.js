@@ -326,7 +326,7 @@ module.exports = [
   // Strip nested keys with `undefined` values (`{}` case)
   { example: {}, actual: {a: {x: undefined}, b: 3}, result: {a: {}, b: 3}  },
 
-  // Don't strip keys or nested keys with `undefined` values (`*` case)
+  // Don't strip keys or nested keys with `undefined` values (`*` and nested `*` cases)
   { example: '*', actual: {a: undefined, b: 3, c: {x: undefined}}, result: {a: undefined, b: 3, c: {x: undefined}}  },
   { example: {c:'*'}, actual: {a: undefined, b: 3, c: {x: undefined}}, result: { c: {x: undefined}}  },
 
@@ -336,6 +336,19 @@ module.exports = [
     example: [],
     actual: [{a: 23, d: true}],
     result: [{a: 23, d: true}]
+  },
+
+  // Ensure that dictionaries nested dictionaries inside of an array passed
+  // through `example: []` are stripped of keys with undefined values
+  {
+    example: [],
+    actual: [{a:3, b: undefined}, {a: undefined}],
+    result: [{a: 3},{}]
+  },
+  {
+    example: [],
+    actual: [{a:3,someStuff: [{x: undefined, y: 'foo'}, {x: 'bar', y: undefined}]},{a: 5, b: undefined}],
+    result: [{a: 3, someStuff: [{y:'foo'}, {x:'bar'}]}, {a: 5}]
   },
 
 
