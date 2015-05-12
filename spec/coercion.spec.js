@@ -338,7 +338,7 @@ module.exports = [
     result: [{a: 23, d: true}]
   },
 
-  // Ensure that dictionaries nested dictionaries inside of an array passed
+  // Ensure that nested dictionaries inside of an array passed
   // through `example: []` are stripped of keys with undefined values
   {
     example: [],
@@ -349,6 +349,20 @@ module.exports = [
     example: [],
     actual: [{a:3,someStuff: [{x: undefined, y: 'foo'}, {x: 'bar', y: undefined}]},{a: 5, b: undefined}],
     result: [{a: 3, someStuff: [{y:'foo'}, {x:'bar'}]}, {a: 5}]
+  },
+
+  // Ensure that nested dictionaries inside of an array passed
+  // through `example: ['*']` are NOT stripped of keys with undefined values--
+  // and are left utterly alone
+  {
+    example: ['*'],
+    actual: [{a:3, b: undefined}, {a: undefined}],
+    result: [{a: 3, b: undefined},{a:undefined}]
+  },
+  {
+    example: ['*'],
+    actual: [{a:3,someStuff: [{x: undefined, y: 'foo'}, {x: 'bar', y: undefined}]},{a: 5, b: undefined}],
+    result: [{a:3,someStuff: [{x: undefined, y: 'foo'}, {x: 'bar', y: undefined}]},{a: 5, b: undefined}]
   },
 
   // Ensure the recursive cloning / undefined-key-stripping doesn't get
