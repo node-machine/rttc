@@ -56,6 +56,18 @@ describe('Inferring type schema from example', function() {
 
 
 
+  // ------------------------------------------------------------
+  // Weird examples
+  // ------------------------------------------------------------
+
+  describe('when weird values are used', function() {
+
+    it('should reject `null`', function() {
+      assert.equal(infer(null), undefined);
+    });
+
+  });
+
 
 
 
