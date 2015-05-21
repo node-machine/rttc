@@ -315,6 +315,10 @@ module.exports = [
   { example: {a:1, b:'hi'}, actual: {a: 23, b: 'stuff', d: true}, result: {a: 23, b: 'stuff'}  },
   { example: {a:1, b:'hi'}, actual: {a: 23, b: 'stuff', d: undefined}, result: {a: 23, b: 'stuff'}  },
 
+
+
+
+
   ////////////////////////////////////////////
   // example: *
   ////////////////////////////////////////////
@@ -332,6 +336,8 @@ module.exports = [
   { example: '*', actual: '0', result: '0',  },
   { example: '*', actual: '1', result: '1',  },
 
+  { example: '*', actual: -0, result: -0,  },
+  { example: '*', actual: +0, result: +0,  },
   { example: '*', actual: 0, result: 0,  },
   { example: '*', actual: 1, result: 1,  },
   { example: '*', actual: -1.1, result: -1.1,  },

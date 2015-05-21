@@ -283,6 +283,29 @@ module.exports = [
   })(),
 
 
+  // ////////////////////////////////////////////
+  // // example: '%json'
+  // ////////////////////////////////////////////
+
+  // { example: '%json', actual: 'bar', result: 'bar' },
+  // { example: '%json', actual: 123, result: 123 },
+  // { example: '%json', actual: -0, result: 0 },
+  // { example: '%json', actual: +0, result: 0 },
+  // { example: '%json', actual: true, result: '' },
+
+
+  // ////////////////////////////////////////////
+  // // example: '->'
+  // ////////////////////////////////////////////
+
+  // { example: '->', actual: 'bar', result: [] },
+  // { example: '->', actual: 123, result: [] },
+  // { example: '->', actual: -0, result: [] },
+  // { example: '->', actual: +0, result: [] },
+  // { example: '->', actual: true, result: [] },
+
+
+
   ////////////////////////////////////////////
   // example: * (aka undefined)
   ////////////////////////////////////////////
@@ -300,6 +323,8 @@ module.exports = [
   { example: undefined, actual: '0', result: '0',  },
   { example: undefined, actual: '1', result: '1',  },
 
+  { example: undefined, actual: -0, result: -0,  },
+  { example: undefined, actual: +0, result: +0,  },
   { example: undefined, actual: 0, result: 0,  },
   { example: undefined, actual: 1, result: 1,  },
   { example: undefined, actual: -1.1, result: -1.1,  },

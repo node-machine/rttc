@@ -44,9 +44,28 @@ describe('Inferring type schema from example', function() {
       assert.strictEqual(type, 'boolean');
     });
 
-    it('should set type "*"', function() {
-      var type = infer('*');
-      assert.strictEqual(type, '*');
+    it('should set type "ref" for "*" and `undefined`', function() {
+      // TODO: consider making `=` do this instead of `*` (would be a breaking change)
+      // assert.strictEqual( infer('='), 'ref' );
+      assert.strictEqual( infer('*'), 'ref' );
+      assert.strictEqual( infer(undefined), 'ref' );
+    });
+
+    it('should set type "json" for "%json"', function() {
+      assert.strictEqual( infer('%json'), 'json' );
+      // TODO: consider making `*` do this (would be a breaking change)
+      // assert.strictEqual( infer('*'), 'json' );
+    });
+
+    it('should set type "lamda" for "->", "<-", "-->", "<--", "<==", "==>", "=>", "<="', function() {
+      assert.strictEqual( infer('->'), 'lamda' );
+      assert.strictEqual( infer('<-'), 'lamda' );
+      assert.strictEqual( infer('=>'), 'lamda' );
+      assert.strictEqual( infer('<='), 'lamda' );
+      assert.strictEqual( infer('-->'), 'lamda' );
+      assert.strictEqual( infer('<--'), 'lamda' );
+      assert.strictEqual( infer('==>'), 'lamda' );
+      assert.strictEqual( infer('<=='), 'lamda' );
     });
 
   });
