@@ -86,7 +86,13 @@ function describeAndExecuteTest(test, runTestFn){
 function getDisplayType(x){
   var displayType;
   if (x === '*') {
-    return '*';
+    return 'mutable reference (*)';
+  }
+  if (x === '->') {
+    return 'lambda fn (->)';
+  }
+  if (x === '%json') {
+    return 'JSON-compatible';
   }
   displayType = typeof x;
   try {

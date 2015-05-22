@@ -148,7 +148,7 @@ module.exports = [
   { example: true, actual: new Error('asdf'), result: false },
 
   ////////////////////////////////////////////
-  // DICTIONARIES (json-serializable)
+  // DICTIONARIES (json-serializable, except `null` not allowed)
   ////////////////////////////////////////////
 
   { example: {}, actual: 'bar', result: {} },
@@ -193,7 +193,7 @@ module.exports = [
 
 
   ////////////////////////////////////////////
-  // ARRAYS (json-serializable)
+  // ARRAYS (json-serializable, except `null` not allowed)
   // (all of the tests below pass w/ [], not necessarily ['*'])
   ////////////////////////////////////////////
 
@@ -245,9 +245,9 @@ module.exports = [
   // • after doing the rest of the things, prune undefined/null items
   // • after doing the rest of the things, strip keys w/ undefined/null values
   { example: {}, actual: { x: undefined }, result: {} },
-  { example: {}, actual: { x: NaN }, result: {} },
-  { example: {}, actual: { x: Infinity }, result: {} },
-  { example: {}, actual: { x: -Infinity }, result: {} },
+  { example: {}, actual: { x: NaN }, result: { x: 0 } },
+  { example: {}, actual: { x: Infinity }, result: { x: 0 } },
+  { example: {}, actual: { x: -Infinity }, result: { x: 0 } },
   { example: {}, actual: { x: null }, result: {} },
   { example: {}, actual: { x: function foo(a,b){return a+' '+b;} }, result: { x: 'function foo(a,b){return a+\' \'+b;}' } },
   // { example: {}, actual: { x: undefined, null, NaN, -Infinity, Infinity, function(){} }, result: [] },
@@ -266,9 +266,9 @@ module.exports = [
 
   { example: [], actual: [undefined], result: [] },
   { example: [], actual: [null], result: [] },
-  { example: [], actual: [NaN], result: [] },
-  { example: [], actual: [Infinity], result: [] },
-  { example: [], actual: [-Infinity], result: [] },
+  { example: [], actual: [NaN], result: [0] },
+  { example: [], actual: [Infinity], result: [0] },
+  { example: [], actual: [-Infinity], result: [0] },
   { example: [], actual: [function foo(a,b){return a+' '+b;}], result: ['function foo(a,b){return a+\' \'+b;}'] },
   { example: [], actual: [/some regexp/gi], result: ['/some regexp/gi'] },
   { example: [], actual: [new Date('November 5, 1605 GMT')], result: ['1605-11-05T00:00:00.000Z'] },
@@ -283,15 +283,56 @@ module.exports = [
   })(),
 
 
-  // ////////////////////////////////////////////
-  // // example: '%json'
-  // ////////////////////////////////////////////
+  ////////////////////////////////////////////
+  // example: '%json'
+  ////////////////////////////////////////////
 
-  // { example: '%json', actual: 'bar', result: 'bar' },
-  // { example: '%json', actual: 123, result: 123 },
-  // { example: '%json', actual: -0, result: 0 },
-  // { example: '%json', actual: +0, result: 0 },
-  // { example: '%json', actual: true, result: '' },
+  { example: '%json', actual: 'bar', result: 'bar',  },
+  { example: '%json', actual: '', result: '',  },
+  { example: '%json', actual: '-1.1', result: '-1.1',  },
+  { example: '%json', actual: 'NaN', result: 'NaN',  },
+  { example: '%json', actual: 'undefined', result: 'undefined',  },
+  { example: '%json', actual: 'null', result: 'null',  },
+  { example: '%json', actual: '-Infinity', result: '-Infinity',  },
+  { example: '%json', actual: 'Infinity', result: 'Infinity',  },
+  { example: '%json', actual: 'true', result: 'true',  },
+  { example: '%json', actual: 'false', result: 'false',  },
+  { example: '%json', actual: '0', result: '0',  },
+  { example: '%json', actual: '1', result: '1',  },
+
+  { example: '%json', actual: -0, result: 0,  },
+  { example: '%json', actual: +0, result: 0,  },
+  { example: '%json', actual: 0, result: 0,  },
+  { example: '%json', actual: 1, result: 1,  },
+  { example: '%json', actual: -1.1, result: -1.1,  },
+
+  { example: '%json', actual: true, result: true,  },
+  { example: '%json', actual: false, result: false,  },
+
+  { example: '%json', actual: {}, result: {},  },
+  { example: '%json', actual: {foo:'bar'}, result: {foo:'bar'},  },
+  { example: '%json', actual: {foo:{bar:{baz:{}}}}, result: {foo:{bar:{baz:{}}}},  },
+  { example: '%json', actual: {foo:['bar']}, result: {foo:['bar']},  },
+  { example: '%json', actual: {foo:{bar:{baz:[{}]}}}, result: {foo:{bar:{baz:[{}]}}},  },
+
+  { example: '%json', actual: [], result: [],  },
+  { example: '%json', actual: ['asdf'], result: ['asdf'],  },
+  { example: '%json', actual: [''], result: [''],  },
+  { example: '%json', actual: [235], result: [235],  },
+  { example: '%json', actual: [false], result: [false],  },
+  { example: '%json', actual: [{}], result: [{}],  },
+  { example: '%json', actual: [{foo:'bar'}], result: [{foo:'bar'}],  },
+
+  { example: '%json', actual: undefined, result: null,  },
+
+  { example: '%json', actual: NaN, result: 0,  },
+  { example: '%json', actual: Infinity, result: 0,  },
+  { example: '%json', actual: -Infinity, result: 0,  },
+
+  { example: '%json', actual: null, result: null,  },
+
+  { example: '%json', actual: /some regexp/gi, result: '/some regexp/gi' },
+  { example: '%json', actual: new Date('November 5, 1605 GMT'), result: '1605-11-05T00:00:00.000Z' },
 
 
   // ////////////////////////////////////////////
