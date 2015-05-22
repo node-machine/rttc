@@ -47,6 +47,9 @@ module.exports = function expandSuite ( testSuite ) {
       else if (_.isFunction(_val)) {
         return _val;
       }
+      else if (_.isObject(_val) && _val instanceof Buffer) {
+        return _val;
+      }
       // Otherwise allow vanilla _.cloneDeep() behavior:
       else return undefined;
     });

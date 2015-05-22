@@ -226,7 +226,7 @@ module.exports = [
   { example: [], actual: /some regexp/, result: [] },
   { example: [], actual: function(){}, result: [] },
   { example: [], actual: new Date('November 5, 1605 GMT'), result: [] },
-  { example: [], actual: new (require('stream').Readable)(), result: [] }, // TODO: consider enhancing this behavior to concat the stream contents? Needs community discussion.
+  // { example: [], actual: new (require('stream').Readable)(), result: [] }, // TODO: consider enhancing this behavior to concat the stream contents? Needs community discussion.
   // Skip Buffer tests for now since the enumerable properties vary between Node.js versions.
   // TODO: bring back support for this by explicitly filtering properties of buffers in `.exec()`
   // { example: [], actual: new Buffer('asdf'), result: [ 97, 115, 100, 102 ] },
@@ -272,10 +272,8 @@ module.exports = [
   { example: [], actual: [function foo(a,b){return a+' '+b;}], result: ['function foo(a,b){return a+\' \'+b;}'] },
   { example: [], actual: [/some regexp/gi], result: ['/some regexp/gi'] },
   { example: [], actual: [new Date('November 5, 1605 GMT')], result: ['1605-11-05T00:00:00.000Z'] },
-  // Skip Readable stream tests for now since the enumerable properties vary between Node.js versions.
-  // { example: [], actual: [new (require('stream').Readable)()], result: [ { _readableState: {},readable: true,_events: {},_maxListeners: 10 }] },
-  // Skip Buffer stream tests for now since the enumerable properties vary between Node.js versions.
-  // { example: [], actual: [new Buffer('asdf')], result: [{}] },
+  // { example: [], actual: [new (require('stream').Readable)()], result: [] },
+  // { example: [], actual: [new Buffer('asdf')], result: [] },
   (function (){
     var e = new Error('asdf');
     e.stack = 'fake_error';

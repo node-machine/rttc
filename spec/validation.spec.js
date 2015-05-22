@@ -183,17 +183,10 @@ module.exports = [
   { example: {}, actual: /some regexp/, error: true },
   { example: {}, actual: function(){}, error: true },
   { example: {}, actual: new Date('November 5, 1605 GMT'), error: true },
-
-  // Skip Readable stream tests for now since the enumerable properties vary between Node.js versions.
-  // { example: {}, actual: new (require('stream').Readable)(), result: { _readableState: { highWaterMark: 16384, buffer: [], length: 0, pipes: null, pipesCount: 0, flowing: false, ended: false, endEmitted: false, reading: false, calledRead: false, sync: true, needReadable: false, emittedReadable: false, readableListening: false, objectMode: false, defaultEncoding: 'utf8', ranOut: false, awaitDrain: 0, readingMore: false, decoder: null, encoding: null }, readable: true, domain: null, _events: {}, _maxListeners: 10 } },
-  // Note: we could bring back support for this by explicitly filtering properties of streams in `.exec()`...
-  // TODO: but actually, this should cause an error- use `example: '*'` for things like this.
-
-  // Skip Buffer tests for now since the enumerable properties vary between Node.js versions.
-  // { example: {}, actual: new Buffer('asdf'), error: true },
-  // Note: we could bring back support for this by explicitly filtering properties of buffers in `.exec()`
-  // TODO: but actually, this should cause an error- use `example: '*'` for things like this.
-
+  // Note that the enumerable properties for Streams vary between Node.js versions.
+  { example: {}, actual: new (require('stream').Readable)(), error: true },
+  // Note that the enumerable properties for Buffers vary between Node.js versions.
+  { example: {}, actual: new Buffer('asdf'), error: true },
   { example: {}, actual: new Error('asdf'), error: true },
 
 
@@ -341,7 +334,7 @@ module.exports = [
   { example: '%json', actual: new Date('November 5, 1605 GMT'), result: '1605-11-05T00:00:00.000Z' },
   { example: '%json', actual: (function(){var err=new Error();err.stack='test';return err;})(), result: 'test' },
   { example: '%json', actual: function(){}, result: 'function (){}' },
-  // { example: '%json', actual: new (require('stream').Readable)(), error: true },
+  { example: '%json', actual: new (require('stream').Readable)(), error: true },
 
 
 
