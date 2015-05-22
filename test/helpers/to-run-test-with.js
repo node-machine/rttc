@@ -54,7 +54,7 @@ module.exports = function toRunTestWith(transformationFn) {
     // Otherwise compare it against the original value (`actual`)
     var compareTo = expectations.hasOwnProperty('result') ? expectations.result : expectations.actual;
 
-    if (!isEquivalent) {
+    if (!isEquivalent(actualResult, compareTo, typeSchema)) {
       return cb(new Error('returned incorrect value: '+getDisplayVal(actualResult)+' (a '+getDisplayType(actualResult)+')'));
     }
 
