@@ -50,6 +50,9 @@ module.exports = function expandSuite ( testSuite ) {
       else if (_.isObject(_val) && _val instanceof Buffer) {
         return _val;
       }
+      else if (_.isObject(_val) && _val instanceof require('stream').Readable) {
+        return _val;
+      }
       // Otherwise allow vanilla _.cloneDeep() behavior:
       else return undefined;
     });
