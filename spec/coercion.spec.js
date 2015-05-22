@@ -333,15 +333,54 @@ module.exports = [
   { example: '%json', actual: new Date('November 5, 1605 GMT'), result: '1605-11-05T00:00:00.000Z' },
 
 
-  // ////////////////////////////////////////////
-  // // example: '->'
-  // ////////////////////////////////////////////
+  ////////////////////////////////////////////
+  // example: '->'
+  ////////////////////////////////////////////
 
-  // { example: '->', actual: 'bar', result: [] },
-  // { example: '->', actual: 123, result: [] },
-  // { example: '->', actual: -0, result: [] },
-  // { example: '->', actual: +0, result: [] },
-  // { example: '->', actual: true, result: [] },
+  // { example: '->', actual: 'bar', result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: '', result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: '-1.1', result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: 'NaN', result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: 'undefined', result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: 'null', result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: '-Infinity', result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: 'Infinity', result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: 'true', result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: 'false', result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: '0', result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: '1', result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+
+  // { example: '->', actual: -0, result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: +0, result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: 0, result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: 1, result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: -1.1, result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+
+  // { example: '->', actual: true, result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: false, result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+
+  // { example: '->', actual: {}, result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: {foo:'bar'}, result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: {foo:{bar:{baz:{}}}}, result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: {foo:['bar']}, result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: {foo:{bar:{baz:[{}]}}}, result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+
+  // { example: '->', actual: [], result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: ['asdf'], result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: [''], result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: [235], result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: [false], result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: [{}], result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: [{foo:'bar'}], result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+
+  // { example: '->', actual: undefined, result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+
+  // { example: '->', actual: NaN, result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: Infinity, result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: -Infinity, result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+  // { example: '->', actual: null, result: function (inputs, exits) { return exits.error(new Error('Not implemented! (this function was automatically created by `rttc`')); } },
+
+  // { example: '->', actual: function (inputs, exits){return exits.success();}, result: function (inputs, exits){return exits.success();} },
 
 
 

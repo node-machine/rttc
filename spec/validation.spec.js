@@ -418,6 +418,55 @@ module.exports = [
 
 
 
+  ////////////////////////////////////////////
+  // example: '->'
+  ////////////////////////////////////////////
+
+  { example: '->', actual: 'bar', error: true },
+  { example: '->', actual: '', error: true },
+  { example: '->', actual: '-1.1', error: true },
+  { example: '->', actual: 'NaN', error: true },
+  { example: '->', actual: 'undefined', error: true },
+  { example: '->', actual: 'null', error: true },
+  { example: '->', actual: '-Infinity', error: true },
+  { example: '->', actual: 'Infinity', error: true },
+  { example: '->', actual: 'true', error: true },
+  { example: '->', actual: 'false', error: true },
+  { example: '->', actual: '0', error: true },
+  { example: '->', actual: '1', error: true },
+
+  { example: '->', actual: -0, error: true },
+  { example: '->', actual: +0, error: true },
+  { example: '->', actual: 0, error: true },
+  { example: '->', actual: 1, error: true },
+  { example: '->', actual: -1.1, error: true },
+
+  { example: '->', actual: true, error: true },
+  { example: '->', actual: false, error: true },
+
+  { example: '->', actual: {}, error: true },
+  { example: '->', actual: {foo:'bar'}, error: true },
+  { example: '->', actual: {foo:{bar:{baz:{}}}}, error: true },
+  { example: '->', actual: {foo:['bar']}, error: true },
+  { example: '->', actual: {foo:{bar:{baz:[{}]}}}, error: true },
+
+  { example: '->', actual: [], error: true },
+  { example: '->', actual: ['asdf'], error: true },
+  { example: '->', actual: [''], error: true },
+  { example: '->', actual: [235], error: true },
+  { example: '->', actual: [false], error: true },
+  { example: '->', actual: [{}], error: true },
+  { example: '->', actual: [{foo:'bar'}], error: true },
+
+  { example: '->', actual: undefined, error: true  },
+
+  { example: '->', actual: NaN, error: true },
+  { example: '->', actual: Infinity, error: true },
+  { example: '->', actual: -Infinity, error: true },
+  { example: '->', actual: null, error: true },
+
+  { example: '->', actual: function (inputs, exits){return exits.success();}, result: function (inputs, exits){return exits.success();} },
+
 
 
 
