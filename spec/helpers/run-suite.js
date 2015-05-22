@@ -85,7 +85,7 @@ function getDisplayVal(v){
     return 'a Date';
   }
   if (_.isFunction(v)) {
-    return 'a Function';
+    return v.toString();
   }
   if (_.isError(v)) {
     return 'an Error';
@@ -97,17 +97,4 @@ function getDisplayVal(v){
     return getDisplayType(v);
   }
   return util.inspect(v,false,null);
-  // if (_.isArray(v)) {
-  //   return _.reduce(v, function (memo,item){
-  //     memo.push(getDisplayVal(item));
-  //     return memo;
-  //   }, []);
-  // }
-  // if (_.isPlainObject(v)) {
-  //   return _.reduce(v, function (memo,subVal, key){
-  //     memo[key] = getDisplayVal(subVal);
-  //     return memo;
-  //   }, {});
-  // }
-  // return util.inspect(v);
 }

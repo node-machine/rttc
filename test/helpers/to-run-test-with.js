@@ -82,7 +82,7 @@ module.exports = function toRunTestWith(transformationFn) {
       return undefined;
     });
     if (!isEquivalent) {
-      return cb(new Error('returned incorrect value: '+util.inspect(actualResult, false, null)+' (a '+getDisplayType(actualResult)+')'));
+      return cb(new Error('returned incorrect value: '+getDisplayVal(actualResult)+' (a '+getDisplayType(actualResult)+')'));
     }
 
     // Test using strict equality (===) if explicitly requested
@@ -108,3 +108,26 @@ module.exports = function toRunTestWith(transformationFn) {
 
   };
 };
+
+
+
+
+function getDisplayVal(v){
+
+  if (_.isDate(v)) {
+    return 'a Date';
+  }
+  if (_.isFunction(v)) {
+    return v.toString();
+  }
+  if (_.isError(v)) {
+    return 'an Error';
+  }
+  if (_.isRegExp(v)) {
+    return 'a RegExp';
+  }
+  if (!_.isPlainObject(v) && !_.isArray(v)) {
+    return getDisplayType(v);
+  }
+  return util.inspect(v,false,null);
+}
