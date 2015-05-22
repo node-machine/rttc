@@ -4,7 +4,7 @@
 
 var util = require('util');
 var _ = require('lodash');
-
+var getDisplayType = require('../../lib/helpers/get-display-type');
 
 module.exports = function runSuite( testSuite, runTestFn ){
 
@@ -27,7 +27,7 @@ function describeAndExecuteTest(test, runTestFn){
     throw new Error('INVALID TEST: `isNew` and `strictEq` are mutually exclusive opposites- cannot use them together.  For reference, this is test:\n'+util.inspect(test, false, null));
   }
 
-  var actualDisplayName = (_.isObject(test.actual)&&test.actual.constructor && test.actual.constructor.name !== 'Object' && test.actual.constructor.name !== 'Array')?test.actual.constructor.name:util.inspect(test.actual, false, null);
+  var actualDisplayName = getDisplayVal(test.actual);
 
   describe((function _determineDescribeMsg(){
     var msg = '';
@@ -39,7 +39,7 @@ function describeAndExecuteTest(test, runTestFn){
       msg += ' ';
     }
     if (!_.isUndefined(test.example)) {
-      msg += 'with a '+getDisplayType(test.example)+' example ('+util.inspect(test.example,false, null)+')';
+      msg += 'with a '+getDisplayType(test.example)+' example ('+getDisplayVal(test.example)+')';
     }
     else if (!_.isUndefined(test.typeclass)) {
       msg += 'with typeclass===`'+test.typeclass+'`';
@@ -69,7 +69,7 @@ function describeAndExecuteTest(test, runTestFn){
       }
     }
     else {
-      itMsg+='convert ' + actualDisplayName + ' into '+util.inspect(test.result, false, null);
+      itMsg+='convert ' + actualDisplayName + ' into '+getDisplayVal(test.result) + ' (a '+getDisplayType(test.result)+')';
     }
     it(itMsg, function (done){
       runTestFn(test, done);
@@ -78,26 +78,36 @@ function describeAndExecuteTest(test, runTestFn){
 }
 
 
-/**
- * private helper fn
- * @param  {[type]} x [description]
- * @return {[type]}   [description]
- */
-function getDisplayType(x){
-  var displayType;
-  if (x === '*') {
-    return 'mutable reference (*)';
+
+function getDisplayVal(v){
+
+  if (_.isDate(v)) {
+    return 'a Date';
   }
-  if (x === '->') {
-    return 'lambda fn (->)';
+  if (_.isFunction(v)) {
+    return 'a Function';
   }
-  if (x === '%json') {
-    return 'JSON-compatible';
+  if (_.isError(v)) {
+    return 'an Error';
   }
-  displayType = typeof x;
-  try {
-    displayType = x.constructor.name;
+  if (_.isRegExp(v)) {
+    return 'a RegExp';
   }
-  catch (e){}
-  return displayType;
+  if (!_.isPlainObject(v) && !_.isArray(v)) {
+    return getDisplayType(v);
+  }
+  return util.inspect(v,false,null);
+  // if (_.isArray(v)) {
+  //   return _.reduce(v, function (memo,item){
+  //     memo.push(getDisplayVal(item));
+  //     return memo;
+  //   }, []);
+  // }
+  // if (_.isPlainObject(v)) {
+  //   return _.reduce(v, function (memo,subVal, key){
+  //     memo[key] = getDisplayVal(subVal);
+  //     return memo;
+  //   }, {});
+  // }
+  // return util.inspect(v);
 }

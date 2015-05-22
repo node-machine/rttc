@@ -5,7 +5,7 @@
 var util = require('util');
 var _ = require('lodash');
 var rttc = require('../../');
-
+var getDisplayType = require('../../lib/helpers/get-display-type');
 
 module.exports = function toRunTestWith(transformationFn) {
   return function _runTest(expectations, cb){
@@ -53,7 +53,7 @@ module.exports = function toRunTestWith(transformationFn) {
 
     // if `result` is set, use a lodash equality check
     if (!_.isEqual(actualResult, compareTo)) {
-      return cb(new Error('returned incorrect value: '+util.inspect(actualResult, false, null)));
+      return cb(new Error('returned incorrect value: '+util.inspect(actualResult, false, null)+' (a '+getDisplayType(actualResult)+')'));
     }
 
     // Test using strict equality (===) if explicitly requested

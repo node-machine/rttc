@@ -290,6 +290,62 @@ module.exports = [
 
 
   ////////////////////////////////////////////
+  // example: '%json'
+  ////////////////////////////////////////////
+
+  { example: '%json', actual: 'bar', result: 'bar',  },
+  { example: '%json', actual: '', result: '',  },
+  { example: '%json', actual: '-1.1', result: '-1.1',  },
+  { example: '%json', actual: 'NaN', result: 'NaN',  },
+  { example: '%json', actual: 'undefined', result: 'undefined',  },
+  { example: '%json', actual: 'null', result: 'null',  },
+  { example: '%json', actual: '-Infinity', result: '-Infinity',  },
+  { example: '%json', actual: 'Infinity', result: 'Infinity',  },
+  { example: '%json', actual: 'true', result: 'true',  },
+  { example: '%json', actual: 'false', result: 'false',  },
+  { example: '%json', actual: '0', result: '0',  },
+  { example: '%json', actual: '1', result: '1',  },
+
+  { example: '%json', actual: -0, result: 0,  },
+  { example: '%json', actual: +0, result: 0,  },
+  { example: '%json', actual: 0, result: 0,  },
+  { example: '%json', actual: 1, result: 1,  },
+  { example: '%json', actual: -1.1, result: -1.1,  },
+
+  { example: '%json', actual: true, result: true,  },
+  { example: '%json', actual: false, result: false,  },
+
+  { example: '%json', actual: {}, result: {},  },
+  { example: '%json', actual: {foo:'bar'}, result: {foo:'bar'},  },
+  { example: '%json', actual: {foo:{bar:{baz:{}}}}, result: {foo:{bar:{baz:{}}}},  },
+  { example: '%json', actual: {foo:['bar']}, result: {foo:['bar']},  },
+  { example: '%json', actual: {foo:{bar:{baz:[{}]}}}, result: {foo:{bar:{baz:[{}]}}},  },
+
+  { example: '%json', actual: [], result: [],  },
+  { example: '%json', actual: ['asdf'], result: ['asdf'],  },
+  { example: '%json', actual: [''], result: [''],  },
+  { example: '%json', actual: [235], result: [235],  },
+  { example: '%json', actual: [false], result: [false],  },
+  { example: '%json', actual: [{}], result: [{}],  },
+  { example: '%json', actual: [{foo:'bar'}], result: [{foo:'bar'}],  },
+
+  { example: '%json', actual: undefined, error: true,  },
+
+  { example: '%json', actual: NaN, result: 0  },
+  { example: '%json', actual: Infinity, result: 0  },
+  { example: '%json', actual: -Infinity, result: 0  },
+
+  { example: '%json', actual: null, result: null,  },
+
+  { example: '%json', actual: /some regexp/gi, result: '/some regexp/gi' },
+  { example: '%json', actual: new Date('November 5, 1605 GMT'), result: '1605-11-05T00:00:00.000Z' },
+  { example: '%json', actual: (function(){var err=new Error();err.stack='test';return err;})(), result: 'test' },
+  { example: '%json', actual: function(){}, result: 'function (){}' },
+  // { example: '%json', actual: new (require('stream').Readable)(), error: true },
+
+
+
+  ////////////////////////////////////////////
   // RECURSIVE OBJECTS
   ////////////////////////////////////////////
 
