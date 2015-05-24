@@ -194,7 +194,7 @@ module.exports = [
 
   ////////////////////////////////////////////
   // ARRAYS (json-serializable, except `null` not allowed)
-  // (all of the tests below pass w/ [], not necessarily ['*'])
+  // (all of the tests below pass w/ [], not necessarily ['==='])
   ////////////////////////////////////////////
 
   { example: [], actual: 'bar', result: [] },
@@ -282,55 +282,55 @@ module.exports = [
 
 
   ////////////////////////////////////////////
-  // example: '%json'
+  // example: '*' (any JSON-serializable value)
   ////////////////////////////////////////////
 
-  { example: '%json', actual: 'bar', result: 'bar',  },
-  { example: '%json', actual: '', result: '',  },
-  { example: '%json', actual: '-1.1', result: '-1.1',  },
-  { example: '%json', actual: 'NaN', result: 'NaN',  },
-  { example: '%json', actual: 'undefined', result: 'undefined',  },
-  { example: '%json', actual: 'null', result: 'null',  },
-  { example: '%json', actual: '-Infinity', result: '-Infinity',  },
-  { example: '%json', actual: 'Infinity', result: 'Infinity',  },
-  { example: '%json', actual: 'true', result: 'true',  },
-  { example: '%json', actual: 'false', result: 'false',  },
-  { example: '%json', actual: '0', result: '0',  },
-  { example: '%json', actual: '1', result: '1',  },
+  { example: '*', actual: 'bar', result: 'bar',  },
+  { example: '*', actual: '', result: '',  },
+  { example: '*', actual: '-1.1', result: '-1.1',  },
+  { example: '*', actual: 'NaN', result: 'NaN',  },
+  { example: '*', actual: 'undefined', result: 'undefined',  },
+  { example: '*', actual: 'null', result: 'null',  },
+  { example: '*', actual: '-Infinity', result: '-Infinity',  },
+  { example: '*', actual: 'Infinity', result: 'Infinity',  },
+  { example: '*', actual: 'true', result: 'true',  },
+  { example: '*', actual: 'false', result: 'false',  },
+  { example: '*', actual: '0', result: '0',  },
+  { example: '*', actual: '1', result: '1',  },
 
-  { example: '%json', actual: -0, result: 0,  },
-  { example: '%json', actual: +0, result: 0,  },
-  { example: '%json', actual: 0, result: 0,  },
-  { example: '%json', actual: 1, result: 1,  },
-  { example: '%json', actual: -1.1, result: -1.1,  },
+  { example: '*', actual: -0, result: 0,  },
+  { example: '*', actual: +0, result: 0,  },
+  { example: '*', actual: 0, result: 0,  },
+  { example: '*', actual: 1, result: 1,  },
+  { example: '*', actual: -1.1, result: -1.1,  },
 
-  { example: '%json', actual: true, result: true,  },
-  { example: '%json', actual: false, result: false,  },
+  { example: '*', actual: true, result: true,  },
+  { example: '*', actual: false, result: false,  },
 
-  { example: '%json', actual: {}, result: {},  },
-  { example: '%json', actual: {foo:'bar'}, result: {foo:'bar'},  },
-  { example: '%json', actual: {foo:{bar:{baz:{}}}}, result: {foo:{bar:{baz:{}}}},  },
-  { example: '%json', actual: {foo:['bar']}, result: {foo:['bar']},  },
-  { example: '%json', actual: {foo:{bar:{baz:[{}]}}}, result: {foo:{bar:{baz:[{}]}}},  },
+  { example: '*', actual: {}, result: {},  },
+  { example: '*', actual: {foo:'bar'}, result: {foo:'bar'},  },
+  { example: '*', actual: {foo:{bar:{baz:{}}}}, result: {foo:{bar:{baz:{}}}},  },
+  { example: '*', actual: {foo:['bar']}, result: {foo:['bar']},  },
+  { example: '*', actual: {foo:{bar:{baz:[{}]}}}, result: {foo:{bar:{baz:[{}]}}},  },
 
-  { example: '%json', actual: [], result: [],  },
-  { example: '%json', actual: ['asdf'], result: ['asdf'],  },
-  { example: '%json', actual: [''], result: [''],  },
-  { example: '%json', actual: [235], result: [235],  },
-  { example: '%json', actual: [false], result: [false],  },
-  { example: '%json', actual: [{}], result: [{}],  },
-  { example: '%json', actual: [{foo:'bar'}], result: [{foo:'bar'}],  },
+  { example: '*', actual: [], result: [],  },
+  { example: '*', actual: ['asdf'], result: ['asdf'],  },
+  { example: '*', actual: [''], result: [''],  },
+  { example: '*', actual: [235], result: [235],  },
+  { example: '*', actual: [false], result: [false],  },
+  { example: '*', actual: [{}], result: [{}],  },
+  { example: '*', actual: [{foo:'bar'}], result: [{foo:'bar'}],  },
 
-  { example: '%json', actual: undefined, result: null,  },
+  { example: '*', actual: undefined, result: null,  },
 
-  { example: '%json', actual: NaN, result: 0,  },
-  { example: '%json', actual: Infinity, result: 0,  },
-  { example: '%json', actual: -Infinity, result: 0,  },
+  { example: '*', actual: NaN, result: 0,  },
+  { example: '*', actual: Infinity, result: 0,  },
+  { example: '*', actual: -Infinity, result: 0,  },
 
-  { example: '%json', actual: null, result: null,  },
+  { example: '*', actual: null, result: null,  },
 
-  { example: '%json', actual: /some regexp/gi, result: '/some regexp/gi' },
-  { example: '%json', actual: new Date('November 5, 1605 GMT'), result: '1605-11-05T00:00:00.000Z' },
+  { example: '*', actual: /some regexp/gi, result: '/some regexp/gi' },
+  { example: '*', actual: new Date('November 5, 1605 GMT'), result: '1605-11-05T00:00:00.000Z' },
 
 
   ////////////////////////////////////////////
@@ -385,7 +385,7 @@ module.exports = [
 
 
   ////////////////////////////////////////////
-  // example: * (aka undefined)
+  // example: === (aka undefined)
   ////////////////////////////////////////////
 
   { example: undefined, actual: 'bar', result: 'bar',  },
@@ -488,9 +488,9 @@ module.exports = [
   // Strip nested keys with `undefined` values (`{}` case)
   { example: {}, actual: {a: {x: undefined}, b: 3}, result: {a: {}, b: 3}  },
 
-  // Don't strip keys or nested keys with `undefined` values (`*` and nested `*` cases)
-  { example: '*', actual: {a: undefined, b: 3, c: {x: undefined}}, result: {a: undefined, b: 3, c: {x: undefined}}  },
-  { example: {c:'*'}, actual: {a: undefined, b: 3, c: {x: undefined}}, result: { c: {x: undefined}}  },
+  // Don't strip keys or nested keys with `undefined` values (`===` and nested `===` cases)
+  { example: '===', actual: {a: undefined, b: 3, c: {x: undefined}}, result: {a: undefined, b: 3, c: {x: undefined}}  },
+  { example: {c:'==='}, actual: {a: undefined, b: 3, c: {x: undefined}}, result: { c: {x: undefined}}  },
 
 
   // Ensure that this allows arbitary arrays when coercing to `example: []`
@@ -513,17 +513,17 @@ module.exports = [
     result: [{a: 3, someStuff: [{y:'foo'}, {x:'bar'}]}, {a: 5}]
   },
 
-  // Leave `undefined` items from arrays and nested arrays alone (`*` case)
+  // Leave `undefined` items from arrays and nested arrays alone (`'==='` case)
   {
-    example: '*',
+    example: '===',
     actual: [{a:3}, undefined, {a: 5}, undefined, {a: 7}, {a:9, b: [undefined, 9,2,4,undefined,8]}],
     result: [{a:3}, undefined, {a: 5}, undefined, {a: 7}, {a:9, b: [undefined, 9,2,4,undefined,8]}]
   },
 
-  // Leave `undefined` items from arrays and nested arrays (`[*]` case)
-  // (because '*' leaves them there)
+  // Leave `undefined` items from arrays and nested arrays (`['===']` case)
+  // (because '===' leaves them there)
   {
-    example: ['*'],
+    example: ['==='],
     actual: [{a:3}, undefined, {a: 5}, undefined, {a: 7}, {a:9, b: [undefined, 9,2,4,undefined,8]}],
     result: [{a:3}, undefined, {a: 5}, undefined, {a: 7}, {a:9, b: [undefined, 9,2,4,undefined,8]}]
   },
@@ -536,15 +536,15 @@ module.exports = [
   },
 
   // Ensure that nested dictionaries inside of an array passed
-  // through `example: ['*']` are NOT stripped of keys with undefined values--
+  // through `example: ['===']` are NOT stripped of keys with undefined values--
   // and are left utterly alone
   {
-    example: ['*'],
+    example: ['==='],
     actual: [{a:3, b: undefined}, {a: undefined}],
     result: [{a: 3, b: undefined},{a:undefined}]
   },
   {
-    example: ['*'],
+    example: ['==='],
     actual: [{a:3,someStuff: [{x: undefined, y: 'foo'}, {x: 'bar', y: undefined}]},{a: 5, b: undefined}],
     result: [{a:3,someStuff: [{x: undefined, y: 'foo'}, {x: 'bar', y: undefined}]},{a: 5, b: undefined}]
   },
@@ -796,7 +796,7 @@ module.exports = [
 
 
   ////////////////////////////////////////////////
-  // example: '*'
+  // example: '==='
   // result value should always be strictly equal (===)
   ////////////////////////////////////////////////
 
@@ -812,7 +812,7 @@ module.exports = [
   { example: undefined, actual: new Error('asdf'), strictEq: true },
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
-  // example: nested '*' in dictionaries/arrays
+  // example: nested '===' in dictionaries/arrays
   // TODO: needs to be tested some other way, since we'd be checking reference passing within another nested obj.
   // also check against strict equality between sub-values (`!==` between nested things...)
   // This is prbly eaiest if we just pull it out into a separate test; ie. don't make the test declarative.
@@ -842,25 +842,25 @@ module.exports = [
     isNew: true
   },
   {
-    example: { id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '*' },
+    example: { id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '===' },
     actual: {},
     result:  { id: 0, title: '', body: '', votes: 0, resolved: false, something: undefined },
     isNew: true
   },
   {
-    example: { id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '*' },
+    example: { id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '===' },
     actual: {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]},
     result:  { id: 0, title: '', body: '', votes: 0, resolved: false, something: undefined },
     isNew: true
   },
   {
-    example: { id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '*' },
+    example: { id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '===' },
     actual: { something: new Date('November 5, 1605 GMT')},
     result:  { id: 0, title: '', body: '', votes: 0, resolved: false, something: new Date('November 5, 1605 GMT') },
     isNew: true
   },
   {
-    example: { id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '*' },
+    example: { id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '===' },
     actual: { something: new Date('November 5, 1605 GMT'), a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]},
     result:  { id: 0, title: '', body: '', votes: 0, resolved: false, something: new Date('November 5, 1605 GMT') },
     isNew: true
@@ -889,25 +889,25 @@ module.exports = [
     isNew: true
   },
   {
-    example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '*' }],
+    example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '===' }],
     actual: [],
     result:  [],
     isNew: true
   },
   {
-    example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '*' }],
+    example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '===' }],
     actual: [{a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}],
     result:  [{ id: 0, title: '', body: '', votes: 0, resolved: false, something: undefined }],
     isNew: true
   },
   {
-    example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '*' }],
+    example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '===' }],
     actual: [{ something: new Date('November 5, 1605 GMT')}],
     result:  [{ id: 0, title: '', body: '', votes: 0, resolved: false, something: new Date('November 5, 1605 GMT') }],
     isNew: true
   },
   {
-    example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '*' }],
+    example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '===' }],
     actual: [{ something: new Date('November 5, 1605 GMT'), a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}],
     result:  [{ id: 0, title: '', body: '', votes: 0, resolved: false, something: new Date('November 5, 1605 GMT') }],
     isNew: true

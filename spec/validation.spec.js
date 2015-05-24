@@ -192,7 +192,7 @@ module.exports = [
 
   ////////////////////////////////////////////
   // ARRAYS (json-serializable, except `null` not allowed)
-  // (all of the tests below pass w/ [], not necessarily ['*'])
+  // (all of the tests below pass w/ [], not necessarily ['==='])
   ////////////////////////////////////////////
 
   { example: [], actual: 'bar', error: true },
@@ -227,7 +227,7 @@ module.exports = [
   // Skip Buffer tests for now since the enumerable properties vary between Node.js versions.
   // { example: [], actual: new Buffer('asdf'), result: [ 97, 115, 100, 102 ] },
   // Note: we could bring back support for this by explicitly filtering properties of buffers in `.exec()`
-  // TODO: but actually, this should cause an error- use `example: '*'` for things like this.
+  // TODO: but actually, this should cause an error- use `example: '==='` for things like this.
   { example: [], actual: new Error('asdf'), error: true },
 
 
@@ -283,93 +283,7 @@ module.exports = [
 
 
   ////////////////////////////////////////////
-  // example: '%json'
-  ////////////////////////////////////////////
-
-  { example: '%json', actual: 'bar', result: 'bar',  },
-  { example: '%json', actual: '', result: '',  },
-  { example: '%json', actual: '-1.1', result: '-1.1',  },
-  { example: '%json', actual: 'NaN', result: 'NaN',  },
-  { example: '%json', actual: 'undefined', result: 'undefined',  },
-  { example: '%json', actual: 'null', result: 'null',  },
-  { example: '%json', actual: '-Infinity', result: '-Infinity',  },
-  { example: '%json', actual: 'Infinity', result: 'Infinity',  },
-  { example: '%json', actual: 'true', result: 'true',  },
-  { example: '%json', actual: 'false', result: 'false',  },
-  { example: '%json', actual: '0', result: '0',  },
-  { example: '%json', actual: '1', result: '1',  },
-
-  { example: '%json', actual: -0, result: 0,  },
-  { example: '%json', actual: +0, result: 0,  },
-  { example: '%json', actual: 0, result: 0,  },
-  { example: '%json', actual: 1, result: 1,  },
-  { example: '%json', actual: -1.1, result: -1.1,  },
-
-  { example: '%json', actual: true, result: true,  },
-  { example: '%json', actual: false, result: false,  },
-
-  { example: '%json', actual: {}, result: {},  },
-  { example: '%json', actual: {foo:'bar'}, result: {foo:'bar'},  },
-  { example: '%json', actual: {foo:{bar:{baz:{}}}}, result: {foo:{bar:{baz:{}}}},  },
-  { example: '%json', actual: {foo:['bar']}, result: {foo:['bar']},  },
-  { example: '%json', actual: {foo:{bar:{baz:[{}]}}}, result: {foo:{bar:{baz:[{}]}}},  },
-
-  { example: '%json', actual: [], result: [],  },
-  { example: '%json', actual: ['asdf'], result: ['asdf'],  },
-  { example: '%json', actual: [''], result: [''],  },
-  { example: '%json', actual: [235], result: [235],  },
-  { example: '%json', actual: [false], result: [false],  },
-  { example: '%json', actual: [{}], result: [{}],  },
-  { example: '%json', actual: [{foo:'bar'}], result: [{foo:'bar'}],  },
-
-  { example: '%json', actual: undefined, error: true,  },
-
-  { example: '%json', actual: NaN, result: 0  },
-  { example: '%json', actual: Infinity, result: 0  },
-  { example: '%json', actual: -Infinity, result: 0  },
-
-  { example: '%json', actual: null, result: null,  },
-
-  { example: '%json', actual: /some regexp/gi, result: '/some regexp/gi' },
-  { example: '%json', actual: new Date('November 5, 1605 GMT'), result: '1605-11-05T00:00:00.000Z' },
-  { example: '%json', actual: (function(){var err=new Error();err.stack='test';return err;})(), result: 'test' },
-  { example: '%json', actual: function(){}, result: 'function (){}' },
-  { example: '%json', actual: new (require('stream').Readable)(), error: true },
-
-
-
-  ////////////////////////////////////////////
-  // RECURSIVE OBJECTS
-  ////////////////////////////////////////////
-
-  // Missing keys (general case)
-  { example: {a:1, b:'hi', c: false}, actual: {a: 11}, error: true  },
-  { example: {a:1, b:'hi', c: false}, actual: {a: 23, b: undefined, c: undefined}, error: true  },
-  { example: {a:1}, actual: {a: undefined}, error: true  },
-  { example: {a:1}, actual: {}, error: true  },
-
-  // Missing keys (`*` case)
-  { example: {a:'*'}, actual: {a: undefined}, error: true  },
-  { example: {a:'*'}, actual: {}, error: true  },
-
-  // Strip keys with `undefined` values (`{}` case)
-  { example: {}, actual: {a: undefined, b: 3}, result: {b: 3}  },
-  { example: [{}], actual: [{a: undefined, b: 3}], result: [{b: 3}]  },
-  { example: {x:{}}, actual: {x:{a: undefined, b: 3}}, result: {x:{b: 3}}  },
-
-  // Don't strip keys with `undefined` values (`*` case)
-  { example: '*', actual: {a: undefined, b: 3}, result: {a: undefined, b: 3}  },
-
-  // Extra keys:
-  { example: {a:1, b:'hi'}, actual: {a: 23, b: 'stuff', d: true}, result: {a: 23, b: 'stuff'}  },
-  { example: {a:1, b:'hi'}, actual: {a: 23, b: 'stuff', d: undefined}, result: {a: 23, b: 'stuff'}  },
-
-
-
-
-
-  ////////////////////////////////////////////
-  // example: *
+  // example: '*'  (any JSON-serializable value)
   ////////////////////////////////////////////
 
   { example: '*', actual: 'bar', result: 'bar',  },
@@ -385,8 +299,8 @@ module.exports = [
   { example: '*', actual: '0', result: '0',  },
   { example: '*', actual: '1', result: '1',  },
 
-  { example: '*', actual: -0, result: -0,  },
-  { example: '*', actual: +0, result: +0,  },
+  { example: '*', actual: -0, result: 0,  },
+  { example: '*', actual: +0, result: 0,  },
   { example: '*', actual: 0, result: 0,  },
   { example: '*', actual: 1, result: 1,  },
   { example: '*', actual: -1.1, result: -1.1,  },
@@ -408,12 +322,98 @@ module.exports = [
   { example: '*', actual: [{}], result: [{}],  },
   { example: '*', actual: [{foo:'bar'}], result: [{foo:'bar'}],  },
 
-  { example: '*', actual: undefined, error: true  },
+  { example: '*', actual: undefined, error: true,  },
 
-  { example: '*', actual: NaN, result: NaN,  },
-  { example: '*', actual: Infinity, result: Infinity,  },
-  { example: '*', actual: -Infinity, result: -Infinity,  },
+  { example: '*', actual: NaN, result: 0  },
+  { example: '*', actual: Infinity, result: 0  },
+  { example: '*', actual: -Infinity, result: 0  },
+
   { example: '*', actual: null, result: null,  },
+
+  { example: '*', actual: /some regexp/gi, result: '/some regexp/gi' },
+  { example: '*', actual: new Date('November 5, 1605 GMT'), result: '1605-11-05T00:00:00.000Z' },
+  { example: '*', actual: (function(){var err=new Error();err.stack='test';return err;})(), result: 'test' },
+  { example: '*', actual: function(){}, result: 'function (){}' },
+  { example: '*', actual: new (require('stream').Readable)(), error: true },
+
+
+
+  ////////////////////////////////////////////
+  // RECURSIVE OBJECTS
+  ////////////////////////////////////////////
+
+  // Missing keys (general case)
+  { example: {a:1, b:'hi', c: false}, actual: {a: 11}, error: true  },
+  { example: {a:1, b:'hi', c: false}, actual: {a: 23, b: undefined, c: undefined}, error: true  },
+  { example: {a:1}, actual: {a: undefined}, error: true  },
+  { example: {a:1}, actual: {}, error: true  },
+
+  // Missing keys (`===` case)
+  { example: {a:'==='}, actual: {a: undefined}, error: true  },
+  { example: {a:'==='}, actual: {}, error: true  },
+
+  // Strip keys with `undefined` values (`{}` case)
+  { example: {}, actual: {a: undefined, b: 3}, result: {b: 3}  },
+  { example: [{}], actual: [{a: undefined, b: 3}], result: [{b: 3}]  },
+  { example: {x:{}}, actual: {x:{a: undefined, b: 3}}, result: {x:{b: 3}}  },
+
+  // Don't strip keys with `undefined` values (`===` case)
+  { example: '===', actual: {a: undefined, b: 3}, result: {a: undefined, b: 3}  },
+
+  // Extra keys:
+  { example: {a:1, b:'hi'}, actual: {a: 23, b: 'stuff', d: true}, result: {a: 23, b: 'stuff'}  },
+  { example: {a:1, b:'hi'}, actual: {a: 23, b: 'stuff', d: undefined}, result: {a: 23, b: 'stuff'}  },
+
+
+
+
+
+  ////////////////////////////////////////////
+  // example: ===
+  ////////////////////////////////////////////
+
+  { example: '===', actual: 'bar', result: 'bar',  },
+  { example: '===', actual: '', result: '',  },
+  { example: '===', actual: '-1.1', result: '-1.1',  },
+  { example: '===', actual: 'NaN', result: 'NaN',  },
+  { example: '===', actual: 'undefined', result: 'undefined',  },
+  { example: '===', actual: 'null', result: 'null',  },
+  { example: '===', actual: '-Infinity', result: '-Infinity',  },
+  { example: '===', actual: 'Infinity', result: 'Infinity',  },
+  { example: '===', actual: 'true', result: 'true',  },
+  { example: '===', actual: 'false', result: 'false',  },
+  { example: '===', actual: '0', result: '0',  },
+  { example: '===', actual: '1', result: '1',  },
+
+  { example: '===', actual: -0, result: -0,  },
+  { example: '===', actual: +0, result: +0,  },
+  { example: '===', actual: 0, result: 0,  },
+  { example: '===', actual: 1, result: 1,  },
+  { example: '===', actual: -1.1, result: -1.1,  },
+
+  { example: '===', actual: true, result: true,  },
+  { example: '===', actual: false, result: false,  },
+
+  { example: '===', actual: {}, result: {},  },
+  { example: '===', actual: {foo:'bar'}, result: {foo:'bar'},  },
+  { example: '===', actual: {foo:{bar:{baz:{}}}}, result: {foo:{bar:{baz:{}}}},  },
+  { example: '===', actual: {foo:['bar']}, result: {foo:['bar']},  },
+  { example: '===', actual: {foo:{bar:{baz:[{}]}}}, result: {foo:{bar:{baz:[{}]}}},  },
+
+  { example: '===', actual: [], result: [],  },
+  { example: '===', actual: ['asdf'], result: ['asdf'],  },
+  { example: '===', actual: [''], result: [''],  },
+  { example: '===', actual: [235], result: [235],  },
+  { example: '===', actual: [false], result: [false],  },
+  { example: '===', actual: [{}], result: [{}],  },
+  { example: '===', actual: [{foo:'bar'}], result: [{foo:'bar'}],  },
+
+  { example: '===', actual: undefined, error: true  },
+
+  { example: '===', actual: NaN, result: NaN,  },
+  { example: '===', actual: Infinity, result: Infinity,  },
+  { example: '===', actual: -Infinity, result: -Infinity,  },
+  { example: '===', actual: null, result: null,  },
 
 
 
@@ -523,9 +523,9 @@ module.exports = [
   // Strip nested keys with `undefined` values (`{}` case)
   { example: {}, actual: {a: {x: undefined}, b: 3}, result: {a: {}, b: 3}  },
 
-  // Don't strip keys or nested keys with `undefined` values (`*` and nested `*` cases)
-  { example: '*', actual: {a: undefined, b: 3, c: {x: undefined}}, result: {a: undefined, b: 3, c: {x: undefined}}  },
-  { example: {c:'*'}, actual: {a: undefined, b: 3, c: {x: undefined}}, result: { c: {x: undefined}}  },
+  // Don't strip keys or nested keys with `undefined` values (`===` and nested `===` cases)
+  { example: '===', actual: {a: undefined, b: 3, c: {x: undefined}}, result: {a: undefined, b: 3, c: {x: undefined}}  },
+  { example: {c:'==='}, actual: {a: undefined, b: 3, c: {x: undefined}}, result: { c: {x: undefined}}  },
 
 
   // Ensure that this allows arbitary arrays when coercing to `example: []`
@@ -555,31 +555,31 @@ module.exports = [
     result: [{a: 3}, {a: 5}, {a:7}, {a:9, b:[9,2,4,8]}]
   },
 
-  // DO allow `undefined` items from arrays and nested arrays (`*` case)
+  // DO allow `undefined` items from arrays and nested arrays (`===` case)
   {
-    example: '*',
+    example: '===',
     actual: [{a:3}, undefined, {a: 5}, undefined, {a: 7}, {a:9, b: [undefined, 9,2,4,undefined,8]}],
     result: [{a:3}, undefined, {a: 5}, undefined, {a: 7}, {a:9, b: [undefined, 9,2,4,undefined,8]}]
   },
 
-  // Don't allow `undefined` items from arrays and nested arrays (`[*]` case)
-  // (because '*' does not allow `undefined`)
+  // Don't allow `undefined` items from arrays and nested arrays (`[===]` case)
+  // (because '===' does not allow `undefined`)
   {
-    example: ['*'],
+    example: ['==='],
     actual: [{a:3}, undefined, {a: 5}, undefined, {a: 7}, {a:9, b: [undefined, 9,2,4,undefined,8]}],
     error: true
   },
 
   // Ensure that nested dictionaries inside of an array passed
-  // through `example: ['*']` are NOT stripped of keys with undefined values--
+  // through `example: ['===']` are NOT stripped of keys with undefined values--
   // and are left utterly alone
   {
-    example: ['*'],
+    example: ['==='],
     actual: [{a:3, b: undefined}, {a: undefined}],
     result: [{a: 3, b: undefined},{a:undefined}]
   },
   {
-    example: ['*'],
+    example: ['==='],
     actual: [{a:3,someStuff: [{x: undefined, y: 'foo'}, {x: 'bar', y: undefined}]},{a: 5, b: undefined}],
     result: [{a:3,someStuff: [{x: undefined, y: 'foo'}, {x: 'bar', y: undefined}]},{a: 5, b: undefined}]
   },
@@ -653,12 +653,12 @@ module.exports = [
   //  situations)
   ////////////////////////////////////////////////
 
-  { example: '*', actual: /some regexp/, strictEq: true },
-  { example: '*', actual: function (){}, strictEq: true },
-  { example: '*', actual: new Date('November 5, 1605 GMT'), strictEq: true },
-  { example: '*', actual: new (require('stream').Readable)(), strictEq: true },
-  { example: '*', actual: new Buffer('asdf'), strictEq: true },
-  { example: '*', actual: new Error('asdf'), strictEq: true },
+  { example: '===', actual: /some regexp/, strictEq: true },
+  { example: '===', actual: function (){}, strictEq: true },
+  { example: '===', actual: new Date('November 5, 1605 GMT'), strictEq: true },
+  { example: '===', actual: new (require('stream').Readable)(), strictEq: true },
+  { example: '===', actual: new Buffer('asdf'), strictEq: true },
+  { example: '===', actual: new Error('asdf'), strictEq: true },
 
 
 ];
