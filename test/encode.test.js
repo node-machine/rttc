@@ -6,7 +6,7 @@ var rttc = require('../');
 describe('.encode()', function() {
 
 
-  it('should always return a string', function() {
+  it('should return a string in the general case', function() {
     assert.strictEqual(typeof rttc.encode('foo'), 'string');
     assert.strictEqual(typeof rttc.encode(''), 'string');
     assert.strictEqual(typeof rttc.encode(2323), 'string');
@@ -20,7 +20,7 @@ describe('.encode()', function() {
     assert.strictEqual(typeof rttc.encode({x:'foo',z: [{a:4}]}), 'string');
   });
 
-  it('should return `null` when attempting to encode `undefined` with `allowNull` enabled', function() {
+  it('should return `"null"` (as a string) when attempting to encode `undefined` with `allowNull` enabled', function() {
     assert.strictEqual(rttc.encode(undefined, true), 'null');
   });
 
