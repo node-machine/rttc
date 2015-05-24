@@ -68,7 +68,27 @@ describe('.isEqual()', function() {
     assert(rttc.isEqual(function foo(x){}, function foo(x){}, 'lamda'));
     assert(rttc.isEqual(function foo(x){return x+1;}, function foo(x){return x+1;}, 'lamda'));
     assert(rttc.isEqual([function foo(x){return x+1;}], [function foo(x){return x+1;}], ['lamda']));
-    // assert(rttc.isEqual([{fn: function foo(x){return x+1;}}, {fn: function bar(x){return x+1;}}], [{fn:function foo(x){return x+1;}}, {fn: function bar(x){return x+1;}}], [{fn: 'lamda'}]), 'expected rttc.isEqual() to accurately declare nested lamda fns as equal when a type schema is provided');
+
+
+    assert(rttc.isEqual([{
+      fn: function foo(x) {
+        return x + 1;
+      }
+    }, {
+      fn: function bar(x) {
+        return x + 1;
+      }
+    }], [{
+      fn: function foo(x) {
+        return x + 1;
+      }
+    }, {
+      fn: function bar(x) {
+        return x + 1;
+      }
+    }], [{
+      fn: 'lamda'
+    }]), 'expected rttc.isEqual() to accurately declare nested lamda fns as equal when a type schema is provided');
   });
 
 });
