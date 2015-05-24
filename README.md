@@ -10,54 +10,109 @@ $ npm install rttc --save
 
 ## Quick Start
 
+
+Want to coerce a value to match a particular type?
+
 ```js
 var rttc = require('rttc');
 
-rttc.coerce({ firstName: 'string'}, {firstName: 45});
-// => { firstName: "45" }
+rttc.coerce({ firstName: 'string'}, {firstName: 13375055});
+// => { firstName: "13375055" }
 
 rttc.coerce({ firstName: 'string'}, {something: 'totally incorrect'});
 // => { firstName: "" }
 // (when confronted with something totally weird, `.coerce()` returns the "base value" for the type)
+```
 
+Want to throw an Error if a value doesn't match a particular type?
+
+```
+rttc.validateStrict({ firstName: 'string'}, {firstName: 13375055});
+// throws error
+// (`.validateStrict()` demands a value that is precisely the correct type)
+
+rttc.validateStrict({ firstName: 'string'}, {firstName: '13375055'});
+// does not throw
+```
+
+Or if you want to be a little more forgiving:
+
+```js
 rttc.validate({ firstName: 'string'}, {something: 'totally incorrect'});
 // throws error
 
 rttc.validate({ firstName: 'string'}, {firstName: 45});
 // => "45"
 // (when confronted with minor differences, `.validate()` coerces as needed to make stuff fit)
-
-rttc.validateStrict({ firstName: 'string'}, {firstName: 45});
-// throws error
-// (`.validateStrict()` demands a value that is precisely the correct type)
-
-rttc.validateStrict({ firstName: 'string'}, {firstName: '45'});
-// does not throw, returns undefined
 ```
 
 
-## Philosophy
+Not sure how to build a type schema for use with `.coerce()` or `.validate()`? Use `.infer()` to build one from an example value you've got laying around:
 
-All of the validation and coercion strategies used in this modules are recursive through the keys of plain old JavaScript objects and the indices of arrays.
+```js
+rttc.infer({ firstName: 'Rosella', lastName: 'Graham', friends: ['Valencia', 'Edgar', 'Attis'] });
+// => { firstName: 'string',  }
+```
 
-#### Coercion vs. Validation
+> note that when inferring an array type, the first item of the example is used as a pattern- assuming homogeneity (i.e. that all items will look the same)
 
-+ `.validateStrict()` throws if the provided value is not the right type (recursive).
-+ `.validate()` either returns a (potentially "lightly" coerced) version of the value that was accepted, or it throws.  The "lightly" coerced value turns `"3"` into `3`, `"true"` into `true`, `-4.5` into `"-4.5"`, etc.
-+ `.coerce()` ALWAYS returns an acceptable version of the value, even if it has to mangle it to get there (i.e. by using the "base value" for the expected type.)
 
-#### Base values
+Finally, note that all of the validation and coercion strategies used in this modules are recursive through the keys of plain old JavaScript objects and the indices of arrays.
 
-+ For the "string" type, base value is `""`
-+ For the "number" type, base value is `0`
-+ For the "boolean" type, base value is `false`
-+ For the "lamda" type (`'->'`), base value is a function that uses the standard machine fn signature and triggers its "error" callback w/ a message about being the rttc default (e.g. `function(inputs,exits,env) { return exits.error(new Error('not implemented')); }`)
-+ For the generic "dictionary" type (`{}`) or a faceted dictionary type (e.g. `{foo:'bar'}`), the base value is `{}`.
-+ For the generic "array" type (`[]`), or a faceted/homogenous array type (e.g. `[3]` or `[{age:48,name: 'Nico'}]`), the base value is `[]`
-+ For the "json" type (`'*'`), base value is `null`.
-+ For the "ref" type (`'==='`), base value is `undefined`.
 
-> Note that, for both arrays and dictionaries, any keys in the schema will get the base value for their type (and their keys for their type, etc. -- recursive)
+## Usage
+
+#### .validateStrict(expectedTypeSchema, actualValue)
+
+Throws if the provided value is not the right type (recursive).
+
+
+#### .validate(expectedTypeSchema, actualValue)
+
+Either returns a (potentially "lightly" coerced) version of the value that was accepted, or it throws.  The "lightly" coerced value turns `"3"` into `3`, `"true"` into `true`, `-4.5` into `"-4.5"`, etc.
+
+
+#### .coerce(expectedTypeSchema, actualValue)
+
+ALWAYS returns an acceptable version of the value, even if it has to mangle it to get there (i.e. by using the "base value" for the expected type.  More on that below.)
+
+
+#### .infer(exampleValue)
+
+Guesses the type schema from an example value.
+
+
+#### .decode(stringifiedValue, [_typeSchema_=`undefined`], [_unsafeMode_=`false`])
+
+Decode a stringified value back into a usable value.
+
+Very similar to `JSON.parse`, except that if `unsafeMode` is set to `true`, and a `typeSchema` is provided, this function will use that schema to figure out where "lamda" values (functions) are expected, then will use `eval()` to bring them back to life.  Use with care.
+
+
+#### .encode(value, [_allowNull_=`false`])
+
+Encode a value into a string.
+
+This is basically just a variation on JSON.stringify that also takes care of a few additional edge-cases, such as:
+
++ stringifies functions, regexps, and errors (grabs the `.stack` property)
++ replacing circular references with a string (e.g. `[Circular]`)
++ replaces `-Infinity`, `Infinity`, and `NaN` with 0
++ strips keys and array items with `undefined` or `null` values. If `allowNull` is set to true, `null` values will not be stripped from the encoded string.
+
+
+#### .isEqual(firstValue, secondValue, [_expectedTypeSchema_=`undefined`])
+
+Determine whether two values are equivalent using `_.isEqual()`, but also look for expected `lamda` values in the optional type schema and call `toString()` on functions before comparing them.
+
+> This is the method used by `rttc`'s own tests to validate that expected values and actual values match.
+
+
+#### .getDisplayType(value)
+
+Given a value, return a human-readable type string (tries a few heuristics, including the `typeof` operator, examining the `.constructor` property, and calling `rttc.infer()`).
+
+
 
 
 
@@ -75,7 +130,7 @@ All of the validation and coercion strategies used in this modules are recursive
 
 #### Booleans
 
-`example: {}`
+`example: false`
 
 
 #### Generic dictionaries
@@ -98,8 +153,7 @@ Dictionaries that have been validated/coerced against the generic dictionary typ
 
 `example: {...}`
 
-The **faceted dictionary** type is any dictionary type schema with at least one key.
-Extra keys in the actual value that are not in the type schema will be stripped out.
+The **faceted dictionary** type is any dictionary type schema with at least one key.  Extra keys in the actual value that are not in the type schema will be stripped out. Missing keys will cause `.validate()` to throw.
 
 Dictionary type schemas (i.e. plain old JavaScript objects nested like `{a:{}}`) can be infinitely nested.  Type validation and coercion will proceed through the nested objects recursively.
 
@@ -176,7 +230,7 @@ Other than the aforementioned exception for `null`, the generic JSON type follow
 
 
 
-#### Mutable references
+#### Mutable reference ("ref")
 
 `example: '==='`
 
@@ -184,9 +238,26 @@ This special type allows anything except `undefined`.  It also _does not rebuild
 
 
 
-#### Edge-case cheat sheet
 
-The following notes are a high-level overview of important conventions used by the `rttc` module. For detailed coverage of every permutation of validation and coercion, check out the declarative tests in the `spec/` folder of this repository.
+## Base values
+
+As mentioned above, every type has a base value.
+
++ For the "string" type, base value is `""`
++ For the "number" type, base value is `0`
++ For the "boolean" type, base value is `false`
++ For the "lamda" type (`'->'`), base value is a function that uses the standard machine fn signature and triggers its "error" callback w/ a message about being the rttc default (e.g. `function(inputs,exits,env) { return exits.error(new Error('not implemented')); }`)
++ For the generic dictionary type (`{}`) or a faceted dictionary type (e.g. `{foo:'bar'}`), the base value is `{}`.
++ For the generic array type (`[]`), or a faceted/homogenous array type (e.g. `[3]` or `[{age:48,name: 'Nico'}]`), the base value is `[]`
++ For the "json" type (`'*'`), base value is `null`.
++ For the "ref" type (`'==='`), base value is `undefined`.
+
+> Note that, for both arrays and dictionaries, any keys in the schema will get the base value for their type (and their keys for their type, etc. -- recursive)
+
+
+## Edge-cases
+
+The following is a high-level overview of important conventions used by the `rttc` module. For detailed coverage of every permutation of validation and coercion, check out the declarative tests in the `spec/` folder of this repository.
 
 ##### `undefined` and `null` values
 
@@ -215,7 +286,7 @@ When coerced against the generic dictionary, generic array, or the generic json 
 + Streams and Buffers are coerced to `null` against the generic dictionary, generic array, or the generic json types.
 
 
-## Examples
+## More examples
 
 #### rttc.infer(value)
 
@@ -326,12 +397,14 @@ rttc.validate({
  */
 ```
 
-If value cannot be properly coerced, throws error with code=`E_INVALID_TYPE`:
+If value cannot be properly coerced, throws error with its `.code` property set to `E_INVALID_TYPE`:
 
 ```js
 rttc.validate('number', 'asdf');
 // throws E_INVALID_TYPE
 ```
+
+
 
 #### rttc.coerce(expected, actual)
 
@@ -388,3 +461,10 @@ rttc.coerce({
  */
 ```
 
+
+
+## License
+
+MIT
+
+&copy; 2014 Mike McNeil, Cody Stoltman;  &copy; 2015 The Treeline Company
