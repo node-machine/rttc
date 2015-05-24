@@ -13,7 +13,7 @@ $ npm install rttc --save
 
 Want to coerce a value to match a particular type?
 
-```js
+```javascript
 var rttc = require('rttc');
 
 rttc.coerce({ firstName: 'string'}, {firstName: 13375055});
@@ -26,7 +26,7 @@ rttc.coerce({ firstName: 'string'}, {something: 'totally incorrect'});
 
 Want to throw an Error if a value doesn't match a particular type?
 
-```
+```javascript
 rttc.validateStrict({ firstName: 'string'}, {firstName: 13375055});
 // throws error
 // (`.validateStrict()` demands a value that is precisely the correct type)
@@ -37,7 +37,7 @@ rttc.validateStrict({ firstName: 'string'}, {firstName: '13375055'});
 
 Or if you want to be a little more forgiving:
 
-```js
+```javascript
 rttc.validate({ firstName: 'string'}, {something: 'totally incorrect'});
 // throws error
 
@@ -49,7 +49,7 @@ rttc.validate({ firstName: 'string'}, {firstName: 45});
 
 Not sure how to build a type schema for use with `.coerce()` or `.validate()`? Use `.infer()` to build one from an example value you've got laying around:
 
-```js
+```javascript
 rttc.infer({ firstName: 'Rosella', lastName: 'Graham', friends: ['Valencia', 'Edgar', 'Attis'] });
 // => { firstName: 'string',  }
 ```
@@ -157,7 +157,7 @@ The **faceted dictionary** type is any dictionary type schema with at least one 
 
 Dictionary type schemas (i.e. plain old JavaScript objects nested like `{a:{}}`) can be infinitely nested.  Type validation and coercion will proceed through the nested objects recursively.
 
-```js
+```javascript
 {
   id: 'number',
   name: 'string',
@@ -201,7 +201,7 @@ Runtime arrays being validated/coerced against array type schemas will be homoge
 
 > Also note that, because of this, when providing a type schema or type-inference-able example for an array, you only need to provide one item in the array, e.g.:
 
-```js
+```javascript
 [
   {
     id: 'number',
@@ -292,24 +292,24 @@ When coerced against the generic dictionary, generic array, or the generic json 
 
 Infer the type/schema of the provided value.
 
-```js
+```javascript
 require('rttc').infer(false);
 // => 'boolean'
 ```
 
-```js
+```javascript
 require('rttc').infer(0);
 // => 'number'
 ```
 
-```js
+```javascript
 require('rttc').infer({
   foo: 'bar'
 });
 // => { foo: 'string' }
 ```
 
-```js
+```javascript
 require('rttc').infer({
   foo: 'whatever',
   bar: { baz: true }
@@ -317,14 +317,14 @@ require('rttc').infer({
 // => { foo: 'string', bar: { baz: 'boolean' } }
 ```
 
-```js
+```javascript
 require('rttc').infer([{
   foo: ['bar']
 }]);
 // => [{ foo: ['string'] }]
 ```
 
-```js
+```javascript
 require('rttc').infer({
   user: {
     friends: [{
@@ -348,7 +348,7 @@ require('rttc').infer({
 
 #### rttc.validate(expected, actual)
 
-```js
+```javascript
 rttc.validate('string', 'foo');
 // => 'foo'
 
@@ -399,7 +399,7 @@ rttc.validate({
 
 If value cannot be properly coerced, throws error with its `.code` property set to `E_INVALID_TYPE`:
 
-```js
+```javascript
 rttc.validate('number', 'asdf');
 // throws E_INVALID_TYPE
 ```
@@ -408,7 +408,7 @@ rttc.validate('number', 'asdf');
 
 #### rttc.coerce(expected, actual)
 
-```js
+```javascript
 rttc.coerce('string', 'foo');
 // => 'foo'
 
