@@ -31,6 +31,7 @@ describe('.isEqual()', function() {
     assert(rttc.isEqual({foo:[{bar:['baz']}]}, {foo:[{bar:['baz']}]}));
   });
 
+
   it('should accurately match arrays', function (){
     assert(rttc.isEqual([], []));
     assert(rttc.isEqual(['Arya Stark', 'Jon Snow'], ['Arya Stark', 'Jon Snow']));
@@ -40,6 +41,12 @@ describe('.isEqual()', function() {
     assert(rttc.isEqual([{species: 'Hopidor maxim', weight: 23821394, isAvailable: true}], [{species: 'Hopidor maxim', weight: 23821394, isAvailable: true}]));
     assert(rttc.isEqual([['baz']], [['baz']]));
     assert(rttc.isEqual([{foo:[{bar:['baz']}]}], [{foo:[{bar:['baz']}]}]));
+  });
+
+  it('should not care about key order in dictionaries (nested or top-level)', function (){
+    assert(rttc.isEqual({y: 4, x: 3}, {x: 3, y: 4}));
+    assert(rttc.isEqual([{y: 4, x: 3}], [{x: 3, y: 4}]));
+    assert(rttc.isEqual([{y: 4, x: 3}, {y: 3, x: 9}], [{x: 3, y: 4}, {x: 9, y: 3}]));
   });
 
   it('should fail to match functions when no type schema is provided (nested and at the top-level)', function (){
