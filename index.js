@@ -3,5 +3,6 @@ module.exports = {
   validateStrict: require('./lib/validate-strict'),
   coerce: require('./lib/coerce'),
   infer: require('./lib/infer'),
-  isEqual: require('./lib/is-equal')
+  isEqual: require('./lib/is-equal'),
+  getDisplayType: require('./lib/get-display-type')
 };

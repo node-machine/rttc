@@ -4,7 +4,7 @@
 
 var util = require('util');
 var _ = require('lodash');
-var getDisplayType = require('../../lib/helpers/get-display-type');
+var getDisplayType = require('../../lib/get-display-type');
 
 module.exports = function runSuite( testSuite, runTestFn ){
 

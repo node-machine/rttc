@@ -5,7 +5,7 @@
 var util = require('util');
 var _ = require('lodash');
 var rttc = require('../../');
-var getDisplayType = require('../../lib/helpers/get-display-type');
+var getDisplayType = require('../../lib/get-display-type');
 var isEquivalent = require('../../spec/helpers/is-equivalent');
 
 
