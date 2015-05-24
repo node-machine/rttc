@@ -13,12 +13,12 @@ var _ = require('lodash');
  */
 module.exports = function expandSuite ( testSuite ) {
 
-  // For all `example: undefined` tests, also test `example: '*'`
+  // For all `example: undefined` tests, also test `example: '==='`
   var starTests = [];
   _.each(testSuite, function (test){
     if (_.isUndefined(test.example)) {
       var newTest = {
-        example: '*',
+        example: '===',
         actual: test.actual
       };
       if (test.hasOwnProperty('result')) {
