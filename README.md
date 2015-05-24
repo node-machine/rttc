@@ -48,18 +48,17 @@ All of the validation and coercion strategies used in this modules are recursive
 
 #### Base values
 
-+ For "string", base value is `""`
-+ For "number", base value is `0`
-+ For "boolean", base value is `false`
-+ For any "dictionary" (`{}`), base value is `{}`, with whatever keys are expected (recursive)
-+ For a generic "array" (`[]`), base value is `[]`, with a single archetypal item matching the expectation (recursive)
-+ For "*", base value is `"undefined"`.
++ For the "string" type, base value is `""`
++ For the "number" type, base value is `0`
++ For the "boolean" type, base value is `false`
++ For the "lamda" type (`'->'`), base value is a function that uses the standard machine fn signature and triggers its "error" callback w/ a message about being the rttc default (e.g. `function(inputs,exits,env) { return exits.error(new Error('not implemented')); }`)
++ For the generic "dictionary" type (`{}`) or a faceted dictionary type (e.g. `{foo:'bar'}`), the base value is `{}`.
++ For the generic "array" type (`[]`), or a faceted/homogenous array type (e.g. `[3]` or `[{age:48,name: 'Nico'}]`), the base value is `[]`
++ For the "json" type (`'*'`), base value is `null`.
++ For the "ref" type (`'==='`), base value is `undefined`.
 
+> Note that, for both arrays and dictionaries, any keys in the schema will get the base value for their type (and their keys for their type, etc. -- recursive)
 
-<!--
-TODO:
-+ For "stream", base value is an empty readable buffer stream (i.e. not in object mode)
--->
 
 
 ## Types
@@ -167,24 +166,53 @@ Runtime arrays being validated/coerced against array type schemas will be homoge
 ]
 ```
 
-#### Wildcards
+#### Generic JSON
 
 `example: '*'`
 
-This special type allows anything except `undefined`.  It also _does not rebuild objects_, which means it maintains the original reference (i.e. is `===`).  It also does not guarantee JSON-serializability.
+This works pretty much like the generic array or generic dictionary type, with two major differences: (1) the top-level value can be a string, boolean, number, dictionary, array, or null value. (2) `null` is permitted, both as a top-level value and recursively in nested arrays and dictionaries (and as you might expect, `null` values are NOT stripped from nested arrays and dictionaries when performing type coercion)
+
+Other than the aforementioned exception for `null`, the generic JSON type follows the JSON-serializability rules from generic arrays and generic dictionaries.
 
 
 
-#### Edge cases
+#### Mutable references
 
-+ `undefined` is _never_ valid as a _top-level value_, but it is allowed as an item or value in a nested array or dictionary validated/coerced against `example: *`.
-+ `null` is only valid against `example: '*'`.
-+ `NaN` is only valid against `example: '*'`.
-+ `Infinity` is only valid against `example: '*'`.
-+ `-Infinity` is only valid against `example: '*'`.
-+ `-0` is understood as 0
-+ `+0` is understood as 0
+`example: '==='`
 
+This special type allows anything except `undefined`.  It also _does not rebuild objects_, which means it maintains the original reference (i.e. is `===`).  It does not guarantee JSON-serializability.
+
+
+
+#### Edge-case cheat sheet
+
+The following notes are a high-level overview of important conventions used by the `rttc` module. For detailed coverage of every permutation of validation and coercion, check out the declarative tests in the `spec/` folder of this repository.
+
+##### `undefined` and `null` values
+
++ `undefined` _is never valid as a top-level value_ against ANY type, even mutable reference (`===`)
++ `undefined` IS, however, allowed as an item in a nested array or value in a nested dictionary, but only against the mutable reference type (`===`)
++ `null` is only valid against the JSON (`*`) and mutable reference (`===`) types.
+
+##### Weird psuedo-numeric values
+
++ `NaN` is only valid against the mutable reference type (`'==='`)
++ `Infinity` and `-Infinity` is only valid against the mutable reference type (`'==='`)
++ `Infinity` and `-Infinity` are only valid against `example: '==='`
++ `+0` and `-0` are always coerced to `0` (except against the mutable reference type)
+
+##### Instances of ECMAScript core classes
+
+When coerced against the generic dictionary, generic array, or the generic json types, the following is true:
++ `Error` instances are coerced to the string value of their `.stack` property (i.e. the message + stack trace you're used to seeing in the terminal)
++ `Date` instances are coerced to the string value of running their `.toJSON()` method (a ISO-8601 timestamp, e.g. `'2015-05-24T15:16:48.999Z'`.  This reflects the Date in GMT/UTC time, so is therefore timezone-agnostic).
++ `RegExp` instances are coerced to the string value you get from running their `.toString()` method (e.g. `'/foo/'` or `'/^bar/gi'`)
++ Functions are coerced to the string value you get from running their `.toString()` method (e.g. `'function someFunction (some,args,like,this,maybe){ /* and some kind of implementation in here prbly */ }'`)
+
+##### Instances of Node.js core classes
+
++ `Stream` and `Buffer` instances (from Node.js) are only valid against the mutable reference type.
++ Streams and Buffers are coerced to `null` against the generic dictionary, generic array, or the generic json types.
 
 
 ## Examples
