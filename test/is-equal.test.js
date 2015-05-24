@@ -5,6 +5,8 @@ var rttc = require('../');
 
 describe('.isEqual()', function() {
 
+  // TODO: test that this doesn't go nuts given circular objects
+
 
   it('should accurately match strings', function() {
     assert(rttc.isEqual('stuff', 'stuff'));
