@@ -100,6 +100,14 @@ describe('.decode()', function() {
   });
 
 
+  it('should properly decode the characters from "I Love Lucy"', function (){
+    var encoded = '[{"name":"Lucy"},{"name":"Ricky"},{"name":"Louise"},{"name":"Ethyl"}]';
+    var example = [{}];
+    var decoded = rttc.decode(encoded, rttc.infer(example), true);
+    assert.deepEqual([{name: 'Lucy'}, {name:'Ricky'},{name:'Louise'},{name:'Ethyl'}], decoded);
+  });
+
+
 });
 
 
