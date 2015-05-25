@@ -58,7 +58,7 @@ rttc.infer({ firstName: 'Rosella', lastName: 'Graham', friends: ['Valencia', 'Ed
 
 
 You can do this with anything-- here's a more advanced version to show what I mean:
-```
+```javascript
 rttc.infer([{ upstream: '===', fieldName: 'photos', files: [{getFile: '->', fileName: 'whatever', numBytes: 34353, meta: '*' }] }]);
 // =>
 // [
