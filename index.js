@@ -7,6 +7,7 @@ module.exports = {
   getDisplayType: require('./lib/get-display-type'),
   stringify: require('./lib/stringify'),
   parse: require('./lib/parse'),
+  parseHuman: require('./lib/parse-human'),
   hydrate: require('./lib/hydrate'),
   dehydrate: require('./lib/dehydrate')
 };
