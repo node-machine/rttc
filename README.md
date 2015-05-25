@@ -62,33 +62,33 @@ Finally, note that all of the validation and coercion strategies used in this mo
 
 ## Usage
 
-#### .validateStrict(expectedTypeSchema, actualValue)
+### Validation
+
+##### .validateStrict(expectedTypeSchema, actualValue)
 
 Throws if the provided value is not the right type (recursive).
 
 
-#### .validate(expectedTypeSchema, actualValue)
+##### .validate(expectedTypeSchema, actualValue)
 
 Either returns a (potentially "lightly" coerced) version of the value that was accepted, or it throws.  The "lightly" coerced value turns `"3"` into `3`, `"true"` into `true`, `-4.5` into `"-4.5"`, etc.
 
 
-#### .coerce(expectedTypeSchema, actualValue)
+
+### Munging
+
+
+##### .coerce(expectedTypeSchema, actualValue)
 
 ALWAYS returns an acceptable version of the value, even if it has to mangle it to get there (i.e. by using the "base value" for the expected type.  More on that below.)
 
 
-#### .infer(exampleValue)
-
-Guesses the type schema from an example value.
-
-
-
-#### .hydrate(value, [_typeSchema_=`undefined`])
+##### .hydrate(value, [_typeSchema_=`undefined`])
 
 This function will use the provided `typeSchema` to figure out where "lamda" values (functions) are expected, then will use `eval()` to bring them back to life.  Use with care.
 
 
-#### .dehydrate(value, [_allowNull_=`false`])
+##### .dehydrate(value, [_allowNull_=`false`])
 
 This takes care of a few serialization edge-cases, such as:
 
@@ -98,29 +98,45 @@ This takes care of a few serialization edge-cases, such as:
 + strips keys and array items with `undefined` or `null` values. If `allowNull` is set to true, `null` values will not be stripped from the encoded string.
 
 
-#### .parse(stringifiedValue, [_typeSchema_=`undefined`], [_unsafeMode_=`false`])
+
+##### .parse(stringifiedValue, [_typeSchema_=`undefined`], [_unsafeMode_=`false`])
 
 Parse a stringified value back into a usable value.
 
-This is basically just a variation on JSON.parse that calls `rttc.hydrate()` first.
+This is basically just a variation on JSON.parse that calls `rttc.hydrate()` first if `unsafeMode` is enabled.
 
 
-#### .stringify(value, [_allowNull_=`false`])
+##### .stringify(value, [_allowNull_=`false`])
 
 Encode a value into a string.
 
 This is basically just a variation on JSON.stringify that calls `rttc.dehydrate()` first.
 
 
+##### .parseHuman(stringFromHuman, [_typeSchema_=`undefined`], [_unsafeMode_=`false`])
 
-#### .isEqual(firstValue, secondValue, [_expectedTypeSchema_=`undefined`])
+Parse a string from a human into something usable.  If provided, `typeSchema` will be used to make a better guess.  If `unsafeMode` is enabled, lamda functions will be hydrated.
+
+
+
+### Assertions
+
+##### .isEqual(firstValue, secondValue, [_expectedTypeSchema_=`undefined`])
 
 Determine whether two values are equivalent using `_.isEqual()`, but also look for expected `lamda` values in the optional type schema and call `toString()` on functions before comparing them.
 
 > This is the method used by `rttc`'s own tests to validate that expected values and actual values match.
 
 
-#### .getDisplayType(value)
+##### .infer(exampleValue)
+
+Guesses the type schema from an example value.
+
+
+
+### Utilities
+
+##### .getDisplayType(value)
 
 Given a value, return a human-readable type string (tries a few heuristics, including the `typeof` operator, examining the `.constructor` property, and calling `rttc.infer()`).
 
