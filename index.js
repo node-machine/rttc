@@ -6,5 +6,7 @@ module.exports = {
   isEqual: require('./lib/is-equal'),
   getDisplayType: require('./lib/get-display-type'),
   encode: require('./lib/encode'),
-  decode: require('./lib/decode')
+  decode: require('./lib/decode'),
+  hydrate: require('./lib/hydrate'),
+  dehydrate: require('./lib/dehydrate')
 };
