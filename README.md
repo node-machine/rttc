@@ -82,23 +82,35 @@ ALWAYS returns an acceptable version of the value, even if it has to mangle it t
 Guesses the type schema from an example value.
 
 
-#### .decode(stringifiedValue, [_typeSchema_=`undefined`], [_unsafeMode_=`false`])
 
-Decode a stringified value back into a usable value.
+#### .hydrate(value, [_typeSchema_=`undefined`])
 
-Very similar to `JSON.parse`, except that if `unsafeMode` is set to `true`, and a `typeSchema` is provided, this function will use that schema to figure out where "lamda" values (functions) are expected, then will use `eval()` to bring them back to life.  Use with care.
+This function will use the provided `typeSchema` to figure out where "lamda" values (functions) are expected, then will use `eval()` to bring them back to life.  Use with care.
 
 
-#### .encode(value, [_allowNull_=`false`])
+#### .dehydrate(value, [_allowNull_=`false`])
 
-Encode a value into a string.
-
-This is basically just a variation on JSON.stringify that also takes care of a few additional edge-cases, such as:
+This takes care of a few serialization edge-cases, such as:
 
 + stringifies functions, regexps, and errors (grabs the `.stack` property)
 + replacing circular references with a string (e.g. `[Circular]`)
 + replaces `-Infinity`, `Infinity`, and `NaN` with 0
 + strips keys and array items with `undefined` or `null` values. If `allowNull` is set to true, `null` values will not be stripped from the encoded string.
+
+
+#### .parse(stringifiedValue, [_typeSchema_=`undefined`], [_unsafeMode_=`false`])
+
+Parse a stringified value back into a usable value.
+
+This is basically just a variation on JSON.parse that calls `rttc.hydrate()` first.
+
+
+#### .stringify(value, [_allowNull_=`false`])
+
+Encode a value into a string.
+
+This is basically just a variation on JSON.stringify that calls `rttc.dehydrate()` first.
+
 
 
 #### .isEqual(firstValue, secondValue, [_expectedTypeSchema_=`undefined`])

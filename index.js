@@ -5,8 +5,13 @@ module.exports = {
   infer: require('./lib/infer'),
   isEqual: require('./lib/is-equal'),
   getDisplayType: require('./lib/get-display-type'),
-  encode: require('./lib/encode'),
-  decode: require('./lib/decode'),
+  stringify: require('./lib/stringify'),
+  parse: require('./lib/parse'),
   hydrate: require('./lib/hydrate'),
   dehydrate: require('./lib/dehydrate')
 };
+
+
+// Backwards compatibility
+module.exports.encode = module.exports.stringify;
+module.exports.decode = module.exports.parse;
