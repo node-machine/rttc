@@ -635,6 +635,14 @@ module.exports = [
 
 
 
+  {
+    example: [{}],
+    actual: [ { name: 'Lucy' }, { name: 'Ricky' }, { name: 'Louise' }, { name: 'Estelle' } ],
+    expected: [ { name: 'Lucy' }, { name: 'Ricky' }, { name: 'Louise' }, { name: 'Estelle' } ]
+  },
+
+
+
 
   //              $$\               $$\             $$\                                       $$$\               $$$\
   //              $$ |              \__|            $$ |                                     $$  _|               \$$\
