@@ -34,7 +34,8 @@ describe('.decode()', function() {
     checkSerialization([true, true, false, false]);
     checkSerialization([{species: 'Hopidor maxim', weight: 23821394, isAvailable: true}]);
     checkSerialization([['baz']]);
-    checkSerialization([{foo:[{bar:['baz']}]}]);
+    checkSerialization([{foo:[{bar:['baz']}]}, {foo:[{bar:['brains']}]}], [{foo: [{bar: ['string']}]}], true);
+    checkSerialization([{foo:[{bar:[function things(){}]}]}, {foo:[{bar:[function stuff(){}]}]}], [{foo: [{bar: ['lamda']}]}], true);
   });
 
   it('should throw when given a non-string', function (){
