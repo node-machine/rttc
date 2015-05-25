@@ -51,10 +51,32 @@ Not sure how to build a type schema for use with `.coerce()` or `.validate()`? U
 
 ```javascript
 rttc.infer({ firstName: 'Rosella', lastName: 'Graham', friends: ['Valencia', 'Edgar', 'Attis'] });
-// => { firstName: 'string',  }
+// => { firstName: 'string',  lastName: 'string', friends: ['string'] }
 ```
 
 > note that when inferring an array type, the first item of the example is used as a pattern- assuming homogeneity (i.e. that all items will look the same)
+
+
+You can do this with anything-- here's a more advanced version to show what I mean:
+```
+rttc.infer([{ upstream: '===', fieldName: 'photos', files: [{getFile: '->', fileName: 'whatever', numBytes: 34353, meta: '*' }] }]);
+// =>
+// [
+//  {
+//    upstream: 'ref',
+//    fieldName: 'string',
+//    files: [
+//      {
+//        getFile: 'lamda',
+//        fileName: 'string',
+//        numBytes: 'number',
+//        meta: 'json'
+//      }
+//    ]
+// }
+// ]
+```
+
 
 
 Finally, note that all of the validation and coercion strategies used in this modules are recursive through the keys of plain old JavaScript objects and the indices of arrays.
