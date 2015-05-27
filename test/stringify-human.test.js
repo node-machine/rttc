@@ -139,21 +139,17 @@ describe('.stringifyHuman()', function() {
   });
   it('should tolerate `null` for "json" type schemas', function() {
     assert.strictEqual( rttc.stringifyHuman(null, 'json'), 'null');
-    // assert.strictEqual( rttc.stringifyHuman([null], ['json']), ['null'] );
-    // assert.strictEqual( rttc.stringifyHuman([null], ['ref']), ['null']);
-    // assert.strictEqual( rttc.stringifyHuman({x:null}, {x:'json'}), {x:'null'} );
-    // assert.strictEqual( rttc.stringifyHuman({x:null}, {x:'ref'}), {x:'null'} );
   });
   it('should tolerate `null` for "ref" type schemas', function() {
     assert.strictEqual( rttc.stringifyHuman(null, 'ref'), 'null' );
   });
   it('should tolerate `null` for type schemas w/ nested "json" types', function() {
-    // assert.strictEqual( rttc.stringifyHuman([null], ['json']), ['null'] );
-    // assert.strictEqual( rttc.stringifyHuman([null], ['ref']), ['null']);
+    assert.strictEqual( rttc.stringifyHuman([null], ['json']), '[null]' );
+    assert.strictEqual( rttc.stringifyHuman({x:null}, {x:'json'}), '{"x":null}' );
   });
   it('should tolerate `null` for type schemas w/ nested "ref" types', function() {
-    // assert.strictEqual( rttc.stringifyHuman({x:null}, {x:'json'}), {x:'null'} );
-    // assert.strictEqual( rttc.stringifyHuman({x:null}, {x:'ref'}), {x:'null'} );
+    assert.strictEqual( rttc.stringifyHuman([null], ['ref']), '[null]');
+    assert.strictEqual( rttc.stringifyHuman({x:null}, {x:'ref'}), '{"x":null}' );
   });
   it('should NOT tolerate `null` for {} or [] type schemas', function() {
     assert.throws(function (){
