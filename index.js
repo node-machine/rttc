@@ -11,6 +11,7 @@ module.exports = {
   hydrate: require('./lib/hydrate'),
   dehydrate: require('./lib/dehydrate'),
   inspect: require('./lib/inspect'),
+  typeInfo: require('./lib/type-info'),
 };
 
 
