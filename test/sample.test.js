@@ -76,5 +76,7 @@ function assertAllSampledValuesMatchType(expectedTypeSchema){
       rttc.validateStrict(expectedTypeSchema, sample);
     });
   });
+  // TODO: ensure uniqueness of generated samples
+  // TODO: make `n` a MAX number
   // console.log(rttc.inspect(samples));
 }

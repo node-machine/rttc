@@ -10,13 +10,14 @@ module.exports = {
   stringifyHuman: require('./lib/stringify-human'),
   hydrate: require('./lib/hydrate'),
   dehydrate: require('./lib/dehydrate'),
-  inspect: require('./lib/inspect'),
+  compile: require('./lib/inspect'),
   sample: require('./lib/sample'),
   getDisplayType: require('./lib/get-display-type'),
-  typeInfo: require('./lib/type-info'),
 };
 
 
 // Backwards compatibility
 module.exports.encode = module.exports.stringify;
 module.exports.decode = module.exports.parse;
+module.exports.typeInfo = require('./lib/type-info');
+module.exports.inspect = module.exports.compile;

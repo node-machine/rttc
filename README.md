@@ -165,7 +165,7 @@ Guesses the type schema from an example value.
 
 ##### .sample(typeSchema, [n=2])
 
-Given a type schema, return an array of `n` sample values that would validate against it (in random order).  `n` defaults to 2 if left undefined.
+Given a type schema, return an array of up to `n` unique sample values that would validate against it (in random order).  `n` defaults to 2 if left undefined.
 
 
 ##### .getDisplayType(value)
