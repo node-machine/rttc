@@ -188,7 +188,9 @@ Useful for:
   + debugging
   + user interfaces
 
-###### Notable differences from `util.inspect()`
+
+Here's a table listing notable differences between `util.inspect()` and `rttc.inspect()` for reference:
+
 
  |  actual                  |  `util.inspect()`                         |  `rttc.inspect()`                    |
  | ------------------------ | ----------------------------------------- | -------------------------------------|
