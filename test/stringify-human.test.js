@@ -5,7 +5,6 @@ var rttc = require('../');
 
 describe('.stringifyHuman()', function() {
 
-
   it('should coerce things to match the type schema, but as strings', function() {
 
     assert.strictEqual(  rttc.stringifyHuman('foo', 'string'), 'foo');
@@ -65,6 +64,67 @@ describe('.stringifyHuman()', function() {
     assert.strictEqual(  rttc.stringifyHuman(null, 'json'), 'null');
     assert.strictEqual(  rttc.stringifyHuman(null, 'ref'), 'null');
   });
+
+
+  it('should be reversible using .parseHuman()', function() {
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman('foo', 'string'), 'string', true),       'foo',  'string'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman('', 'string'), 'string', true),       '',  'string'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman('4', 'string'), 'string', true),       '4',  'string'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman('-99', 'string'), 'string', true),       '-99',  'string'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman('Infinity', 'string'), 'string', true),       'Infinity',  'string'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman('-Infinity', 'string'), 'string', true),       '-Infinity',  'string'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman('NaN', 'string'), 'string', true),       'NaN',  'string'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman('true', 'string'), 'string', true),       'true',  'string'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman('false', 'string'), 'string', true),       'false',  'string'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman('foo', 'json'), 'json', true),       'foo',  'json'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman('', 'json'), 'json', true),       '',  'json'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman('4', 'json'), 'json', true),       '4',  'json'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman('-99', 'json'), 'json', true),       '-99',  'json'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman('true', 'json'), 'json', true),       'true',  'json'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman('false', 'json'), 'json', true),       'false',  'json'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman('null', 'json'), 'json', true),       'null',  'json'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman('foo', 'ref'), 'ref', true),       'foo',  'ref'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman('', 'ref'), 'ref', true),       '',  'ref'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman('4', 'ref'), 'ref', true),       '4',  'ref'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman('-99', 'ref'), 'ref', true),       '-99',  'ref'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman('true', 'ref'), 'ref', true),       'true',  'ref'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman('false', 'ref'), 'ref', true),       'false',  'ref'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman('null', 'ref'), 'ref', true),       'null',  'ref'                 )      );
+
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman(4, 'number'), 'number', true),       4,  'number'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman(10.345, 'number'), 'number', true),       10.345,  'number'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman(-99, 'number'), 'number', true),       -99,  'number'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman(Math.PI, 'number'), 'number', true),       Math.PI,  'number'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman(4, 'json'), 'json', true),       4,  'json'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman(10.345, 'json'), 'json', true),       10.345,  'json'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman(-99, 'json'), 'json', true),       -99,  'json'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman(Math.PI, 'json'), 'json', true),       Math.PI,  'json'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman(4, 'ref'), 'ref', true),       4,  'ref'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman(10.345, 'ref'), 'ref', true),       10.345,  'ref'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman(-99, 'ref'), 'ref', true),       -99,  'ref'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman(Math.PI, 'ref'), 'ref', true),       Math.PI,  'ref'                 )      );
+
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman(false, 'boolean'), 'boolean', true),       false,  'boolean'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman(true, 'boolean'), 'boolean', true),       true,  'boolean'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman(true, 'json'), 'json', true),       true,  'json'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman(false, 'json'), 'json', true),       false,  'json'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman(true, 'ref'), 'ref', true),       true,  'ref'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman(false, 'ref'), 'ref', true),       false,  'ref'                 )      );
+
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman({}, {}),  {}, true),       {},  {}                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman({}, 'json'), 'json', true),       {},  'json'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman({}, 'ref'), 'ref', true),       {},  'ref'                 )      );
+
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman([], []),  [], true),       [],  []                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman([], 'json'), 'json', true),       [],  'json'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman([], 'ref'), 'ref', true),       [],  'ref'                 )      );
+
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman(function asdf(){}, 'lamda'), 'lamda', true),       function asdf(){},  'lamda'                 )      );
+
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman(null, 'json'), 'json', true),       null,  'json'                 )      );
+    assert(      rttc.isEqual(  rttc.parseHuman(rttc.stringifyHuman(null, 'ref'), 'ref', true),       null,  'ref'                 )      );
+  });
+
 
   it('should add quotes to strings when type schema is "json"', function() {
     assert.strictEqual(rttc.stringifyHuman('stuff', 'json'), '"stuff"' );
