@@ -140,6 +140,10 @@ This is basically just a variation on JSON.stringify that calls `rttc.dehydrate(
 Parse a string from a human into something usable.  If provided, `typeSchema` will be used to make a better guess.  If `unsafeMode` is enabled, lamda functions will be hydrated.
 
 
+##### .stringifyHuman(value, typeSchema)
+
+The inverse of `.parseHuman()`, this function encodes a string that, if run through `.parseHuman()` would result in the given value.
+
 
 ### Assertions
 
@@ -158,15 +162,56 @@ Guesses the type schema from an example value.
 
 ### Utilities
 
+
+##### .sample(typeSchema, [n=2])
+
+Given a type schema, return an array of `n` sample values that would validate against it (in random order).  `n` defaults to 2 if left undefined.
+
+
 ##### .getDisplayType(value)
 
-Given a value, return a human-readable type string (tries a few heuristics, including the `typeof` operator, examining the `.constructor` property, and calling `rttc.infer()`).
+Given a value, return its type as a human-readable string (this is not limited to rttc types-- it can return strings like `"Error"` and `"Date"`)
+
+
+##### .inspect(value)
+
+Given a value, return a human-readable string which represents it.  This string is equivalent to a JavaScript code snippet which would accurately represent the value in code.
+
+This is a lot like `util.inspect(val, false, null)`, but it also has special handling for Errors, Dates, RegExps, and Functions (using `dehydrate()` with `allowNull` enabled.) The biggest difference is that everything you get from `rttc.inspect()` is ready for use as values in `*`, `{}`, or `[]` type machines, Treeline, Angular's rendering engine, and JavaScript code in general (i.e. if you were to append it on the right-hand side of `var x = `, or if you ran `eval()` on it)
+
+Note that undefined values in arrays and undefined values of keys in dictionaries will be stripped out, and circular references will be handled as they are in `util.inspect(val, false, null)`
+
+Useful for:
+  + generating code samples
+  + in particular for bootstrapping data on server-rendered views for access by client-side JavaScript
+  + error messages,
+  + debugging
+  + user interfaces
+
+###### Notable differences from `util.inspect()`
+
+ |  actual                 |  util.inspect()                           |  rttc.inspect()                      |
+ | ----------------------- | ----------------------------------------- | -------------------------------------|
+ | a function              | `[Function: foo]`                         | `'function foo (){}'`                |
+ | a Date                  | `Tue May 26 2015 20:05:37 GMT-0500 (CDT)` | `'2015-05-27T01:06:37.072Z'`         |
+ | a RegExp                | `/foo/gi`                                 | `'/foo/gi/'`                         |
+ | an Error                | `[Error]`                                 | `'Error\n    at repl:1:24\n...'`     |
+ | a deeply nested thing   | `{ a: { b: { c: [Object] } } }`           | `{ a: { b: { c: { d: {} } } } }`     |
+ | a circular thing        | `{ y: { z: [Circular] } }`                | `{ y: { z: '[Circular ~]' } }`       |
+ | undefined               | `undefined`                               | `null`                               |
+ | Infinity                | `Infinity`                                | `0`                                  |
+ | -Infinity               | `-Infinity`                               | `0`                                  |
+ | NaN                     | `NaN`                                     | `0`                                  |
+ | Readable (Node stream)  | `{ _readableState: { highWaterMar..}}`    | `null`                               |
+ | Buffer (Node bytestring)| `<Buffer 61 62 63>`                       | `null`                               |
 
 
 
 
 
 ## Types
+
+Here are the various types recognized by `rttc`.  They are recursive within faceted dictionaries and patterned arrays. If those words don't make sense, keep reading, you'll see what I mean.
 
 #### Strings
 
@@ -237,7 +282,10 @@ Arrays that have been validated/coerced against the generic array type:
   + normally, `RegExp` instances get stringified into empty objects.  Instead, rttc turns them into human-readable strings like `'/some regexp/gi'`
   + normally, `function()` instances get stringified into empty objects.  Instead, rttc turns them into human-readable strings like `'function doStuff (a,b) { console.log(\'wow I can actually read this!\'); }'`
 
-#### Homogeneous arrays
+
+
+
+#### Patterned arrays
 
 `example: ['Margaret']`
 `example: [123]`
