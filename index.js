@@ -4,13 +4,15 @@ module.exports = {
   coerce: require('./lib/coerce'),
   infer: require('./lib/infer'),
   isEqual: require('./lib/is-equal'),
-  getDisplayType: require('./lib/get-display-type'),
   stringify: require('./lib/stringify'),
   parse: require('./lib/parse'),
   parseHuman: require('./lib/parse-human'),
+  stringifyHuman: require('./lib/stringify-human'),
   hydrate: require('./lib/hydrate'),
   dehydrate: require('./lib/dehydrate'),
   inspect: require('./lib/inspect'),
+  sample: require('./lib/sample'),
+  getDisplayType: require('./lib/get-display-type'),
   typeInfo: require('./lib/type-info'),
 };
 
