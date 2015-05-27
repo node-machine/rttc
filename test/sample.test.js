@@ -77,6 +77,5 @@ function assertAllSampledValuesMatchType(expectedTypeSchema){
     });
   });
   // TODO: ensure uniqueness of generated samples
-  // TODO: make `n` a MAX number
-  // console.log(rttc.inspect(samples));
+  // TODO: ensure NO MORE THAN `n` (not guaranteed to have exactly `n` samples)
 }

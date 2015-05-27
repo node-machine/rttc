@@ -173,11 +173,11 @@ Given a type schema, return an array of up to `n` unique sample values that woul
 Given a value, return its type as a human-readable string (this is not limited to rttc types-- it can return strings like `"Error"` and `"Date"`)
 
 
-##### .inspect(value)
+##### .compile(value)
 
 Given a value, return a human-readable string which represents it.  This string is equivalent to a JavaScript code snippet which would accurately represent the value in code.
 
-This is a lot like `util.inspect(val, false, null)`, but it also has special handling for Errors, Dates, RegExps, and Functions (using `dehydrate()` with `allowNull` enabled.) The biggest difference is that everything you get from `rttc.inspect()` is ready for use as values in `*`, `{}`, or `[]` type machines, Treeline, Angular's rendering engine, and JavaScript code in general (i.e. if you were to append it on the right-hand side of `var x = `, or if you ran `eval()` on it)
+This is a lot like `util.inspect(val, false, null)`, but it also has special handling for Errors, Dates, RegExps, and Functions (using `dehydrate()` with `allowNull` enabled.) The biggest difference is that everything you get from `rttc.compile()` is ready for use as values in `*`, `{}`, or `[]` type machines, Treeline, Angular's rendering engine, and JavaScript code in general (i.e. if you were to append it on the right-hand side of `var x = `, or if you ran `eval()` on it)
 
 Note that undefined values in arrays and undefined values of keys in dictionaries will be stripped out, and circular references will be handled as they are in `util.inspect(val, false, null)`
 
@@ -189,10 +189,10 @@ Useful for:
   + user interfaces
 
 
-Here's a table listing notable differences between `util.inspect()` and `rttc.inspect()` for reference:
+Here's a table listing notable differences between `util.inspect()` and `rttc.compile()` for reference:
 
 
- | actual                   | `util.inspect()`                          | `rttc.inspect()`                     |
+ | actual                   | `util.inspect()`                          | `rttc.compile()`                     |
  | ------------------------ | ----------------------------------------- | ------------------------------------ |
  | a function               | `[Function: foo]`                         | `'function foo (){}'`                |
  | a Date                   | `Tue May 26 2015 20:05:37 GMT-0500 (CDT)` | `'2015-05-27T01:06:37.072Z'`         |

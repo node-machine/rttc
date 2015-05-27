@@ -10,7 +10,7 @@ module.exports = {
   stringifyHuman: require('./lib/stringify-human'),
   hydrate: require('./lib/hydrate'),
   dehydrate: require('./lib/dehydrate'),
-  compile: require('./lib/inspect'),
+  compile: require('./lib/compile'),
   sample: require('./lib/sample'),
   getDisplayType: require('./lib/get-display-type'),
 };
