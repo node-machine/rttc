@@ -9,7 +9,8 @@ module.exports = {
   parse: require('./lib/parse'),
   parseHuman: require('./lib/parse-human'),
   hydrate: require('./lib/hydrate'),
-  dehydrate: require('./lib/dehydrate')
+  dehydrate: require('./lib/dehydrate'),
+  inspect: require('./lib/inspect'),
 };
 
 
