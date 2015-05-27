@@ -70,10 +70,11 @@ describe('.sample()', function() {
  * @return {[type]}                    [description]
  */
 function assertAllSampledValuesMatchType(expectedTypeSchema){
-  var samples = rttc.sample(expectedTypeSchema);
+  var samples = rttc.sample(expectedTypeSchema, 10);
   _.each(samples, function (sample) {
     assert.doesNotThrow(function (){
       rttc.validateStrict(expectedTypeSchema, sample);
     });
   });
+  // console.log(rttc.inspect(samples));
 }
