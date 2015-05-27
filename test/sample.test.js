@@ -70,12 +70,15 @@ describe('.sample()', function() {
  * @return {[type]}                    [description]
  */
 function assertAllSampledValuesMatchType(expectedTypeSchema){
-  var samples = rttc.sample(expectedTypeSchema, 10);
+  var n = 25;
+  var samples = rttc.sample(expectedTypeSchema, n);
   _.each(samples, function (sample) {
     assert.doesNotThrow(function (){
       rttc.validateStrict(expectedTypeSchema, sample);
     });
   });
-  // TODO: ensure uniqueness of generated samples
-  // TODO: ensure NO MORE THAN `n` (not guaranteed to have exactly `n` samples)
+  // Ensure NO MORE THAN `n` (not guaranteed to have exactly `n` samples)
+  assert(samples.length <= n);
+  // Ensure uniqueness of generated samples
+  assert.equal(_.uniq(samples).length, samples.length, 'Expected samples to be unique ('+_.uniq(samples)+') but they weren\'t: '+samples);
 }
