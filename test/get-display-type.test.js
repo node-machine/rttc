@@ -23,8 +23,6 @@ describe('.getDisplayType()', function() {
     assert.strictEqual(typeof rttc.getDisplayType(function foo(a,b){}), 'string');
     assert.strictEqual(typeof rttc.getDisplayType({x:'foo',z: [{a:4}]}), 'string');
     assert.strictEqual(typeof rttc.getDisplayType([1,2,3]), 'string');
-    assert.strictEqual(typeof rttc.getDisplayType(undefined, true), 'string');
-    assert.strictEqual(typeof rttc.getDisplayType(undefined, false), 'string');
     assert.strictEqual(typeof rttc.getDisplayType(undefined), 'string');
   });
 
