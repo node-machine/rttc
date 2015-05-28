@@ -1,20 +1,3 @@
-
-| value                    | util.inspect                              | rttc.compile                         |
-|--------------------------|-------------------------------------------|--------------------------------------|
-| a function               | `[Function: foo]`                         | `'function foo (){}'`                |
-| a Date                   | `Tue May 26 2015 20:05:37 GMT-0500 (CDT)` | `'2015-05-27T01:06:37.072Z'`         |
-| a RegExp                 | `/foo/gi`                                 | `'/foo/gi/'`                         |
-| an Error                 | `[Error]`                                 | `'Error\n    at repl:1:24\n...'`     |
-| a deeply nested thing    | `{ a: { b: { c: [Object] } } }`           | `{ a: { b: { c: { d: {} } } } }`     |
-| a circular thing         | `{ y: { z: [Circular] } }`                | `{ y: { z: '[Circular ~]' } }`       |
-| undefined                | `undefined`                               | `null`                               |
-| Infinity                 | `Infinity`                                | `0`                                  |
-| -Infinity                | `-Infinity`                               | `0`                                  |
-| NaN                      | `NaN`                                     | `0`                                  |
-| Readable (Node stream)   | `{ _readableState: { highWaterMar..}}`    | `null`                               |
-| Buffer (Node bytestring) | `<Buffer 61 62 63>`                       | `null`                               |
-
-
 # rttc
 Runtime (recursive) type-checking for JavaScript.
 
@@ -225,21 +208,20 @@ Useful for:
 Here's a table listing notable differences between `util.inspect()` and `rttc.compile()` for reference:
 
 
- | value                    | util.inspect                              | rttc.compile                         |
- |--------------------------|-------------------------------------------|--------------------------------------|
- | a function               | `[Function: foo]`                         | `'function foo (){}'`                |
- | a Date                   | `Tue May 26 2015 20:05:37 GMT-0500 (CDT)` | `'2015-05-27T01:06:37.072Z'`         |
- | a RegExp                 | `/foo/gi`                                 | `'/foo/gi/'`                         |
- | an Error                 | `[Error]`                                 | `'Error\n    at repl:1:24\n...'`     |
- | a deeply nested thing    | `{ a: { b: { c: [Object] } } }`           | `{ a: { b: { c: { d: {} } } } }`     |
- | a circular thing         | `{ y: { z: [Circular] } }`                | `{ y: { z: '[Circular ~]' } }`       |
- | undefined                | `undefined`                               | `null`                               |
- | Infinity                 | `Infinity`                                | `0`                                  |
- | -Infinity                | `-Infinity`                               | `0`                                  |
- | NaN                      | `NaN`                                     | `0`                                  |
- | Readable (Node stream)   | `{ _readableState: { highWaterMar..}}`    | `null`                               |
- | Buffer (Node bytestring) | `<Buffer 61 62 63>`                       | `null`                               |
-
+| value                    | util.inspect()                            | rttc.compile()                       |
+|--------------------------|-------------------------------------------|--------------------------------------|
+| a function               | `[Function: foo]`                         | `'function foo (){}'`                |
+| a Date                   | `Tue May 26 2015 20:05:37 GMT-0500 (CDT)` | `'2015-05-27T01:06:37.072Z'`         |
+| a RegExp                 | `/foo/gi`                                 | `'/foo/gi/'`                         |
+| an Error                 | `[Error]`                                 | `'Error\n    at repl:1:24\n...'`     |
+| a deeply nested thing    | `{ a: { b: { c: [Object] } } }`           | `{ a: { b: { c: { d: {} } } } }`     |
+| a circular thing         | `{ y: { z: [Circular] } }`                | `{ y: { z: '[Circular ~]' } }`       |
+| undefined                | `undefined`                               | `null`                               |
+| Infinity                 | `Infinity`                                | `0`                                  |
+| -Infinity                | `-Infinity`                               | `0`                                  |
+| NaN                      | `NaN`                                     | `0`                                  |
+| Readable (Node stream)   | `{ _readableState: { highWaterMar..}}`    | `null`                               |
+| Buffer (Node bytestring) | `<Buffer 61 62 63>`                       | `null`                               |
 
 
 ## Types
