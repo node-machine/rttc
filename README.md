@@ -209,7 +209,7 @@ Here's a table listing notable differences between `util.inspect()` and `rttc.co
 
 
  | value                    | util.inspect()                            | rttc.compile()                     |
- | ------------------------ | ----------------------------------------- | ------------------------------------ |
+ |--------------------------|-------------------------------------------|--------------------------------------|
  | a function               | `[Function: foo]`                         | `'function foo (){}'`                |
  | a Date                   | `Tue May 26 2015 20:05:37 GMT-0500 (CDT)` | `'2015-05-27T01:06:37.072Z'`         |
  | a RegExp                 | `/foo/gi`                                 | `'/foo/gi/'`                         |
@@ -218,7 +218,7 @@ Here's a table listing notable differences between `util.inspect()` and `rttc.co
  | a circular thing         | `{ y: { z: [Circular] } }`                | `{ y: { z: '[Circular ~]' } }`       |
  | undefined                | `undefined`                               | `null`                               |
  | Infinity                 | `Infinity`                                | `0`                                  |
- | Infinity                | `-Infinity`                               | `0`                                  |
+ | -Infinity                | `-Infinity`                               | `0`                                  |
  | NaN                      | `NaN`                                     | `0`                                  |
  | Readable (Node stream)   | `{ _readableState: { highWaterMar..}}`    | `null`                               |
  | Buffer (Node bytestring) | `<Buffer 61 62 63>`                       | `null`                               |
