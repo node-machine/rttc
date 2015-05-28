@@ -218,7 +218,7 @@ Here's a table listing notable differences between `util.inspect()` and `rttc.co
  | a circular thing         | `{ y: { z: [Circular] } }`                | `{ y: { z: '[Circular ~]' } }`       |
  | undefined                | `undefined`                               | `null`                               |
  | Infinity                 | `Infinity`                                | `0`                                  |
- | -Infinity                | `-Infinity`                               | `0`                                  |
+ | Infinity                | `-Infinity`                               | `0`                                  |
  | NaN                      | `NaN`                                     | `0`                                  |
  | Readable (Node stream)   | `{ _readableState: { highWaterMar..}}`    | `null`                               |
  | Buffer (Node bytestring) | `<Buffer 61 62 63>`                       | `null`                               |
