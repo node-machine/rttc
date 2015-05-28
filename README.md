@@ -208,7 +208,7 @@ Useful for:
 Here's a table listing notable differences between `util.inspect()` and `rttc.compile()` for reference:
 
 
- | actual                   | `util.inspect()`                          | `rttc.compile()`                     |
+ | value                    | util.inspect()                            | rttc.compile()                     |
  | ------------------------ | ----------------------------------------- | ------------------------------------ |
  | a function               | `[Function: foo]`                         | `'function foo (){}'`                |
  | a Date                   | `Tue May 26 2015 20:05:37 GMT-0500 (CDT)` | `'2015-05-27T01:06:37.072Z'`         |
