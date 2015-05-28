@@ -4,7 +4,6 @@
  | a function               | `[Function: foo]`                         | `'function foo (){}'`                |
  | a Date                   | `Tue May 26 2015 20:05:37 GMT-0500 (CDT)` | `'2015-05-27T01:06:37.072Z'`         |
  | a RegExp                 | `/foo/gi`                                 | `'/foo/gi/'`                         |
- | an Error                 | `[Error]`                                 | `'Error\n    at repl:1:24\n...'`     |
  | a deeply nested thing    | `{ a: { b: { c: [Object] } } }`           | `{ a: { b: { c: { d: {} } } } }`     |
  | a circular thing         | `{ y: { z: [Circular] } }`                | `{ y: { z: '[Circular ~]' } }`       |
  | undefined                | `undefined`                               | `null`                               |
