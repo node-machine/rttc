@@ -164,16 +164,16 @@ Determine whether the given type schema is "strict" (meaning it is a string, num
 
 | type                    | is strict?          |
 |-------------------------|---------------------|
-| string                  | :white_check_mark:  |
-| number                  | :white_check_mark:  |
-| boolean                 | :white_check_mark:  |
-| lamda                   | :white_check_mark:  |
-| `{}` (generic)          | :x:                 |
-| `[]` (generic)          | :x:                 |
-| `{...}` (faceted)       | :white_check_mark: _(maybe recursive)_  |
-| `[...]` (patterned)     | :white_check_mark: _(maybe recursive)_  |
-| json                    | :x:                 |
-| ref                     | :x:                 |
+| string                  | yes _(always)_ |
+| number                  | yes _(always)_ |
+| boolean                 | yes _(always)_ |
+| lamda                   | yes _(always)_ |
+| `{}` (generic)          | no                 |
+| `[]` (generic)          | no                 |
+| `{...}` (faceted)       | yes _(maybe recursively)_  |
+| `[...]` (patterned)     | yes _(maybe recursively)_  |
+| json                    | no                 |
+| ref                     | no                 |
 
 
 ### Utilities
