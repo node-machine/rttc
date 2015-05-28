@@ -156,8 +156,24 @@ Determine whether two values are equivalent using `_.isEqual()`, but also look f
 
 ##### .infer(exampleValue)
 
-Guesses the type schema from an example value.
+Guess the type schema from an example value.
 
+##### .isStrictType(typeSchema, [recursive=false])
+
+Determine whether the given type schema is "strict" (meaning it is a string, number, boolean, lamda, faceted dictionary, or patterned array).  If second argument (`recursive`) is set to `true`, then also recursively check the subkeys of faceted dictionaries and patterns of arrays in the type schema.
+
+| type                    | is strict?          |
+|-------------------------|---------------------|
+| string                  | :white_check_mark:  |
+| number                  | :white_check_mark:  |
+| boolean                 | :white_check_mark:  |
+| lamda                   | :white_check_mark:  |
+| `{}` (generic)          | :x:                 |
+| `[]` (generic)          | :x:                 |
+| `{...}` (faceted)       | :white_check_mark: _(maybe recursive)_  |
+| `[...]` (patterned)     | :white_check_mark: _(maybe recursive)_  |
+| json                    | :x:                 |
+| ref                     | :x:                 |
 
 
 ### Utilities
