@@ -145,6 +145,11 @@ Parse a string from a human into something usable.  If provided, `typeSchema` wi
 The inverse of `.parseHuman()`, this function encodes a string that, if run through `.parseHuman()` would result in the given value.
 
 
+##### .reify(typeSchema)
+
+Given a type schema, strip out generics ("ref", "json", {}, and []) to convert it into a strict type. In other words, this makes a type schema "strict", and the result of this function always passes `rttc.isStrictType()`.
+
+
 ### Assertions
 
 ##### .isEqual(firstValue, secondValue, [_expectedTypeSchema_=`undefined`])
