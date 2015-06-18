@@ -515,11 +515,11 @@ rttc.validate({
  */
 ```
 
-If value cannot be properly coerced, throws error with its `.code` property set to `E_INVALID_TYPE`:
+If value cannot be properly coerced, throws error with its `.code` property set to `E_INVALID`:
 
 ```javascript
 rttc.validate('number', 'asdf');
-// throws E_INVALID_TYPE
+// throws E_INVALID
 ```
 
 
