@@ -222,6 +222,8 @@ Here's a table listing notable differences between `util.inspect()` and `rttc.co
 | a deeply nested thing    | `{ a: { b: { c: [Object] } } }`           | `{ a: { b: { c: { d: {} } } } }`     |
 | a circular thing         | `{ y: { z: [Circular] } }`                | `{ y: { z: '[Circular ~]' } }`       |
 | undefined                | `undefined`                               | `null`                               |
+| [undefined]              | `[undefined]`                             | []                                     |
+| {foo: undefined}       | `{foo: undefined}`                     | {}                                    |
 | Infinity                 | `Infinity`                                | `0`                                  |
 | -Infinity                | `-Infinity`                               | `0`                                  |
 | NaN                      | `NaN`                                     | `0`                                  |
@@ -258,11 +260,13 @@ The **generic dictionary** type is a dictionary type schema with no keys.
 Dictionaries that have been validated/coerced against the generic dictionary type:
 + will have no prototypal properties, getters, or setters, as well as a complete deficit of any other sort of deceit, lies, or magic
 + are guaranteed to be JSON-serializable, with a few additional affordances:
-  + normally, stringified JSON may contain `null` values.  Instead, rttc removes `null` items from arrays and removes keys with `null` values from objects.
   + normally, `Error` instances get stringified into empty objects.  Instead, rttc turns them into human-readable strings by reducing them to their `.stack` property (this includes the error message and the stack trace w/ line numbers)
   + normally, `RegExp` instances get stringified into empty objects.  Instead, rttc turns them into human-readable strings like `'/some regexp/gi'`
   + normally, `function()` instances get stringified into empty objects.  Instead, rttc turns them into human-readable strings like `'function doStuff (a,b) { console.log(\'wow I can actually read this!\'); }'`
-
++ keys with undefined values at any level will be stripped out
++ undefined items in nested arrays will be stripped out
++ keys with null values may be present
++ null items in nested arrays may be present
 
 #### Faceted dictionaries
 
@@ -297,10 +301,13 @@ Dictionary type schemas (i.e. plain old JavaScript objects nested like `{a:{}}`)
 Arrays that have been validated/coerced against the generic array type:
 + _may_ be heterogeneous (have items with different types) - but it is generally best practice to avoid heterogeneous arrays in general.
 + are guaranteed to be JSON-serializable, with a few additional affordances:
-  + normally, stringified JSON may contain `null` values.  Instead, rttc removes `null` items from arrays and removes keys with `null` values from objects.
   + normally, `Error` instances get stringified into empty objects.  Instead, rttc turns them into human-readable strings by reducing them to their `.stack` property (this includes the error message and the stack trace w/ line numbers)
   + normally, `RegExp` instances get stringified into empty objects.  Instead, rttc turns them into human-readable strings like `'/some regexp/gi'`
   + normally, `function()` instances get stringified into empty objects.  Instead, rttc turns them into human-readable strings like `'function doStuff (a,b) { console.log(\'wow I can actually read this!\'); }'`
++ keys of nested dictionaries with undefined values will be stripped out
++ undefined array items at any level will be stripped out
++ keys of nested dictionaries with null values may be present
++ null items in arrays at any level may be present
 
 
 
@@ -316,6 +323,8 @@ Arrays that have been validated/coerced against the generic array type:
 Array type schemas may be infinitely nested and combined with dictionaries or any other types.
 
 Runtime arrays being validated/coerced against array type schemas will be homogeneous (meaning every item in the array will have the same type).
+
+Undefined items will always be stripped out of arrays.
 
 > Also note that, because of this, when providing a type schema or type-inference-able example for an array, you only need to provide one item in the array, e.g.:
 
@@ -342,7 +351,7 @@ Runtime arrays being validated/coerced against array type schemas will be homoge
 
 `example: '*'`
 
-This works pretty much like the generic array or generic dictionary type, with two major differences: (1) the top-level value can be a string, boolean, number, dictionary, array, or null value. (2) `null` is permitted, both as a top-level value and recursively in nested arrays and dictionaries (and as you might expect, `null` values are NOT stripped from nested arrays and dictionaries when performing type coercion)
+This works pretty much like the generic array or generic dictionary type, with one major difference: the top-level value can be a string, boolean, number, dictionary, array, or null value.
 
 Other than the aforementioned exception for `null`, the generic JSON type follows the JSON-serializability rules from generic arrays and generic dictionaries.
 
@@ -352,7 +361,7 @@ Other than the aforementioned exception for `null`, the generic JSON type follow
 
 `example: '==='`
 
-This special type allows anything except `undefined`.  It also _does not rebuild objects_, which means it maintains the original reference (i.e. is `===`).  It does not guarantee JSON-serializability.
+This special type allows anything except `undefined` at the top level (undefined is permitted at any other level).  It also _does not rebuild objects_, which means it maintains the original reference (i.e. is `===`).  It does not guarantee JSON-serializability.
 
 
 
@@ -381,7 +390,7 @@ The following is a high-level overview of important conventions used by the `rtt
 
 + `undefined` _is never valid as a top-level value_ against ANY type, even mutable reference (`===`)
 + `undefined` IS, however, allowed as an item in a nested array or value in a nested dictionary, but only against the mutable reference type (`===`)
-+ `null` is only valid against the JSON (`*`) and mutable reference (`===`) types.
++ `null` is only valid at the top level against the JSON (`*`) and mutable reference (`===`) types.
 
 ##### Weird psuedo-numeric values
 
