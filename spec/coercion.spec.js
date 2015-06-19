@@ -248,7 +248,7 @@ module.exports = [
   { example: {}, actual: { x: NaN }, result: { x: 0 } },
   { example: {}, actual: { x: Infinity }, result: { x: 0 } },
   { example: {}, actual: { x: -Infinity }, result: { x: 0 } },
-  { example: {}, actual: { x: null }, result: {} },
+  { example: {}, actual: { x: null }, result: { x:null } },
   { example: {}, actual: { x: function foo(a,b){return a+' '+b;} }, result: { x: 'function foo(a,b){return a+\' \'+b;}' } },
   // { example: {}, actual: { x: undefined, null, NaN, -Infinity, Infinity, function(){} }, result: [] },
   { example: {}, actual: { x: /some regexp/ig }, result: {x:'/some regexp/gi' }},
@@ -265,7 +265,7 @@ module.exports = [
   })(),
 
   { example: [], actual: [undefined], result: [] },
-  { example: [], actual: [null], result: [] },
+  { example: [], actual: [null], result: [null] },
   { example: [], actual: [NaN], result: [0] },
   { example: [], actual: [Infinity], result: [0] },
   { example: [], actual: [-Infinity], result: [0] },

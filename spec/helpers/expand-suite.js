@@ -72,12 +72,14 @@ module.exports = function expandSuite ( testSuite ) {
     if (!test.error && !_.isUndefined(test.result) && !test.hasOwnProperty('strictEq') && !test.hasOwnProperty('isNew')) {
 
       // test one level of additional array nesting
-      recursiveTests.push({
-        example: [ customCloneDeep(test.example) ],
-        actual: [ customCloneDeep(test.actual) ],
-        result: [ customCloneDeep(test.result) ],
-        _meta: '+1 array depth'
-      });
+      if (!_.isUndefined(test.actual)) {
+        recursiveTests.push({
+          example: [ customCloneDeep(test.example) ],
+          actual: [ customCloneDeep(test.actual) ],
+          result: [ customCloneDeep(test.result) ],
+          _meta: '+1 array depth'
+        });
+      }
 
       // test one level of additional dictionary nesting
       recursiveTests.push({
@@ -103,13 +105,15 @@ module.exports = function expandSuite ( testSuite ) {
         _meta: '+2 dictionary depth'
       });
 
-      // test two levels of additional array nesting
-      recursiveTests.push({
-        example: [ [ customCloneDeep(test.example) ] ],
-        actual:  [ [ customCloneDeep(test.actual) ] ],
-        result:  [ [ customCloneDeep(test.result) ] ],
-        _meta: '+2 array depth'
-      });
+      if (!_.isUndefined(test.actual)) {
+        // test two levels of additional array nesting
+        recursiveTests.push({
+          example: [ [ customCloneDeep(test.example) ] ],
+          actual:  [ [ customCloneDeep(test.actual) ] ],
+          result:  [ [ customCloneDeep(test.result) ] ],
+          _meta: '+2 array depth'
+        });
+      }
 
       // test two levels of additional dictionary nesting AND 1 level of array nesting
       recursiveTests.push({
@@ -120,20 +124,24 @@ module.exports = function expandSuite ( testSuite ) {
       });
 
       // test two levels of additional dictionary nesting and one level of array nesting, then WITHIN that, 1 level of array nesting
-      recursiveTests.push({
-        example: [ { xtra: { xtra2: [customCloneDeep(test.example)] } } ],
-        actual: [ { xtra: { xtra2: [customCloneDeep(test.actual)] } } ],
-        result: [ { xtra:{ xtra2: [customCloneDeep(test.result)] } } ],
-        _meta: '+1 array depth, +2 dictionary depth, +1 nested array depth'
-      });
+      if (!_.isUndefined(test.actual)) {
+        recursiveTests.push({
+          example: [ { xtra: { xtra2: [customCloneDeep(test.example)] } } ],
+          actual: [ { xtra: { xtra2: [customCloneDeep(test.actual)] } } ],
+          result: [ { xtra:{ xtra2: [customCloneDeep(test.result)] } } ],
+          _meta: '+1 array depth, +2 dictionary depth, +1 nested array depth'
+        });
+      }
 
-      // test two levels of additional dictionary nesting and one level of array nesting, then WITHIN that, 2 levels of array nesting
-      recursiveTests.push({
-        example: [ { xtra: { xtra2: [[customCloneDeep(test.example)]] } } ],
-        actual: [ { xtra: { xtra2: [[customCloneDeep(test.actual)]] } } ],
-        result: [ { xtra:{ xtra2: [[customCloneDeep(test.result)]] } } ],
-        _meta: '+1 array depth, +2 dictionary depth, +2 nested array depth'
-      });
+      if (!_.isUndefined(test.actual)) {
+        // test two levels of additional dictionary nesting and one level of array nesting, then WITHIN that, 2 levels of array nesting
+        recursiveTests.push({
+          example: [ { xtra: { xtra2: [[customCloneDeep(test.example)]] } } ],
+          actual: [ { xtra: { xtra2: [[customCloneDeep(test.actual)]] } } ],
+          result: [ { xtra:{ xtra2: [[customCloneDeep(test.result)]] } } ],
+          _meta: '+1 array depth, +2 dictionary depth, +2 nested array depth'
+        });
+      }
     }
 
   });

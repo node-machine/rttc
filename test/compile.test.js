@@ -199,7 +199,7 @@ describe('.compile()', function() {
           stream: new (require('stream').Readable)()
         }
       }],
-      expected: '[ { someDate: \'1605-11-05T00:00:00.000Z\',\n    someRegExp: \'/waldo/gi\',\n    someError: \'setting this stack property to something inane so that it\\\'s easy to compare, and so tests don\\\'t depend on file paths from the stack trace of my computer\',\n    someFunction: \'function foobar(x,y){ return x+y; }\',\n    weirdNumbers: [ 0, 0, 0, 0, 0 ],\n    weirdExistentials: [ null, null ],\n    nodejsThings: { stream: null } } ]'
+      expected: '[ { someDate: \'1605-11-05T00:00:00.000Z\',\n    someRegExp: \'/waldo/gi\',\n    someError: \'setting this stack property to something inane so that it\\\'s easy to compare, and so tests don\\\'t depend on file paths from the stack trace of my computer\',\n    someFunction: \'function foobar(x,y){ return x+y; }\',\n    weirdNumbers: [ 0, 0, 0, 0, 0 ],\n    weirdExistentials: [ null ],\n    nodejsThings: { stream: null } } ]'
     });
 
   });
@@ -210,6 +210,8 @@ describe('.compile()', function() {
 
 
 function _assertCompiledResultIsCorrect(opts){
+  // console.log('ACTUAL:',rttc.compile(opts.value));
+  // console.log('\n\n\nEXPECTING:',opts.expected);
   assert.strictEqual(typeof rttc.compile(opts.value), 'string');
   assert.strictEqual(rttc.compile(opts.value), opts.expected);
 }
