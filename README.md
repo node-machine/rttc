@@ -233,29 +233,57 @@ Here's a table listing notable differences between `util.inspect()` and `rttc.co
 
 ## Types
 
-Here are the various types recognized by `rttc`.  They are recursive within faceted dictionaries and patterned arrays. If those words don't make sense, keep reading, you'll see what I mean.
+> Each type can be validated or coerced against.  If coercion fails, the "base value" for the type will be used.
+
+> Also note that all types below may be expressed recursively within faceted dictionaries and patterned arrays. If those words don't make sense, keep reading, you'll see what I mean.
+
+
+There are 10 different types recognized by `rttc`:
+
+| type                    | rttc example notation    | base value                          |
+|-------------------------|--------------------------|-------------------------------------|
+| string                  | `'any string like this'` | `''`
+| number                  | `1337` _(any number)_    | `0`
+| boolean                 | `false` _(or `true`)_    | `false`
+| lamda                   | `function anyFunction(){ /* any function */ }` | `function () { throw new Error('Not implemented! (this function was automatically created by `rttc`'); };`
+| generic dictionary      | `{}` _(empty)_           | `{}`
+| `[]` (generic)          | `[]`  _(empty)_          | `[]`
+| json (generic)          | `'*'`                    | `null`
+| ref  (generic)          | `'==='`                  | `undefined`
+| faceted dictionary  (recursive)       | `{...}` _(dictionary w/ keys)_  | (a dictionary w/ all expected keys and _their_ base values)
+| pattern array (recursive)    | `[...]` _(array w/ exactly 1 item)_  | (a single-item array w/ the base value for the item)
+
+
 
 #### Strings
 
 `example: 'stuff'`
 
+The **string** type accepts any string.
 
 #### Numbers
 
 `example: 323`
 
+The **number** type accepts numbers like `0`, `-4`, or `235.3`.  Anathemas like `Infinity`, `-Infinity`, `NaN`, and `-0` are all coerced to zero.
 
 #### Booleans
 
 `example: false`
 
+The **boolean** type accepts `true` or `false`.
+
+#### Lamdas
+
+`example: ->`
+
+The **lamda** type accepts any function.  
 
 #### Generic dictionaries
 
 `example: {}`
 
-The **generic dictionary** type is a dictionary type schema with no keys.
-
+The **generic dictionary** type accepts any JSON-serializable dictionary.
 
 Dictionaries that have been validated/coerced against the generic dictionary type:
 + will have no prototypal properties, getters, or setters, as well as a complete deficit of any other sort of deceit, lies, or magic
