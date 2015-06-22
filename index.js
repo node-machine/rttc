@@ -16,6 +16,8 @@ module.exports = {
   isStrictType: require('./lib/is-strict-type'),
   isInvalidExample: require('./lib/is-invalid-example'),
   reify: require('./lib/reify'),
+  intersection: require('./lib/intersection'),
+  union: require('./lib/union'),
 };
 
 
