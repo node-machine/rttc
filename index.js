@@ -12,6 +12,7 @@ module.exports = {
   dehydrate: require('./lib/dehydrate'),
   compile: require('./lib/compile'),
   sample: require('./lib/sample'),
+  exemplar: require('./lib/exemplar'),
   getDisplayType: require('./lib/get-display-type'),
   isStrictType: require('./lib/is-strict-type'),
   isInvalidExample: require('./lib/is-invalid-example'),
