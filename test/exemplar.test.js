@@ -3,7 +3,7 @@ var assert = require('assert');
 var _ = require('lodash');
 var rttc = require('../');
 
-describe.only('.exemplar()', function() {
+describe('.exemplar()', function() {
 
 
   it('should generate correct exemplars', function() {
