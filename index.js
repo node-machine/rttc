@@ -19,6 +19,7 @@ module.exports = {
   reify: require('./lib/reify'),
   intersection: require('./lib/intersection'),
   union: require('./lib/union'),
+  getPathInfo: require('./lib/get-path-info'),
 };
 
 
