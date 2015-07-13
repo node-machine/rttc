@@ -20,6 +20,7 @@ module.exports = {
   intersection: require('./lib/intersection'),
   union: require('./lib/union'),
   getPathInfo: require('./lib/get-path-info'),
+  getBaseVal: require('./lib/get-base-val'),
 };
 
 
