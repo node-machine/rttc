@@ -127,7 +127,7 @@ The **boolean** type accepts `true` or `false`.
 
 `example: ->`
 
-The **lamda** type accepts any function.  
+The **lamda** type accepts any function.
 
 ### Generic dictionaries
 
@@ -327,11 +327,11 @@ ALWAYS returns an acceptable version of the value, even if it has to mangle it t
 This function will use the provided `typeSchema` to figure out where "lamda" values (functions) are expected, then will use `eval()` to bring them back to life.  Use with care.
 
 
-##### .dehydrate(value, [_allowNull_=`false`])
+##### .dehydrate(value, [_allowNull_=`false`], [_dontStringifyFunctions_=`false`])
 
 This takes care of a few serialization edge-cases, such as:
 
-+ stringifies functions, regexps, and errors (grabs the `.stack` property)
++ stringifies regexps, errors (grabs the `.stack` property), and functions (unless `dontStringifyFunctions` is set)
 + replacing circular references with a string (e.g. `[Circular]`)
 + replaces `-Infinity`, `Infinity`, and `NaN` with 0
 + strips keys and array items with `undefined` or `null` values. If `allowNull` is set to true, `null` values will not be stripped from the encoded string.
