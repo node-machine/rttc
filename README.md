@@ -415,7 +415,7 @@ Given a value, return its type as a human-readable string (this is not limited t
 
 Given a value, return a human-readable string which represents it.  This string is equivalent to a JavaScript code snippet which would accurately represent the value in code.
 
-This is a lot like `util.inspect(val, false, null)`, but it also has special handling for Errors, Dates, RegExps, and Functions (using `dehydrate()` with `allowNull` enabled.) The biggest difference is that everything you get from `rttc.compile()` is ready for use as values in `*`, `{}`, or `[]` type machines, Treeline, Angular's rendering engine, and JavaScript code in general (i.e. if you were to append it on the right-hand side of `var x = `, or if you ran `eval()` on it)
+This is a lot like `util.inspect(val, false, null)`, but it also has special handling for Errors, Dates, and RegExps (using `dehydrate()` with `allowNull` enabled), as well as for Functions (making them `eval()`-ready.) The biggest difference is that everything you get from `rttc.compile()` is ready for use as values in `*`, `{}`, or `[]` type machines, Treeline, Angular's rendering engine, and JavaScript code in general (i.e. if you were to append it on the right-hand side of `var x = `, or if you ran `eval()` on it)
 
 Note that undefined values in arrays and undefined values of keys in dictionaries will be stripped out, and circular references will be handled as they are in `util.inspect(val, false, null)`
 
@@ -432,7 +432,7 @@ Here's a table listing notable differences between `util.inspect()` and `rttc.co
 
 | value                    | util.inspect()                            | rttc.compile()                       |
 |--------------------------|-------------------------------------------|--------------------------------------|
-| a function               | `[Function: foo]`                         | `'function foo (){}'`                |
+| a function               | `[Function: foo]`                         | `function foo (){}`                  |
 | a Date                   | `Tue May 26 2015 20:05:37 GMT-0500 (CDT)` | `'2015-05-27T01:06:37.072Z'`         |
 | a RegExp                 | `/foo/gi`                                 | `'/foo/gi/'`                         |
 | an Error                 | `[Error]`                                 | `'Error\n    at repl:1:24\n...'`     |
@@ -440,7 +440,7 @@ Here's a table listing notable differences between `util.inspect()` and `rttc.co
 | a circular thing         | `{ y: { z: [Circular] } }`                | `{ y: { z: '[Circular ~]' } }`       |
 | undefined                | `undefined`                               | `null`                               |
 | [undefined]              | `[undefined]`                             | []                                     |
-| {foo: undefined}       | `{foo: undefined}`                     | {}                                    |
+| {foo: undefined}         | `{foo: undefined}`                        | {}                                    |
 | Infinity                 | `Infinity`                                | `0`                                  |
 | -Infinity                | `-Infinity`                               | `0`                                  |
 | NaN                      | `NaN`                                     | `0`                                  |

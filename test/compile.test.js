@@ -50,17 +50,17 @@ describe('.compile()', function() {
   });
 
 
-  it('should `.toString()` function and wrap it in single quotes', function() {
+  it('should `.toString()` function BUT NOT wrap it in single quotes!!', function() {
     _assertCompiledResultIsCorrect({
       value: function foobar(x,y){ return x+y; },
-      expected: '\'function foobar(x,y){ return x+y; }\''
+      expected: 'function foobar(x,y){ return x+y; }'
     });
   });
 
   it('should remove any whitespace between function name and arguments declaration', function() {
     _assertCompiledResultIsCorrect({
       value: function foobar   (x,y){ return x+y; },
-      expected: '\'function foobar(x,y){ return x+y; }\''
+      expected: 'function foobar(x,y){ return x+y; }'
     });
   });
 
@@ -199,7 +199,7 @@ describe('.compile()', function() {
           stream: new (require('stream').Readable)()
         }
       }],
-      expected: '[ { someDate: \'1605-11-05T00:00:00.000Z\',\n    someRegExp: \'/waldo/gi\',\n    someError: \'setting this stack property to something inane so that it\\\'s easy to compare, and so tests don\\\'t depend on file paths from the stack trace of my computer\',\n    someFunction: \'function foobar(x,y){ return x+y; }\',\n    weirdNumbers: [ 0, 0, 0, 0, 0 ],\n    weirdExistentials: [ null ],\n    nodejsThings: { stream: null } } ]'
+      expected: '[ { someDate: \'1605-11-05T00:00:00.000Z\',\n    someRegExp: \'/waldo/gi\',\n    someError: \'setting this stack property to something inane so that it\\\'s easy to compare, and so tests don\\\'t depend on file paths from the stack trace of my computer\',\n    someFunction: function foobar(x,y){ return x+y; },\n    weirdNumbers: [ 0, 0, 0, 0, 0 ],\n    weirdExistentials: [ null ],\n    nodejsThings: { stream: null } } ]'
     });
 
   });
