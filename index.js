@@ -30,4 +30,4 @@ module.exports.encode = module.exports.stringify;
 module.exports.decode = module.exports.parse;
 module.exports.typeInfo = require('./lib/type-info');
 module.exports.inspect = module.exports.compile;
-module.exports.exemplar = module.exports.getExemplar;
+module.exports.exemplar = module.exports.getDefaultExemplar;
