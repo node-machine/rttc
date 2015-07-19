@@ -21,7 +21,7 @@ module.exports = {
   union: require('./lib/union'),
   getPathInfo: require('./lib/get-path-info'),
   getBaseVal: require('./lib/get-base-val'),
-  inferExemplar: require('./lib/infer-exemplar'),
+  coerceExemplar: require('./lib/coerce-exemplar'),
 };
 
 

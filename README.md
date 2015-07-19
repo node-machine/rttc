@@ -475,6 +475,17 @@ Convert a normal value into an exemplar representative of the _most specific_ ty
 + Other than the exceptions mentioned above, non-JSON-serializable things (like circular references) are boiled away when this calls `dehydrate` internally.
 
 
+```js
+rttc.coerceExemplar({x:'*'})
+//   =>   { x: 'a star symbol' }
+
+rttc.coerceExemplar([{a:null}, {b: [[74,39,'surprise string!']] }])
+//   =>   [ {} ]
+
+rttc.coerceExemplar([74,39,'surprise string!'])
+//   =>   [ 'surprise string!' ]
+```
+
 ##### .isInvalidExample(exemplar)
 
 Return `true` if the provided value is NOT a valid rttc exemplar.
