@@ -54,10 +54,14 @@ rttc.infer({ firstName: 'Rosella', lastName: 'Graham', friends: ['Valencia', 'Ed
 // => { firstName: 'string',  lastName: 'string', friends: ['string'] }
 ```
 
-> note that when inferring an array type, the first item of the example is used as a pattern- assuming homogeneity (i.e. that all items will look the same)
+This special example value is called an **exemplar**.
 
 
-You can do this with anything-- here's a more advanced version to show what I mean:
+> Note that when inferring the schema for an array in an exemplar, the array item is considered the _pattern_.  It is used to indicate the expected type of each item in the array.  Consequently, if an array in an exemplar has an item, that means it is homogeneous (i.e. all its items have the same schema).
+
+
+You can use exemplars to specify just about any type-- here's a more advanced schema to show what I mean:
+
 ```javascript
 rttc.infer([{ upstream: '===', fieldName: 'photos', files: [{getFile: '->', fileName: 'whatever', numBytes: 34353, meta: '*' }] }]);
 // =>
@@ -362,10 +366,6 @@ Parse a string from a human into something usable.  If provided, `typeSchema` wi
 The inverse of `.parseHuman()`, this function encodes a string that, if run through `.parseHuman()` would result in the given value.
 
 
-##### .reify(typeSchema)
-
-Given a type schema, strip out generics ("ref", "json", {}, and []) to convert it into a strict type. In other words, this makes a type schema "strict", and the result of this function always passes `rttc.isStrictType()`.
-
 
 ### Assertions
 
@@ -382,7 +382,7 @@ Guess the type schema from an example value.
 
 ##### .isStrictType(typeSchema, [recursive=false])
 
-Determine whether the given type schema is "strict" (meaning it is a string, number, boolean, lamda, faceted dictionary, or patterned array).  If second argument (`recursive`) is set to `true`, then also recursively check the subkeys of faceted dictionaries and patterns of arrays in the type schema.
+Determine whether the given type schema is "strict" (note that this is NOT the same as `validateStrict()`!!!  It's confusing and we should change the terminology.  In this sense, "strict" means that it is a string, number, boolean, lamda, faceted dictionary, or patterned array).  If second argument (`recursive`) is set to `true`, then also recursively check the subkeys of faceted dictionaries and patterns of arrays in the type schema.
 
 | type                    | is strict?          |
 |-------------------------|---------------------|
@@ -449,184 +449,92 @@ Here's a table listing notable differences between `util.inspect()` and `rttc.co
 
 
 
-<!--
+### Experimental
 
-## More examples
+The following functions are newly implemented, experimental, and tend to be a bit more advanced. They may undergo frequent changes over the coming months, so use with care.  You have been warned!
 
-#### rttc.infer(value)
+##### .getDefaultExemplar(typeSchema)
 
-Infer the type/schema of the provided value.
+Given a type schema, return an exemplar which accepts precisely the same set of values.
 
-```javascript
-require('rttc').infer(false);
-// => 'boolean'
-```
+##### .coerceExemplar(value)
 
-```javascript
-require('rttc').infer(0);
-// => 'number'
-```
+Convert a normal value into an exemplar representative of the _most specific_ type schema which would accept it.  In most cases, this leaves the value untouched-- however it does take care of a few special cases:
 
-```javascript
-require('rttc').infer({
-  foo: 'bar'
-});
-// => { foo: 'string' }
-```
-
-```javascript
-require('rttc').infer({
-  foo: 'whatever',
-  bar: { baz: true }
-});
-// => { foo: 'string', bar: { baz: 'boolean' } }
-```
-
-```javascript
-require('rttc').infer([{
-  foo: ['bar']
-}]);
-// => [{ foo: ['string'] }]
-```
-
-```javascript
-require('rttc').infer({
-  user: {
-    friends: [{
-      name: 'Lenny',
-      age: 77
-    }]
-});
-// =>
-/*
-{
-  user: {
-    friends: [{
-      name: 'Lenny',
-      age: 77
-    }]
-}
-*/
-```
++ Empty dictionaries become generic dictionaries (`{}`).  The most specific exemplar which can accept an empty dictionary is the generic dictionary.
++ Empty arrays become generic arrays (`[]`).  Since we don't know the contents, we have to assume this array could be heterogeneous (i.e. have items with different types).
++ Multi-item arrays become pattern arrays, and any extra items (other than the first one) are lopped off.
++ Functions become '->'.
++ `null` becomes '*'.
++ If the top-level value is `undefined`, it becomes '==='.
++ '->' becomes 'an arrow symbol'.
++ '*' becomes 'a star symbol'.
++ '===' becomes '3 equal signs'.
++ `NaN`, `Infinity`, `-Infinity`, and `-0` become 0.
++ Nested items and keys with `undefined` values are stripped.
++ Other than the exceptions mentioned above, non-JSON-serializable things (like circular references) are boiled away when this calls `dehydrate` internally.
 
 
+##### .isInvalidExample(exemplar)
 
-#### rttc.validate(expected, actual)
+Return `true` if the provided value is NOT a valid rttc exemplar.
 
-```javascript
-rttc.validate('string', 'foo');
-// => 'foo'
+##### .getPathInfo(exemplar, path)
 
-rttc.validate('number', 4.5);
-// => 4.5
+Given an exemplar schema and a keypath, return information about the specified segment.  If the path is inside of a generic, then the exemplar is '*',  and this path is optional. If the path is inside of a `ref`,  then the exemplar is '===', and this path is optional.  If the path is not reachable (i.e. inside of a string, or lamda... or something) then throw an error.
 
-rttc.validate('boolean', true);
-// => true
-
-rttc.validate('string', -2);
-// => '-2'
-
-rttc.validate('string', false);
-// => 'false'
-
-rttc.validate('number', '3');
-// => 3
-
-rttc.validate('boolean', 'true');
-// => true
-
-rttc.validate({
-  user: {
-    friends: [{
-      name: 'Lenny',
-      age: 77
-    }]
-}, {
-  user: {
-    friends: [{
-      name: 'Lenny',
-      age: '77'
-    }]
+```js
+var SOME_EXEMPLAR = {
+  salutation: 'Mr.',
+  hobbies: ['knitting'],
+  medicalInfo: {
+    numYearsBlueberryAbuse: 12.5,
+    latestBloodWork: {}
   }
-});
+};
+
+rttc.getPathInfo(SOME_EXEMPLAR, 'hobbies.238');
 // =>
-/*
-{
-  user: {
-    friends: [{
-      name: 'Lenny',
-      age: 77
-    }]
-  }
-}
- */
-```
-
-If value cannot be properly coerced, throws error with its `.code` property set to `E_INVALID`:
-
-```javascript
-rttc.validate('number', 'asdf');
-// throws E_INVALID
-```
+//     {
+//       exemplar: 'knitting',
+//       optional: false
+//     }
 
 
-
-#### rttc.coerce(expected, actual)
-
-```javascript
-rttc.coerce('string', 'foo');
-// => 'foo'
-
-rttc.coerce('number', 4.5);
-// => 4.5
-
-rttc.coerce('boolean', true);
-// => true
-
-rttc.coerce('string', -2);
-// => '-2'
-
-rttc.coerce('string', false);
-// => 'false'
-
-rttc.coerce('number', '3');
-// => 3
-
-rttc.coerce('boolean', 'true');
-// => true
-```
-
-
-If value can't be properly coerced, the "base value" for the type will be used:
-
-```
-rttc.coerce('number', 'asdf');
-// => 0
-
-rttc.coerce('boolean', 'asdf');
-// => false
-
-rttc.coerce({
-  user: {
-    friends: [{
-      name: 'Lenny',
-      age: 77
-    }]
-}, 'err... some dude who\'s friends with lenny?');
+rttc.getPathInfo(SOME_EXEMPLAR, 'medicalInfo.latestBloodWork.whiteBloodCellCount');
 // =>
-/*
-{
-  user: {
-    friends: [{
-      name: 'Lenny',
-      age: 77
-    }]
-  }
-}
- */
+//     {
+//       exemplar: '*',
+//       optional: true
+//     }
 ```
 
--->
+##### .union(schema0, schema1, [isExemplar=false], [isStrict=false])
+
+Given two rttc schemas (e.g. `A` and `B`), return the most specific schema that would accept the superset of what both schemas accept normally (`A ∪ B`).
+
++ _schema0_ - the first schema
++ _schema1_ - the second schema (order doesn't matter)
++ _isExemplar_ - if set, the schemas will be treated as exemplars (rather than type schemas)
++ _isStrict_ - if set, the schemas will be unioned using strict validation rules (i.e. like `validateStrict()`)
+
+
+##### .intersection(schema0, schema1, [isExemplar=false], [isStrict=false])
+
+Given two rttc schemas, return the most specific schema that accepts the shared subset of values accepted by both. Formally, this subset is the intersection of A and B (A ∩ B), where A is the set of values accepted by `schema0` and B is the set of values accepted by `schema1`.  If `A ∩ B` is the empty set, then this function will return `null`.  Otherwise it will return the schema that precisely accepts `A ∩ B`.
+
++ _schema0_ - the first schema
++ _schema1_ - the second schema (order doesn't matter)
++ _isExemplar_ - if set, the schemas will be treated as exemplars (rather than type schemas)
++ _isStrict_ - if set, the schemas will be intersected using strict validation rules (i.e. like `validateStrict()`)
+
+
+##### .reify(typeSchema)
+
+Given a type schema, strip out generics ("ref", "json", {}, and []) to convert it into a "strict" type (note that this is NOT the same as `validateStrict()`!!!  It's confusing and we should change the terminology.) In other words, this makes a type schema "strict" (again, bad terminology choice, sorry!), and the result of this function always passes `rttc.isStrictType()`.
+
+
+
 
 
 ## License

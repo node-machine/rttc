@@ -12,7 +12,7 @@ module.exports = {
   dehydrate: require('./lib/dehydrate'),
   compile: require('./lib/compile'),
   sample: require('./lib/sample'),
-  exemplar: require('./lib/exemplar'),
+  getDefaultExemplar: require('./lib/get-default-exemplar'),
   getDisplayType: require('./lib/get-display-type'),
   isStrictType: require('./lib/is-strict-type'),
   isInvalidExample: require('./lib/is-invalid-example'),
@@ -21,6 +21,7 @@ module.exports = {
   union: require('./lib/union'),
   getPathInfo: require('./lib/get-path-info'),
   getBaseVal: require('./lib/get-base-val'),
+  inferExemplar: require('./lib/infer-exemplar'),
 };
 
 
@@ -29,3 +30,4 @@ module.exports.encode = module.exports.stringify;
 module.exports.decode = module.exports.parse;
 module.exports.typeInfo = require('./lib/type-info');
 module.exports.inspect = module.exports.compile;
+module.exports.exemplar = module.exports.getExemplar;
