@@ -1,6 +1,6 @@
 {
   "name": "rttc",
-  "version": "8.1.4",
+  "version": "8.1.5",
   "description": "Runtime type-checking for JavaScript.",
   "main": "index.js",
   "scripts": {
