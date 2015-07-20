@@ -408,7 +408,8 @@ Given a type schema, return an array of up to `n` unique sample values that woul
 
 ##### .getDisplayType(value)
 
-Given a value, return its type as a human-readable string (this is not limited to rttc types-- it can return strings like `"Error"` and `"Date"`)
+Given a value, return its type as a human-readable string (this is not limited to rttc types-- it can return strings like `"Error"` and `"Date"`).
+If special rttc exemplar syntax is used, it is respected.
 
 
 ##### .compile(value)

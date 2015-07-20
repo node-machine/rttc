@@ -27,6 +27,12 @@ describe('.getDisplayType()', function() {
   });
 
 
+  it('should recognize special rttc exemplar syntax', function (){
+    assert.strictEqual(rttc.getDisplayType('*'), 'json');
+    assert.strictEqual(rttc.getDisplayType('==='), 'ref');
+    assert.strictEqual(rttc.getDisplayType('->'), 'lamda');
+    assert.strictEqual(rttc.getDisplayType('<-'), 'lamda');
+  });
 
   it('should recognize strings', function (){
     assert.strictEqual(rttc.getDisplayType(''), 'string');
