@@ -457,7 +457,7 @@ The following functions are newly implemented, experimental, and tend to be a bi
 
 Given a type schema, return an exemplar which accepts precisely the same set of values.
 
-##### .coerceExemplar(value)
+##### .coerceExemplar(value, [allowSpecialSyntax=false])
 
 Convert a normal value into an exemplar representative of the _most specific_ type schema which would accept it.  In most cases, this leaves the value untouched-- however it does take care of a few special cases:
 
@@ -474,16 +474,20 @@ Convert a normal value into an exemplar representative of the _most specific_ ty
 + Nested items and keys with `undefined` values are stripped.
 + Other than the exceptions mentioned above, non-JSON-serializable things (like circular references) are boiled away when this calls `dehydrate` internally.
 
+If the `allowSpecialSyntax` flag is enabled, then `*`, `->`, and `===` will take on their traditional meaning instead of being replaced with strings (e.g. "a star symbol").
 
 ```js
-rttc.coerceExemplar({x:'*'})
-//   =>   { x: 'a star symbol' }
-
 rttc.coerceExemplar([{a:null}, {b: [[74,39,'surprise string!']] }])
 //   =>   [ {} ]
 
 rttc.coerceExemplar([74,39,'surprise string!'])
 //   =>   [ 'surprise string!' ]
+
+rttc.coerceExemplar({x:'*'})
+//   =>   { x: 'a star symbol' }
+
+rttc.coerceExemplar({x:'*'}, true)
+//   =>   { x: '*' }
 ```
 
 ##### .isInvalidExample(exemplar)

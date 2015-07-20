@@ -21,6 +21,22 @@ describe('.coerceExemplar()', function() {
   // + Nested items and keys with `undefined` values are stripped.
   // + Other than the exceptions mentioned above, non-JSON-serializable things (like circular references) are boiled away when this calls `dehydrate` internally.
 
+  it('should replace "json", "ref", and "lamda" exemplars with strings', function (){
+    coerceExemplarAndVerifyDeep('*', 'a star symbol');
+    coerceExemplarAndVerifyDeep('->', 'an arrow symbol');
+    coerceExemplarAndVerifyDeep('<=', 'an arrow symbol');
+    coerceExemplarAndVerifyDeep('<---', 'an arrow symbol');
+    coerceExemplarAndVerifyDeep('===', '3 equal signs');
+  });
+
+  it('should NOT replace "json", "ref", and "lamda" exemplars with strings if the `allowSpecialSyntax` flag is enabled', function (){
+    coerceExemplarAndVerifyDeep('*', '*', true);
+    coerceExemplarAndVerifyDeep('->', '->', true);
+    coerceExemplarAndVerifyDeep('<=', '<=', true);
+    coerceExemplarAndVerifyDeep('<---', '<---', true);
+    coerceExemplarAndVerifyDeep('===', '===', true);
+  });
+
   it('should leave empty dictionaries, empty arrays, strings, numbers, and booleans alone (and recursively process things)', function (){
     coerceExemplarAndVerifyDeep({}, {});
     coerceExemplarAndVerifyDeep([], []);
@@ -148,13 +164,14 @@ describe('.coerceExemplar()', function() {
  *
  * @param  {*} value
  * @param  {*} expected
+ * @param  {Boolean} allowSpecialSyntax
  */
-function coerceExemplarAndVerifyDeep(value, expected){
-  assert.deepEqual(rttc.coerceExemplar(value), expected);
-  assert.deepEqual(rttc.coerceExemplar({x:value}), {x:expected});
-  assert.deepEqual(rttc.coerceExemplar({x: [value]}), {x:[expected]});
-  assert.deepEqual(rttc.coerceExemplar([{x: value}]), [{x:expected}]);
-  assert.deepEqual(rttc.coerceExemplar([value]), [expected]);
-  assert.deepEqual(rttc.coerceExemplar([[value]]), [[expected]]);
+function coerceExemplarAndVerifyDeep(value, expected, allowSpecialSyntax){
+  assert.deepEqual(rttc.coerceExemplar(value, allowSpecialSyntax), expected);
+  assert.deepEqual(rttc.coerceExemplar({x:value}, allowSpecialSyntax), {x:expected});
+  assert.deepEqual(rttc.coerceExemplar({x: [value]}, allowSpecialSyntax), {x:[expected]});
+  assert.deepEqual(rttc.coerceExemplar([{x: value}], allowSpecialSyntax), [{x:expected}]);
+  assert.deepEqual(rttc.coerceExemplar([value], allowSpecialSyntax), [expected]);
+  assert.deepEqual(rttc.coerceExemplar([[value]], allowSpecialSyntax), [[expected]]);
 }
 
