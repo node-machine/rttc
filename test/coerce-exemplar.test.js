@@ -133,9 +133,9 @@ describe('.coerceExemplar()', function() {
     coerceExemplarAndVerifyDeep([1], [1]);
     coerceExemplarAndVerifyDeep([1,4], [4]);
     coerceExemplarAndVerifyDeep(['1','4'], ['4']);
-    coerceExemplarAndVerifyDeep([1,'1'], ['1']);
-    coerceExemplarAndVerifyDeep([0,false], [0]);
-    coerceExemplarAndVerifyDeep([false, 7, 4, true, -4, 0, 89], [89]);
+    coerceExemplarAndVerifyDeep([1,'1'], ['*']);
+    coerceExemplarAndVerifyDeep([0,false], ['*']);
+    coerceExemplarAndVerifyDeep([false, 7, 4, true, -4, 0, 89], ['*']);
     coerceExemplarAndVerifyDeep([{x:false}, [7], {y: {z: 4}}, [[]], 'whatever', true], ['*']);
     coerceExemplarAndVerifyDeep([
       [{ x: false }],
