@@ -14,7 +14,7 @@ module.exports = {
   sample: require('./lib/sample'),
   getDefaultExemplar: require('./lib/get-default-exemplar'),
   getDisplayType: require('./lib/get-display-type'),
-  isStrictType: require('./lib/is-strict-type'),
+  isSpecific: require('./lib/is-specific'),
   isInvalidExample: require('./lib/is-invalid-example'),
   reify: require('./lib/reify'),
   intersection: require('./lib/intersection'),
@@ -31,3 +31,4 @@ module.exports.decode = module.exports.parse;
 module.exports.typeInfo = require('./lib/type-info');
 module.exports.inspect = module.exports.compile;
 module.exports.exemplar = module.exports.getDefaultExemplar;
+module.exports.isStrictType = module.exports.isSpecific;

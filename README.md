@@ -85,7 +85,7 @@ rttc.infer([{ upstream: '===', fieldName: 'photos', files: [{getFile: '->', file
 
 
 
-## Types
+## Types &amp; terminology
 
 > Each type can be validated or coerced against.  If coercion fails, the "base value" for the type will be used.
 
@@ -248,7 +248,7 @@ This special type allows anything except `undefined` at the top level (undefined
 
 
 
-## Edge-cases
+## Conventions and edge-cases
 
 The following is a high-level overview of important conventions used by the `rttc` module. For detailed coverage of every permutation of validation and coercion, check out the declarative tests in the `spec/` folder of this repository.
 
@@ -380,11 +380,17 @@ Determine whether two values are equivalent using `_.isEqual()`, but also look f
 
 Guess the type schema from an example value.
 
-##### .isStrictType(typeSchema, [recursive=false])
+##### .isSpecific(typeSchemaOrExemplar, [recursive=false], [isExemplar=false])
 
-Determine whether the given type schema is "strict" (note that this is NOT the same as `validateStrict()`!!!  It's confusing and we should change the terminology.  In this sense, "strict" means that it is a string, number, boolean, lamda, faceted dictionary, or patterned array).  If second argument (`recursive`) is set to `true`, then also recursively check the subkeys of faceted dictionaries and patterns of arrays in the type schema.
+Determine whether the given type schema is "specific".  String, number, boolean, lamda, faceted dictionary, or patterned array types are "specific".  Everything else is "generic".
 
-| type                    | is strict?          |
+If the second argument (`recursive`) is set to `true`, then also recursively check the subkeys of faceted dictionaries and patterns of arrays in the type schema.
+
+If the third argument (`isExemplar`) is set to `true`, then treat the provided schema as an rttc example rather than a type schema.
+
+For reference
+
+| type                    | is specific?          |
 |-------------------------|---------------------|
 | string                  | yes _(always)_ |
 | number                  | yes _(always)_ |
@@ -547,7 +553,7 @@ Given two rttc schemas, return the most specific schema that accepts the shared 
 
 ##### .reify(typeSchema)
 
-Given a type schema, strip out generics ("ref", "json", {}, and []) to convert it into a "strict" type (note that this is NOT the same as `validateStrict()`!!!  It's confusing and we should change the terminology.) In other words, this makes a type schema "strict" (again, bad terminology choice, sorry!), and the result of this function always passes `rttc.isStrictType()`.
+Given a type schema, strip out generics ("ref", "json", {}, and []) to convert it into a "specific" type. In other words, the result of this function always passes `rttc.isSpecific()`.
 
 
 
