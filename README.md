@@ -99,7 +99,7 @@ There are 10 different types recognized by `rttc`:
 | string                  | `'any string like this'` | `''`
 | number                  | `1337` _(any number)_    | `0`
 | boolean                 | `false` _(or `true`)_    | `false`
-| lamda                   | `function anyFunction(){ /* any function */ }` | `function () { throw new Error('Not implemented! (this function was automatically created by `rttc`'); };`
+| lamda                   | `'->'`                   | `function () { throw new Error('Not implemented! (this function was automatically created by `rttc`'); };`
 | generic dictionary      | `{}`           | `{}` _(empty dictionary)_
 | generic array           | `[]`          | `[]` _(empty array)_
 | json                    | `'*'`                    | `null`
