@@ -556,10 +556,13 @@ Given two rttc schemas, return the most specific schema that accepts the shared 
 Given a type schema, strip out generics ("ref", "json", {}, and []) to convert it into a "specific" type. In other words, the result of this function always passes `rttc.isSpecific()`.
 
 
-##### .getBaseVal(sampleValue)
+##### .getBaseVal(exemplar)
 
 A convenience method to return the base value for the given exemplar.
 
+##### .cast(exemplar, actualValue)
+
+A convenience method that calls `rttc.infer()` on the provided exemplar to get the type schema, then uses it to `rttc.coerce()` the `actualValue` provided.
 
 
 ## License
