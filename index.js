@@ -22,6 +22,7 @@ module.exports = {
   getPathInfo: require('./lib/get-path-info'),
   getBaseVal: require('./lib/get-base-val'),
   coerceExemplar: require('./lib/coerce-exemplar'),
+  cast: require('./lib/cast'),
 };
 
 
