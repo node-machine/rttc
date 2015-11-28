@@ -422,10 +422,11 @@ If special rttc exemplar syntax is used, it is respected.
 
 Given a value, return a human-readable string which represents it.  This string is equivalent to a JavaScript code snippet which would accurately represent the value in code.
 
-This is a lot like `util.inspect(val, false, null)`, but it also has special handling for Errors, Dates, and RegExps (using `dehydrate()` with `allowNull` enabled), as well as for Functions (making them `eval()`-ready.) The biggest difference is that the string you get back from `rttc.compile()` is ready for use as the right hand side of a variable initialization statement in JavaSript. e.g.:
+This is a lot like `util.inspect(val, false, null)`, but it also has special handling for Errors, Dates, and RegExps (using `dehydrate()` with `allowNull` enabled), as well as for Functions (making them `eval()`-ready.) The biggest difference is that the string you get back from `rttc.compile()` is ready for use as the right hand side of a variable initialization statement in JavaSript. For example, if we assume you are using EJS on the server, and provided some `data` as a view local (as well as providing access to `rttc`):
 
 ```html
-<script type="text/javascript>
+<script type="text/javascript">
+// This exposes the `data` local to client-side js as `window.SAILS_LOCALS`.
 window.SAILS_LOCALS = <%- rttc.compile(data); %>;
 </script>
 ```
