@@ -191,7 +191,7 @@ Arrays that have been validated/coerced against the generic array type:
 + keys of nested dictionaries with null values may be present
 + null items in arrays at any level may be present
 
-
+> Note: Generic array exemplar syntax is really just another way to write `['*']`.  The special empty array syntax will continue to be supported for backwards compatibility, but it may eventually be removed from documentation and tests to avoid potential confusion.
 
 
 ### Patterned arrays
@@ -513,7 +513,7 @@ Convert a normal value into an exemplar representative of the _most specific_ ty
 + Nested items and keys with `undefined` values are stripped.
 + Other than the exceptions mentioned above, non-JSON-serializable things (like circular references) are boiled away when this calls `dehydrate` internally.
 
-If the `allowSpecialSyntax` flag is enabled, then `*`, `->`, and `===` will take on their traditional meaning instead of being replaced with strings (e.g. "a star symbol").
+If the `allowSpecialSyntax` flag is enabled, then `*`, `->`, and `===` will be left untouched (allowing them to be intperpreted as special rttc exemplar syntax) instead of being replaced with string samples (e.g. "a star symbol" or "an arrow symbol").
 
 ```js
 rttc.coerceExemplar([{a:null}, {b: [[74,39,'surprise string!']] }])
