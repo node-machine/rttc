@@ -424,41 +424,108 @@ Given a value, return a human-readable string which represents it.  This string 
 
 This is a lot like `util.inspect(val, false, null)`, but it also has special handling for Errors, Dates, and RegExps (using `dehydrate()` with `allowNull` enabled), as well as for Functions (making them `eval()`-ready.) The biggest difference is that the string you get back from `rttc.compile()` is ready for use as the right hand side of a variable initialization statement in JavaSript.
 
-For example, let's assume you are using EJS on the server, and provided some `data` as a view local (as well as providing access to `rttc`):
-```js
-return res.view('pages/my-sweet-page', {
-  rttc: require('rttc'),
-  data: {
-    stuff: {like: 'this'},
-    orMaybe: [
-      {
-        'even a function': function optionalFnName(yourName){
-          console.log('At last, the browser!  I am born again!  Thanks, '+ yourName+ '.');
-        }
-      }
-    ]
-  }
-})
-```
-
-Then in your view template (`pages/my-sweet-page.ejs`), you could write:
-```html
-<script type="text/javascript">
-// This exposes the `data` local to client-side js as `window.SAILS_LOCALS`.
-window.SAILS_LOCALS = <%- rttc.compile(data); %>;
-
-// Then you can do:
-window.SAILS_LOCALS.orMaybe['even a function']('Giles');
-// => At last, the browser!  I am born again!  Thanks, Giles.
-</script>
-```
-
 Useful for:
   + bootstrapping data on server-rendered views for access by client-side JavaScript
   + generating code samples
   + error messages
   + debugging
   + user interfaces
+
+###### For Example
+
+Let's assume you are building a website about vampires.
+
+In your view template (`pages/all-vampires.ejs`), you might write:
+```html
+<div class="topbar">
+  <span>Logged in as <%= me.name %></span>
+</div>
+<div class="vampire-list-component" is="vampire-list-component">
+  <h2>All known vampires in the Los Angeles area:</h2>
+  <ul class="vampire-list">
+  <% _.each(vampires, function (vampire){ %>
+    <li data-vampire-username="<%=vampire.username%>">
+      <span><%= vampire.name %></span>
+      <button is="summon-btn">Summon</button>
+    </li>
+  <% }); %>
+  </ul>
+</div>
+
+
+<%
+// If present, expose the `dataToExposeToBrowserJs` local to client-side js as `window.SAILS_LOCALS`:
+if(typeof dataToExposeToBrowserJs !== undefined) { %>
+<script type="text/javascript">
+window.SAILS_LOCALS = <%- dataToExposeToBrowserJs %>;
+</script>
+<% } %>
+
+<script type="text/javascript">
+// * * (normally the code in this second script block would be in a separate client-side js file) * *
+
+// When the summon button is clicked, trigger the `summon` function for this vampire.
+$('[is="vampire-list-component"]').on('click', '[is="summon-btn"]', function whenSummonButtonIsClicked(e) {
+  
+  // Look up the clicked vampire in SAILS_LOCALS
+  var clickedVampire = _.find(window.SAILS_LOCALS.vampires, {
+    username: $(e.currentTarget).closest('[data-vampire-username]').attr('data-vampire-username')
+  });
+  
+  // Call its summon function
+  // (obviously the summon function has to contain logic which runs in the browser)
+  var summoningStatusReport = clickedVampire.summon(window.SAILS_LOCALS.me.name);
+  
+  // Will log:
+  // >  At last, the browser!  I am born again!  Thanks, Rupert.
+  //
+  // Or:
+  // >  ...
+
+  // And return:
+  // > { mood: 'hungry' }
+  // Or:
+  // > { mood: 'brooding' }
+});
+</script>
+
+```
+
+using EJS on the server, and provided some data as a view local (as well as providing access to `rttc`):
+```js
+var SOME_WATCHER = { name: 'Rupert Giles', hobbies: ['dirty dancing'], favoriteVampire: 'angelus' };
+var SOME_VAMPIRES = [
+  {
+    username: 'angelus',
+    name: 'Angelus',
+    hobbies: ['taiji'],
+    summon: function noteThatRttcCompilePreservesFunctionNamesIfProvided(){
+      console.log('...');}
+      return {mood: 'brooding'};
+    },
+  {
+    username: 'darla',
+    name: 'Darla',
+    hobbies: ['torture'],
+    summon: function (yourName){
+      console.log('At last, the browser!  I am born again!  Thanks, '+ yourName+ '.');
+      return {mood: 'hungry'};
+    }
+  }
+];
+return res.view('pages/my-sweet-page', {
+  watcher: SOME_WATCHER,
+  vampires: SOME_VAMPIRES,
+  dataToExposeToBrowserJs: require('rttc').compile({
+    watcher: SOME_WATCHER,
+    vampires: SOME_VAMPIRES,
+    otherStuff: {like: 'this'},
+    orMaybe: [ { 'even another function': function (){ console.log('like this'); } } ]
+  }
+})
+```
+
+
 
 
 Here's a table listing notable differences between `util.inspect()` and `rttc.compile()` for reference:
