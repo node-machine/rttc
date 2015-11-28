@@ -422,14 +422,18 @@ If special rttc exemplar syntax is used, it is respected.
 
 Given a value, return a human-readable string which represents it.  This string is equivalent to a JavaScript code snippet which would accurately represent the value in code.
 
-This is a lot like `util.inspect(val, false, null)`, but it also has special handling for Errors, Dates, and RegExps (using `dehydrate()` with `allowNull` enabled), as well as for Functions (making them `eval()`-ready.) The biggest difference is that everything you get from `rttc.compile()` is ready for use as values in `*`, `{}`, or `[]` type machines, Treeline, Angular's rendering engine, and JavaScript code in general (i.e. if you were to append it on the right-hand side of `var x = `, or if you ran `eval()` on it)
+This is a lot like `util.inspect(val, false, null)`, but it also has special handling for Errors, Dates, and RegExps (using `dehydrate()` with `allowNull` enabled), as well as for Functions (making them `eval()`-ready.) The biggest difference is that the string you get back from `rttc.compile()` is ready for use as the right hand side of a variable initialization statement in JavaSript. e.g.:
 
-Note that undefined values in arrays and undefined values of keys in dictionaries will be stripped out, and circular references will be handled as they are in `util.inspect(val, false, null)`
+```html
+<script type="text/javascript>
+window.SAILS_LOCALS = <%- rttc.compile(data); %>;
+</script>
+```
 
 Useful for:
+  + bootstrapping data on server-rendered views for access by client-side JavaScript
   + generating code samples
-  + in particular for bootstrapping data on server-rendered views for access by client-side JavaScript
-  + error messages,
+  + error messages
   + debugging
   + user interfaces
 
@@ -453,6 +457,11 @@ Here's a table listing notable differences between `util.inspect()` and `rttc.co
 | NaN                      | `NaN`                                     | `0`                                  |
 | Readable (Node stream)   | `{ _readableState: { highWaterMar..}}`    | `null`                               |
 | Buffer (Node bytestring) | `<Buffer 61 62 63>`                       | `null`                               |
+
+
+> Note that undefined values in arrays and undefined values of keys in dictionaries will be stripped out, and circular references will be handled as they are in `util.inspect(val, false, null)`.
+
+
 
 
 
