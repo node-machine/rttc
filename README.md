@@ -103,7 +103,7 @@ There are 10 different types recognized by `rttc`:
 | generic dictionary      | `{}`           | `{}` _(empty dictionary)_
 | generic array           | `[]`          | `[]` _(empty array)_
 | json                    | `'*'`                    | `null`
-| ref                     | `'==='`                  | `undefined`
+| ref                     | `'==='`                  | `null`
 | faceted dictionary  (recursive)       | `{...}` _(i.e. w/ keys)_  | `{...}` (w/ all expected keys and _their_ base values)
 | pattern array (recursive)    | `[...]` _(i.e. w/ 1 item)_  | `[]` _(empty array)_
 
@@ -255,8 +255,8 @@ The following is a high-level overview of important conventions used by the `rtt
 ##### `undefined` and `null` values
 
 + `undefined` _is never valid as a top-level value_ against ANY type, even mutable reference (`===`)
-+ `undefined` IS, however, allowed as an item in a nested array or value in a nested dictionary, but only against the mutable reference type (`===`)
-+ `null` is only valid at the top level against the JSON (`*`) and mutable reference (`===`) types.
++ `undefined` IS, however, allowed as an item in a nested array or value in a nested dictionary, but only _within a dictionary or array_ being validated against the mutable reference type (`===`)
++ `null` is only valid against the JSON (`*`) and mutable reference (`===`) types.
 
 ##### Weird psuedo-numeric values
 
@@ -291,7 +291,7 @@ As mentioned above, every type has a base value.
 + For the generic dictionary type (`{}`) or a faceted dictionary type (e.g. `{foo:'bar'}`), the base value is `{}`.
 + For the generic array type (`[]`), or a faceted/homogenous array type (e.g. `[3]` or `[{age:48,name: 'Nico'}]`), the base value is `[]`
 + For the "json" type (`'*'`), base value is `null`.
-+ For the "ref" type (`'==='`), base value is `undefined`.
++ For the "ref" type (`'==='`), base value is `null`.
 
 > Note that, for both arrays and dictionaries, any keys in the schema will get the base value for their type (and their keys for their type, etc. -- recursive)
 
@@ -422,7 +422,7 @@ If special rttc exemplar syntax is used, it is respected.
 
 Given a value, return a human-readable string which represents it.  This string is equivalent to a JavaScript code snippet which would accurately represent the value in code.
 
-This is a lot like `util.inspect(val, false, null)`, but it also has special handling for Errors, Dates, and RegExps (using `dehydrate()` with `allowNull` enabled), as well as for Functions (making them `eval()`-ready.) The biggest difference is that the string you get back from `rttc.compile()` is ready for use as the right hand side of a variable initialization statement in JavaSript.
+This is a lot like `util.inspect(val, {depth: null})` in the Node core util package. But there are a few differences. `rttc.compile()` also has special handling for Errors, Dates, and RegExps (using `dehydrate()` with `allowNull` enabled), as well as for Functions (making them `eval()`-ready.) The biggest difference is that the string you get back from `rttc.compile()` is ready for use as the right hand side of a variable initialization statement in JavaSript.
 
 Useful for:
   + bootstrapping data on server-rendered views for access by client-side JavaScript
@@ -444,8 +444,8 @@ Finally, here's a table listing notable differences between `util.inspect()` and
 | a deeply nested thing    | `{ a: { b: { c: [Object] } } }`           | `{ a: { b: { c: { d: {} } } } }`     |
 | a circular thing         | `{ y: { z: [Circular] } }`                | `{ y: { z: '[Circular ~]' } }`       |
 | undefined                | `undefined`                               | `null`                               |
-| [undefined]              | `[undefined]`                             | []                                     |
-| {foo: undefined}         | `{foo: undefined}`                        | {}                                    |
+| [undefined]              | `[undefined]`                             | `[]`                                 |
+| {foo: undefined}         | `{foo: undefined}`                        | `{}`                                 |
 | Infinity                 | `Infinity`                                | `0`                                  |
 | -Infinity                | `-Infinity`                               | `0`                                  |
 | NaN                      | `NaN`                                     | `0`                                  |
@@ -453,7 +453,7 @@ Finally, here's a table listing notable differences between `util.inspect()` and
 | Buffer (Node bytestring) | `<Buffer 61 62 63>`                       | `null`                               |
 
 
-> Note that undefined values in arrays and undefined values of keys in dictionaries will be stripped out, and circular references will be handled as they are in `util.inspect(val, false, null)`.
+> Note that undefined values in arrays and undefined values of keys in dictionaries will be stripped out, and circular references will be handled as they are in `util.inspect(val, {depth: null})`.
 
 
 
@@ -476,12 +476,12 @@ Convert a normal value into an exemplar representative of the _most specific_ ty
 + Multi-item arrays become pattern arrays, and any extra items (other than the first one) are lopped off.
 + Functions become '->'.
 + `null` becomes '*'.
-+ If the top-level value is `undefined`, it becomes '==='.
-+ '->' becomes 'an arrow symbol'.
-+ '*' becomes 'a star symbol'.
-+ '===' becomes '3 equal signs'.
++ If the top-level value is `undefined`, it becomes '==='. (however this behavior is subject to change in an upcoming release; since `undefined` is not supported by any exemplar)
++ '->' becomes the string: `'an arrow symbol'`.
++ '*' becomes the string: `'a star symbol'`.
++ '===' becomes the string: `'3 equal signs'`.
 + `NaN`, `Infinity`, `-Infinity`, and `-0` become 0.
-+ Nested items and keys with `undefined` values are stripped.
++ Nested array items and keys with `undefined` values are stripped.
 + Other than the exceptions mentioned above, non-JSON-serializable things (like circular references) are boiled away when this calls `dehydrate` internally.
 
 If the `allowSpecialSyntax` flag is enabled, then `*`, `->`, and `===` will be left untouched (allowing them to be intperpreted as special rttc exemplar syntax) instead of being replaced with string samples (e.g. "a star symbol" or "an arrow symbol").
@@ -502,7 +502,7 @@ rttc.coerceExemplar({x:'*'}, true)
 
 ##### .isInvalidExample(exemplar)
 
-Return `true` if the provided value is NOT a valid rttc exemplar.
+Return truthy if the provided value is NOT a valid rttc exemplar.
 
 ##### .getPathInfo(exemplar, path)
 
