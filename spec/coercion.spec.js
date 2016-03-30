@@ -148,7 +148,11 @@ module.exports = [
   { example: true, actual: new Error('asdf'), result: false },
 
   ////////////////////////////////////////////
-  // DICTIONARIES (json-serializable, except `null` not allowed)
+  // DICTIONARIES (w/ json-serializable contents)
+  // (note that `{}` in an exemplar indicates that any keys are permitted, but that their values must be json-serializable)
+  // (there is no way to specifically indicate a dictionary of literally anything, including a mix of functions and other stuff
+  //  so in that scenario, just use `'==='` instead of `{}` and add additional checks in relevant code to ensure you're dealing
+  //  with a dictionary vs the other things `===` might produce; e.g. strings/functions/streams/whatever - literally anything.)
   ////////////////////////////////////////////
 
   { example: {}, actual: 'bar', result: {} },
@@ -193,8 +197,9 @@ module.exports = [
 
 
   ////////////////////////////////////////////
-  // ARRAYS (json-serializable, except `null` not allowed)
-  // (all of the tests below pass w/ [], not necessarily ['==='])
+  // ARRAYS (with json-serializable contents)
+  // (note that `[]` in an exemplar is actually just shorthand for `['*']`)
+  // (to indicate an array of literally anything, including a mix of functions and other stuff, use `['===']`)
   ////////////////////////////////////////////
 
   { example: [], actual: 'bar', result: [] },
@@ -334,7 +339,7 @@ module.exports = [
 
 
   ////////////////////////////////////////////
-  // example: '->'
+  // example: '->' (any function)
   ////////////////////////////////////////////
 
   { example: '->', actual: 'bar', result: function () { throw new Error('Not implemented! (this function was automatically created by `rttc`'); } },
@@ -385,7 +390,8 @@ module.exports = [
 
 
   ////////////////////////////////////////////
-  // example: === (aka undefined)
+  // example: === (literally anything)
+  // (undefined changes to '===' automatically)
   ////////////////////////////////////////////
 
   { example: undefined, actual: 'bar', result: 'bar',  },
