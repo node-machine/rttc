@@ -7,6 +7,7 @@ var _ = require('lodash');
 var rttc = require('../../');
 var getDisplayType = require('../../lib/get-display-type');
 var isEquivalent = require('../../spec/helpers/is-equivalent');
+var getAbbreviatedDisplayVal = require('../../lib/helpers/get-abbreviated-display-val');
 
 
 
@@ -55,7 +56,7 @@ module.exports = function toRunTestWith(transformationFn) {
     var compareTo = expectations.hasOwnProperty('result') ? expectations.result : expectations.actual;
 
     if (!isEquivalent(actualResult, compareTo, typeSchema)) {
-      return cb(new Error('returned incorrect value: '+getDisplayVal(actualResult)+' (a '+getDisplayType(actualResult)+')'));
+      return cb(new Error('returned incorrect value: '+getAbbreviatedDisplayVal(actualResult)+' (a '+getDisplayType(actualResult)+')'));
     }
 
     // Test using strict equality (===) if explicitly requested
@@ -76,31 +77,16 @@ module.exports = function toRunTestWith(transformationFn) {
       }
     }
 
+    // Test that the `example` originally passed in, as well as the
+    // inferred `typeSchema`, have not been altered.
+    //
+    // (The `typeSchema` should NEVER change as a result of running this test.
+    //  And neither should `expectations.example`.)
+    // TODO
+
     // If we made it here, everything's good!
     return cb();
 
   };
 };
 
-
-
-
-function getDisplayVal(v){
-
-  if (_.isDate(v)) {
-    return 'a Date';
-  }
-  if (_.isFunction(v)) {
-    return v.toString();
-  }
-  if (_.isError(v)) {
-    return 'an Error';
-  }
-  if (_.isRegExp(v)) {
-    return 'a RegExp';
-  }
-  if (!_.isPlainObject(v) && !_.isArray(v)) {
-    return getDisplayType(v);
-  }
-  return util.inspect(v,false,null);
-}
