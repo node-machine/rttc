@@ -42,7 +42,7 @@ module.exports = function toRunTestWith(transformationFn) {
     // Ensure that if we got an error, we were expecting it.
     if (gotError){
       if (expectations.error) {return cb();}
-      return cb(new Error('did not expect error, but got one:\n' + util.inspect(gotError)));
+      return cb(new Error('did not expect error, but got one:\n' + util.inspect(gotError) + '\n\nHere is the stack from the error:\n'+gotError.stack+'\n' ));
     }
     // Handle case where we were expecting an error, but we didn't get one.
     if (expectations.error) {
