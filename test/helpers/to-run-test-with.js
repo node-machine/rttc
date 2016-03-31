@@ -4,7 +4,7 @@
 
 var util = require('util');
 var _ = require('lodash');
-var rttc = require('../../');
+var infer = require('../../lib/infer');
 var getDisplayType = require('../../lib/get-display-type');
 var isEquivalent = require('../../spec/helpers/is-equivalent');
 var getAbbreviatedDisplayVal = require('../../lib/helpers/get-abbreviated-display-val');
@@ -21,7 +21,7 @@ module.exports = function toRunTestWith(transformationFn) {
       typeSchema = expectations.type;
     }
     else {
-      typeSchema = rttc.infer(expectations.example);
+      typeSchema = infer(expectations.example);
     }
 
 
