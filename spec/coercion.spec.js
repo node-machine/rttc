@@ -920,4 +920,36 @@ module.exports = [
   },
 
 
+  ////////////////////////////////////////////////
+  // objects which contain other crazy objects
+  // with no `constructor` should not throw errors
+  ////////////////////////////////////////////////
+  {
+    example: [{
+      id: 123,
+      title: 'Robinson Crusoe',
+      surprise: {}
+    }],
+    actual: [{
+      title: 'Hank the Cowdog',
+      surprise: (function(){
+        function Dog(){}
+        var rover = new Dog();
+        rover.coolProps = 'wow so cool';
+        rover.constructo = 'hmm maybe ill try really annoying property names!';
+        rover.prototype = null;
+        rover.__proto__ = null;
+        rover.constructor = null;
+        // hehehehehhe
+        return rover;
+      })()
+    }],
+    result: [{
+      id: 0,
+      title: 'Hank the Cowdog',
+      surprise: {}
+    }]
+  }
+
+
 ];
