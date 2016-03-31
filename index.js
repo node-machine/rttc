@@ -23,6 +23,7 @@ module.exports = {
   getBaseVal: require('./lib/get-base-val'),
   coerceExemplar: require('./lib/coerce-exemplar'),
   cast: require('./lib/cast'),
+  rebuild: require('./lib/rebuild'),
 };
 
 
