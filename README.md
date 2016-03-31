@@ -463,6 +463,20 @@ Finally, here's a table listing notable differences between `util.inspect()` and
 
 The following functions are newly implemented, experimental, and tend to be a bit more advanced. They may undergo frequent changes over the coming months, so use with care.  You have been warned!
 
+##### .rebuild(val, transformLeaf)
+
+Rebuild (non-destructively) the specified value using the provided transformer function to change each primitive or function therein.
+
+Transformer function is provided the value as the first argument, and an rttc display type as the second (either 'string', 'number', 'boolean', 'lamda', or 'null').
+
+e.g.
+```javascript
+return res.json(rttc.rebuild(someData, function transformLeaf(val, type){
+  if (type === 'string') { return val + ' (a grass-type Pokemon)'; }
+  else { return val; }
+}));
+```
+
 ##### .getDefaultExemplar(typeSchema)
 
 Given a type schema, return an exemplar which accepts precisely the same set of values.
