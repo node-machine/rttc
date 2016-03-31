@@ -6,7 +6,7 @@ var util = require('util');
 var _ = require('lodash');
 var infer = require('../../lib/infer');
 var getDisplayType = require('../../lib/get-display-type');
-var isEquivalent = require('../../spec/helpers/is-equivalent');
+var isEqual = require('../../lib/is-equal');
 var getAbbreviatedDisplayVal = require('../../lib/helpers/get-abbreviated-display-val');
 
 
@@ -23,6 +23,11 @@ module.exports = function toRunTestWith(transformationFn) {
     else {
       typeSchema = infer(expectations.example);
     }
+
+    // Create backup copies of our type schema and example
+    // (we validate whether they were inadvertently changed below)
+    var originalExampleBackup = _.cloneDeep(expectations.example);
+    var originalTypeSchemaBackup = _.cloneDeep(typeSchema);
 
 
     // Now validate and/or coerce the actual value against the type schema.
@@ -55,7 +60,7 @@ module.exports = function toRunTestWith(transformationFn) {
     // Otherwise compare it against the original value (`actual`)
     var compareTo = expectations.hasOwnProperty('result') ? expectations.result : expectations.actual;
 
-    if (!isEquivalent(actualResult, compareTo, typeSchema)) {
+    if (!isEqual(actualResult, compareTo, typeSchema)) {
       return cb(new Error('returned incorrect value: '+getAbbreviatedDisplayVal(actualResult)+' (a '+getDisplayType(actualResult)+')'));
     }
 
@@ -81,8 +86,15 @@ module.exports = function toRunTestWith(transformationFn) {
     // inferred `typeSchema`, have not been altered.
     //
     // (The `typeSchema` should NEVER change as a result of running this test.
-    //  And neither should `expectations.example`.)
-    // TODO
+    //  And neither should `expectations.example`, if it was provided.)
+    if (!isEqual(typeSchema, originalTypeSchemaBackup)) {
+      return cb(new Error('inferred type schema was modified as a result of running test!! it became: '+util.inspect(typeSchema, {depth: null})+' (a '+getDisplayType(typeSchema)+')'));
+    }
+    if (!_.isUndefined(originalExampleBackup)) {
+      if (!isEqual(expectations.example, originalExampleBackup)) {
+        return cb(new Error('`example` was modified as a result of running test!! it became: '+util.inspect(expectations.example, {depth: null})+' (a '+getDisplayType(expectations.example)+')'));
+      }
+    }
 
     // If we made it here, everything's good!
     return cb();
