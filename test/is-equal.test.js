@@ -86,11 +86,11 @@ describe('.isEqual()', function() {
 
 
   it('should accurately match functions (nested and at the top-level) when a type schema is provided', function (){
-    // assert(rttc.isEqual(function (){}, function (){}, 'lamda'));
-    // assert(rttc.isEqual(function foo(){}, function foo(){}, 'lamda'));
-    // assert(rttc.isEqual(function foo(x){}, function foo(x){}, 'lamda'));
-    // assert(rttc.isEqual(function foo(x){return x+1;}, function foo(x){return x+1;}, 'lamda'));
-    // assert(rttc.isEqual([function foo(x){return x+1;}], [function foo(x){return x+1;}], ['lamda']));
+    assert(rttc.isEqual(function (){}, function (){}, 'lamda'));
+    assert(rttc.isEqual(function foo(){}, function foo(){}, 'lamda'));
+    assert(rttc.isEqual(function foo(x){}, function foo(x){}, 'lamda'));
+    assert(rttc.isEqual(function foo(x){return x+1;}, function foo(x){return x+1;}, 'lamda'));
+    assert(rttc.isEqual([function foo(x){return x+1;}], [function foo(x){return x+1;}], ['lamda']));
 
 
     assert(rttc.isEqual(
