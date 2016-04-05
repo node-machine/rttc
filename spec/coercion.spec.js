@@ -519,19 +519,21 @@ module.exports = [
     result: [{a: 3, someStuff: [{y:'foo'}, {x:'bar'}]}, {a: 5}]
   },
 
-  // Leave `undefined` items from arrays and nested arrays alone (`'==='` case)
+  // With `===`:
+  // Leave `undefined` items from arrays and nested arrays alone
   {
     example: '===',
     actual: [{a:3}, undefined, {a: 5}, undefined, {a: 7}, {a:9, b: [undefined, 9,2,4,undefined,8]}],
     result: [{a:3}, undefined, {a: 5}, undefined, {a: 7}, {a:9, b: [undefined, 9,2,4,undefined,8]}]
   },
 
-  // Leave `undefined` items from arrays and nested arrays (`['===']` case)
-  // (because '===' leaves them there)
+  // With [`===`]:
+  // Leave `undefined` items from NESTED arrays alone
+  // (because they are being compared as '===')
   {
     example: ['==='],
     actual: [{a:3}, undefined, {a: 5}, undefined, {a: 7}, {a:9, b: [undefined, 9,2,4,undefined,8]}],
-    result: [{a:3}, undefined, {a: 5}, undefined, {a: 7}, {a:9, b: [undefined, 9,2,4,undefined,8]}]
+    result: [{a:3}, {a: 5}, {a: 7}, {a:9, b: [undefined, 9,2,4,undefined,8]}]
   },
 
   // Prune `undefined` items from arrays and nested arrays (`[]` case)
@@ -947,7 +949,12 @@ module.exports = [
     result: [{
       id: 0,
       title: 'Hank the Cowdog',
-      surprise: {}
+      surprise: {
+        coolProps: 'wow so cool',
+        constructo: 'hmm maybe ill try really annoying property names!',
+        prototype: null,
+        constructor: null
+      }
     }]
   }
 
