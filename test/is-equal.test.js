@@ -49,6 +49,20 @@ describe('.isEqual()', function() {
     assert(rttc.isEqual([{y: 4, x: 3}, {y: 3, x: 9}], [{x: 3, y: 4}, {x: 9, y: 3}]));
   });
 
+  it('should not care about key order in dictionaries (nested or top-level) when using a recursive type schema', function (){
+    assert(rttc.isEqual({y: 4, x: 3}, {x: 3, y: 4}, {x: 'number', y: 'number'}));
+    assert(rttc.isEqual([{y: 4, x: 3}], [{x: 3, y: 4}], {x: 'number', y: 'number'}));
+    assert(rttc.isEqual([{y: 4, x: 3}, {y: 3, x: 9}], [{x: 3, y: 4}, {x: 9, y: 3}], [{x: 'number', y: 'number'}]));
+  });
+
+  it('should correctly identify missing keys as inequality when using a faceted dictionary type schemas', function (){
+    assert(!rttc.isEqual(
+      {y: 'things'},
+      {y: 'stuff', x: 'things'},
+      {x: 'string', y: 'string'}
+    ));
+  });
+
   it('should fail to match functions when no type schema is provided (nested and at the top-level)', function (){
     assert.throws(function (){
       assert(rttc.isEqual(function (){}, function (){}));
