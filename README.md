@@ -371,9 +371,14 @@ The inverse of `.parseHuman()`, this function encodes a string that, if run thro
 
 ##### .isEqual(firstValue, secondValue, [_expectedTypeSchema_=`undefined`])
 
-Determine whether two values are equivalent using `_.isEqual()`. If the third argument was provided, also look for expected `lamda` values in the optional type schema and call `toString()` on functions before comparing them.
+Determine whether two values are equivalent using `_.isEqual()`.
 
-> This is the method used by `rttc`'s own tests to validate that expected values and actual values match.
+This is the method used by `rttc`'s own tests to validate that expected values and actual values match.
+
+
+> Experimental:
+> If the third argument was provided, also look for expected `lamda` values in the optional type schema and call `toString()` on functions before comparing them.  The third argument SHOULD NOT BE RELIED UPON.
+
 
 
 ##### .infer(exampleValue)
