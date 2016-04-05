@@ -51,7 +51,7 @@ describe('.isEqual()', function() {
 
   it('should not care about key order in dictionaries (nested or top-level) when using a recursive type schema', function (){
     assert(rttc.isEqual({y: 4, x: 3}, {x: 3, y: 4}, {x: 'number', y: 'number'}));
-    assert(rttc.isEqual([{y: 4, x: 3}], [{x: 3, y: 4}], {x: 'number', y: 'number'}));
+    assert(rttc.isEqual([{y: 4, x: 3}], [{x: 3, y: 4}], [{x: 'number', y: 'number'}]));
     assert(rttc.isEqual([{y: 4, x: 3}, {y: 3, x: 9}], [{x: 3, y: 4}, {x: 9, y: 3}], [{x: 'number', y: 'number'}]));
   });
 
@@ -60,6 +60,18 @@ describe('.isEqual()', function() {
       {y: 'things'},
       {y: 'stuff', x: 'things'},
       {x: 'string', y: 'string'}
+    ));
+  });
+  it('should correctly identify missing keys as inequality when using a type schema that has a generic dictionary inside a pattern array', function (){
+    assert(!rttc.isEqual(
+      {x: 'abc'},
+      {x: 'abc', y: []},
+      {x: 'string', y: [{}]}
+    ));
+    assert(!rttc.isEqual(
+      {x: 'abc', y: []},
+      {x: 'abc'},
+      {x: 'string', y: [{}]}
     ));
   });
 
