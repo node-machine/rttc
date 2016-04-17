@@ -461,6 +461,24 @@ Finally, here's a table listing notable differences between `util.inspect()` and
 > Note that undefined values in arrays and undefined values of keys in dictionaries will be stripped out, and circular references will be handled as they are in `util.inspect(val, {depth: null})`.
 
 
+##### .union(schema0, schema1, [isExemplar=false], [isStrict=false])
+
+Given two rttc schemas (e.g. `A` and `B`), return the most specific schema that would accept the superset of what both schemas accept normally (`A ∪ B`).
+
++ _schema0_ - the first schema
++ _schema1_ - the second schema (order doesn't matter)
++ _isExemplar_ - if set, the schemas will be treated as exemplars (rather than type schemas)
++ _isStrict_ - if set, the schemas will be unioned using strict validation rules (i.e. like `validateStrict()`)
+
+
+##### .intersection(schema0, schema1, [isExemplar=false], [isStrict=false])
+
+Given two rttc schemas, return the most specific schema that accepts the shared subset of values accepted by both. Formally, this subset is the intersection of A and B (A ∩ B), where A is the set of values accepted by `schema0` and B is the set of values accepted by `schema1`.  If `A ∩ B` is the empty set, then this function will return `null`.  Otherwise it will return the schema that precisely accepts `A ∩ B`.
+
++ _schema0_ - the first schema
++ _schema1_ - the second schema (order doesn't matter)
++ _isExemplar_ - if set, the schemas will be treated as exemplars (rather than type schemas)
++ _isStrict_ - if set, the schemas will be intersected using strict validation rules (i.e. like `validateStrict()`)
 
 
 
@@ -470,11 +488,9 @@ The following functions are newly implemented, experimental, and tend to be a bi
 
 ##### .rebuild(val, transformLeaf)
 
-Rebuild (non-destructively) the specified value using the provided transformer function to change each primitive or function therein.
+Recursively rebuild (non-destructively) the specified value using the provided transformer function to change each primitive or function therein. Transformer function is provided the value as the first argument, and an rttc display type as the second (either 'string', 'number', 'boolean', 'lamda', or 'null').  The transformer function is not run for dictionaries or arrays, since they're recursed into automatically (in the rebuilt value, they will be normal dictionary and array literals, so any stuff about getters/setters/non-enumerable properties like prototypal methods and constructor information is all stripped out.  `.rebuild()` also protects against endless recursion due to circular references.
 
-Transformer function is provided the value as the first argument, and an rttc display type as the second (either 'string', 'number', 'boolean', 'lamda', or 'null').
-
-e.g.
+Example usage:
 ```javascript
 return res.json(rttc.rebuild(someData, function transformLeaf(val, type){
   if (type === 'string') { return val + ' (a grass-type Pokemon)'; }
@@ -484,7 +500,7 @@ return res.json(rttc.rebuild(someData, function transformLeaf(val, type){
 
 ##### .getDefaultExemplar(typeSchema)
 
-Given a type schema, return an exemplar which accepts precisely the same set of values.
+Given a type schema, return a random exemplar which accepts precisely the same set of values.
 
 ##### .coerceExemplar(value, [allowSpecialSyntax=false])
 
@@ -521,11 +537,13 @@ rttc.coerceExemplar({x:'*'}, true)
 
 ##### .isInvalidExample(exemplar)
 
-Return truthy if the provided value is NOT a valid rttc exemplar.
+Return truthy if the provided value is NOT a valid rttc exemplar (e.g. `null`).
 
 ##### .getPathInfo(exemplar, path)
 
 Given an exemplar schema and a keypath, return information about the specified segment.  If the path is inside of a generic, then the exemplar is '*',  and this path is optional. If the path is inside of a `ref`,  then the exemplar is '===', and this path is optional.  If the path is not reachable (i.e. inside of a string, or lamda... or something) then throw an error.
+
+> WARNING: Since hops in keypaths are represented by `.` (dots), this method is not safe to use on exemplars which contain any keys which contain dots.  This may be improved in future versions.
 
 ```js
 var SOME_EXEMPLAR = {
@@ -553,34 +571,17 @@ rttc.getPathInfo(SOME_EXEMPLAR, 'medicalInfo.latestBloodWork.whiteBloodCellCount
 //     }
 ```
 
-##### .union(schema0, schema1, [isExemplar=false], [isStrict=false])
-
-Given two rttc schemas (e.g. `A` and `B`), return the most specific schema that would accept the superset of what both schemas accept normally (`A ∪ B`).
-
-+ _schema0_ - the first schema
-+ _schema1_ - the second schema (order doesn't matter)
-+ _isExemplar_ - if set, the schemas will be treated as exemplars (rather than type schemas)
-+ _isStrict_ - if set, the schemas will be unioned using strict validation rules (i.e. like `validateStrict()`)
-
-
-##### .intersection(schema0, schema1, [isExemplar=false], [isStrict=false])
-
-Given two rttc schemas, return the most specific schema that accepts the shared subset of values accepted by both. Formally, this subset is the intersection of A and B (A ∩ B), where A is the set of values accepted by `schema0` and B is the set of values accepted by `schema1`.  If `A ∩ B` is the empty set, then this function will return `null`.  Otherwise it will return the schema that precisely accepts `A ∩ B`.
-
-+ _schema0_ - the first schema
-+ _schema1_ - the second schema (order doesn't matter)
-+ _isExemplar_ - if set, the schemas will be treated as exemplars (rather than type schemas)
-+ _isStrict_ - if set, the schemas will be intersected using strict validation rules (i.e. like `validateStrict()`)
-
 
 ##### .reify(typeSchema)
+
+> **DEPRECATED**.  This method will become an alias for `coerceExemplar` in future versions of rttc, and its current implementation will be removed.
 
 Given a type schema, strip out generics ("ref", "json", {}, and []) to convert it into a "specific" type. In other words, the result of this function always passes `rttc.isSpecific()`.
 
 
 ##### .getBaseVal(exemplar)
 
-A convenience method to return the base value for the given exemplar.
+A convenience method to return the base value for the given exemplar.  This is effectively the same thing as calling `rttc.infer()` to get its type schema, then coercing `undefined` to match (i.e. passing the type schema to `rttc.coerce()` without a second argument).
 
 ##### .cast(exemplar, actualValue)
 
