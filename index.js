@@ -24,7 +24,8 @@ module.exports = {
   coerceExemplar: require('./lib/coerce-exemplar'),
   cast: require('./lib/cast'),
   rebuild: require('./lib/rebuild'),
-  getDisplayTypeLabel: require('./lib/get-display-type-label')
+  getDisplayTypeLabel: require('./lib/get-display-type-label'),
+  inferDisplayType: require('./lib/infer-display-type'),
 };
 
 
