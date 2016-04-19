@@ -539,6 +539,19 @@ rttc.coerceExemplar({x:'*'}, true)
 
 Return truthy if the provided value is NOT a valid rttc exemplar (e.g. `null`).
 
+
+##### .getDisplayTypeLabel(type)
+
+Given an RTTC "display type" aka "typeclass" string, return the appropriate human-readable label for that type. Useful for error messages, user interfaces, etc.
+
+```js
+rttc.getDisplayTypeLabel('ref');
+//   => 'Anything'
+
+rttc.getDisplayTypeLabel('string');
+//   => 'String'
+```
+
 ##### .getPathInfo(exemplar, path)
 
 Given an exemplar schema and a keypath, return information about the specified segment.  If the path is inside of a generic, then the exemplar is '*',  and this path is optional. If the path is inside of a `ref`,  then the exemplar is '===', and this path is optional.  If the path is not reachable (i.e. inside of a string, or lamda... or something) then throw an error.
