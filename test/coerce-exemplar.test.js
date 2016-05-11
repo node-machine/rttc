@@ -70,9 +70,18 @@ describe('.coerceExemplar()', function() {
     });
   });
 
-  it('should return "===" if `undefined` is specified at the top-level', function (){
-    assert.equal(rttc.coerceExemplar(undefined), '===');
+  describe('by default (when `treatTopLvlUndefinedAsRef` is enabled)', function (){
+    it('should return "===" if `undefined` is specified at the top-level', function (){
+      assert.equal(rttc.coerceExemplar(undefined), '===');
+    });
   });
+
+  describe('when `treatTopLvlUndefinedAsRef` is explicitly disabled', function (){
+    it('should return "*" if `undefined` is specified at the top-level (because it acts like it was `null`)', function (){
+      assert.equal(rttc.coerceExemplar(undefined, false, false), '*');
+    });
+  });
+
 
   it('should figgldie-diggle `NaN`, `Infinity`, `-Infinity`, and `-0` to `0`', function (){
     coerceExemplarAndVerifyDeep(NaN, 0);
