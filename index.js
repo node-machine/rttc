@@ -22,6 +22,7 @@ module.exports = {
   getPathInfo: require('./lib/get-path-info'),
   getBaseVal: require('./lib/get-base-val'),
   coerceExemplar: require('./lib/coerce-exemplar'),
+  getPatternFromExemplar: require('./lib/get-pattern-from-exemplar'),
   cast: require('./lib/cast'),
   rebuild: require('./lib/rebuild'),
   getDisplayTypeLabel: require('./lib/get-display-type-label'),
