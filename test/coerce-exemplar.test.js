@@ -51,7 +51,7 @@ describe('.coerceExemplar()', function() {
     coerceExemplarAndVerifyDeep(null, '*');
   });
 
-   it('should coerce circular references (i.e. works just like rttc.dehydrate(), but allowing functions and nulls)', function() {
+  it('should coerce circular references (i.e. works just like rttc.dehydrate(), but allowing functions and nulls)', function() {
     var hallOfMirrors = { giveUp: function (){ throw new Error('psht.');} };
     hallOfMirrors.left = { down: null, up: null };
     hallOfMirrors.right = { down: null, up: null };
@@ -138,25 +138,57 @@ describe('.coerceExemplar()', function() {
     coerceExemplarAndVerifyDeep({numDandelions: [null], numAmaranth: 2, numLambsQuarters: null, numThistle: 4}, {numDandelions: ['*'], numAmaranth: 2, numLambsQuarters: '*', numThistle: 4});
   });
 
-  it('should union together the items of arrays into a single pattern exemplar', function (){
-    coerceExemplarAndVerifyDeep([1], [1]);
-    coerceExemplarAndVerifyDeep([1,4], [4]);
-    coerceExemplarAndVerifyDeep(['1','4'], ['4']);
-    coerceExemplarAndVerifyDeep([1,'1'], ['*']);
-    coerceExemplarAndVerifyDeep([0,false], ['*']);
-    coerceExemplarAndVerifyDeep([false, 7, 4, true, -4, 0, 89], ['*']);
-    coerceExemplarAndVerifyDeep([{x:false}, [7], {y: {z: 4}}, [[]], 'whatever', true], ['*']);
-    coerceExemplarAndVerifyDeep([
-      [{ x: false }],
-      [7],
-      [{ y: { z: 4 } }],
-      [ [] ],
-      ['whatever'],
-      [true]
-    ], [
-      ['===']
-    ]);
+
+  describe('given a multi-item array', function (){
+
+    it('should union together the items of arrays into a single pattern exemplar', function (){
+
+      coerceExemplarAndVerifyDeep([1], [1]);
+      coerceExemplarAndVerifyDeep([1,4], [4]);
+      coerceExemplarAndVerifyDeep(['1','4'], ['4']);
+      coerceExemplarAndVerifyDeep([1,'1'], ['*']);
+      coerceExemplarAndVerifyDeep([0,false], ['*']);
+      coerceExemplarAndVerifyDeep([false, 7, 4, true, -4, 0, 89], ['*']);
+      coerceExemplarAndVerifyDeep([{x:false}, [7], {y: {z: 4}}, [[]], 'whatever', true], ['*']);
+
+      // TODO: come back to this-- seems like it really ought to be ["*"]
+      coerceExemplarAndVerifyDeep([
+        [{ x: false }],
+        [7],
+        [{ y: { z: 4 } }],
+        [ [] ],
+        ['whatever'],
+        [true]
+      ], [
+        ['===']
+      ]);
+    });
+
+    it('when `useStrict` flag is explicitly disabled', function (){
+      coerceExemplarAndVerifyDeep([1], [1], false, false, false);
+      coerceExemplarAndVerifyDeep([1,4], [4], false, false, false);
+      coerceExemplarAndVerifyDeep(['1','4'], ['4'], false, false, false);
+      coerceExemplarAndVerifyDeep([1,'1'], ['1'], false, false, false);
+      coerceExemplarAndVerifyDeep([0,false], [0], false, false, false);
+      coerceExemplarAndVerifyDeep([false, 7, 4, true, -4, 0, 89], [89], false, false, false);
+      coerceExemplarAndVerifyDeep([false, {}, 4, true, -4, 0, 89], ['*'], false, false, false);
+      coerceExemplarAndVerifyDeep([{x:false}, [7], {y: {z: 4}}, [[]], 'whatever', true], ['*'], false, false, false);
+
+      // TODO: come back to this-- seems like it really ought to be ["*"]
+      coerceExemplarAndVerifyDeep([
+        [{ x: false }],
+        [7],
+        [{ y: { z: 4 } }],
+        [ [] ],
+        ['whatever'],
+        [true]
+      ], [
+        ['===']
+      ], false, false, false);
+    });
+
   });
+
 
 
 
@@ -174,13 +206,15 @@ describe('.coerceExemplar()', function() {
  * @param  {*} value
  * @param  {*} expected
  * @param  {Boolean} allowSpecialSyntax
+ * @param  {Boolean} treatTopLvlUndefinedAsRef
+ * @param  {Boolean} useStrict
  */
-function coerceExemplarAndVerifyDeep(value, expected, allowSpecialSyntax){
-  assert.deepEqual(rttc.coerceExemplar(value, allowSpecialSyntax), expected);
-  assert.deepEqual(rttc.coerceExemplar({x:value}, allowSpecialSyntax), {x:expected});
-  assert.deepEqual(rttc.coerceExemplar({x: [value]}, allowSpecialSyntax), {x:[expected]});
-  assert.deepEqual(rttc.coerceExemplar([{x: value}], allowSpecialSyntax), [{x:expected}]);
-  assert.deepEqual(rttc.coerceExemplar([value], allowSpecialSyntax), [expected]);
-  assert.deepEqual(rttc.coerceExemplar([[value]], allowSpecialSyntax), [[expected]]);
+function coerceExemplarAndVerifyDeep(value, expected, allowSpecialSyntax, treatTopLvlUndefinedAsRef, useStrict){
+  assert.deepEqual(rttc.coerceExemplar(value, allowSpecialSyntax, treatTopLvlUndefinedAsRef, useStrict), expected);
+  assert.deepEqual(rttc.coerceExemplar({x:value}, allowSpecialSyntax, treatTopLvlUndefinedAsRef, useStrict), {x:expected});
+  assert.deepEqual(rttc.coerceExemplar({x: [value]}, allowSpecialSyntax, treatTopLvlUndefinedAsRef, useStrict), {x:[expected]});
+  assert.deepEqual(rttc.coerceExemplar([{x: value}], allowSpecialSyntax, treatTopLvlUndefinedAsRef, useStrict), [{x:expected}]);
+  assert.deepEqual(rttc.coerceExemplar([value], allowSpecialSyntax, treatTopLvlUndefinedAsRef, useStrict), [expected]);
+  assert.deepEqual(rttc.coerceExemplar([[value]], allowSpecialSyntax, treatTopLvlUndefinedAsRef, useStrict), [[expected]]);
 }
 
