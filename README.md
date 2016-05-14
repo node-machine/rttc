@@ -1,91 +1,85 @@
 # rttc
 Runtime (recursive) type-checking for JavaScript.
 
+This package is the official SDK for working with the RTTC type system.  It includes a lot of methods that suitable for everyday use, as well as some low-level methods that are intended for developers building tools on top of the [machine specification](http://node-machine.org).  RTTC is a simplified abstraction that sits on top of basic JavaScript and Node.js concepts, and while some of the terminology may seem unfamiliar at first, you will likely recognize the underlying principles at work.
+
+RTTC semantics are used by:
++ the Node-Machine project's core utility packages, including the [`machine` runner](https://github.com/node-machine/machine)
++ throughout the [Sails.js framework](http://sailsjs.org)
++ in [Waterline drivers](https://github.com/node-machine/driver-interface)
++ in every [machinepack published on NPM](http://node-machine.org/machinepacks), and
++ in the [Treeline](https://treeline.io) standard library
+
+
 ## Installation
 
 ```sh
 $ npm install rttc --save
 ```
 
+## Basic Usage
 
-## Quick Start
-
-
-Want to coerce a value to match a particular type?
+The `rttc` package has lots of different methods, but the most common use cases are validation and coercion:
 
 ```javascript
 var rttc = require('rttc');
 
-rttc.coerce({ firstName: 'string'}, {firstName: 13375055});
-// => { firstName: "13375055" }
+// Validation and coercion:
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+rttc.validateStrict('number', 999);
+// (If the value is valid vs. the specified type schema, then `.validateStrict()` simply returns undefined)
 
-rttc.coerce({ firstName: 'string'}, {something: 'totally incorrect'});
-// => { firstName: "" }
-// (when confronted with something totally weird, `.coerce()` returns the "base value" for the type)
-```
+rttc.validateStrict('number', '999');
+// throws Error
+// (but if the provided value is **even slightly off**, then `.validateStrict()` throws).
 
-Want to throw an Error if a value doesn't match a particular type?
+rttc.validate('number', '999');
+// => 999
+// (if the provided value is close-ish, `.validate()` coerces as needed to make it fit.)
 
-```javascript
-rttc.validateStrict({ firstName: 'string'}, {firstName: 13375055});
-// throws error
-// (`.validateStrict()` demands a value that is precisely the correct type)
+rttc.validate('number', { x: 32, y: 79 });
+// throws Error
+// (but when confronted with **major** differences, `.validate()` throws too.)
 
-rttc.validateStrict({ firstName: 'string'}, {firstName: '13375055'});
-// does not throw
-```
+rttc.coerce('number', '999');
+// => 999
+// (as long as the provided type schema is valid, `.coerce()` **never** throws)
 
-Or if you want to be a little more forgiving:
-
-```javascript
-rttc.validate({ firstName: 'string'}, {something: 'totally incorrect'});
-// throws error
-
-rttc.validate({ firstName: 'string'}, {firstName: 45});
-// => "45"
-// (when confronted with minor differences, `.validate()` coerces as needed to make stuff fit)
-```
+rttc.coerce('number', { x: 32, y: 79 });
+// => 0
+// (when confronted with **major** differences, `.coerce()` returns the _base value_ for the given type)
 
 
-Not sure how to build a type schema for use with `.coerce()` or `.validate()`? Use `.infer()` to build one from an example value you've got laying around:
-
-```javascript
-rttc.infer({ firstName: 'Rosella', lastName: 'Graham', friends: ['Valencia', 'Edgar', 'Attis'] });
-// => { firstName: 'string',  lastName: 'string', friends: ['string'] }
-```
-
-This special example value is called an **exemplar**.
-
-
-> Note that when inferring the schema for an array in an exemplar, the array item is considered the _pattern_.  It is used to indicate the expected type of each item in the array.  Consequently, if an array in an exemplar has an item, that means it is homogeneous (i.e. all its items have the same schema).
-
-
-You can use exemplars to specify just about any type-- here's a more advanced schema to show what I mean:
-
-```javascript
-rttc.infer([{ upstream: '===', fieldName: 'photos', files: [{getFile: '->', fileName: 'whatever', numBytes: 34353, meta: '*' }] }]);
-// =>
-// [
-//  {
-//    upstream: 'ref',
-//    fieldName: 'string',
-//    files: [
-//      {
-//        getFile: 'lamda',
-//        fileName: 'string',
-//        numBytes: 'number',
-//        meta: 'json'
-//      }
-//    ]
-// }
+// Recursive (or "deep") validation and coercion:
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+// Unless otherwise stated, all RTTC methods support recursive ("deep") traversal of values and type schemas.
+// In other words, they iterate over the keys of **dictionaries** (aka plain old JavaScript objects) and the indices of arrays.
+//
+// For example:
+rttc.coerce([ { name: 'string', age: 'number' } ], [
+  { name: 'Karl', age: 258 },
+  { name: 'Samantha', age: '937' },
+  { name: 'Lupé', age: 82 },
+  { name: 'Andres', age: '22' },
+  { age: ['nonsense!'] }
+]);
+// => [
+//  { name: 'Karl', age: 258 },
+//  { name: 'Samantha', age: 937 },
+//  { name: 'Lupé', age: 82 },
+//  { name: 'Andres', age: 22 },
+//  { name: '', age: 0 },
 // ]
+//
 ```
 
-> Note that all of the validation and coercion strategies used in this modules are recursive through the keys of plain old JavaScript objects and the indices of arrays.
+
+For a quick tour of common use cases, as well as some additional examples, check out [the RTTC quick start guide](https://gist.github.com/mikermcneil/8d20ba78b248ac9f5644fcdd0bb96b74).  Then keep reading for complete reference documentation; or if you already know what you're doing, feel free to skip ahead to the [Methods](#Methods) section below.
 
 
 
-## Types &amp; terminology
+
+## Types &amp; Exemplars
 
 There are 10 different types recognized by `rttc`, each of which is uniquely expressed by special notation called **RTTC exemplar syntax**.
 For example, if we were to interpret `'hello world'` as an **exemplar**, we would be able to infer that it represents a string data type.
@@ -153,7 +147,7 @@ The **boolean** type accepts `true` or `false`.
 
 ### Lamdas
 
-`example: ->`
+`example: '->'`
 
 The **lamda** type accepts any function.
 
@@ -199,7 +193,7 @@ Dictionary type schemas (i.e. plain old JavaScript objects nested like `{a:{}}`)
 ```
 
 
-
+<!--
 ### Generic arrays
 
 `example: []`
@@ -217,8 +211,9 @@ Arrays that have been validated/coerced against the generic array type:
 
 > Note: Generic array exemplar syntax is really just another way to write `['*']`.  The special empty array syntax will continue to be supported for backwards compatibility, but it may eventually be removed from documentation and tests to avoid potential confusion.
 
+-->
 
-### Patterned arrays
+### Arrays
 
 `example: ['Margaret']`
 `example: [123]`
@@ -226,14 +221,10 @@ Arrays that have been validated/coerced against the generic array type:
 `example: [[...]]`
 `example: [{...}]`
 
-Array type schemas may be infinitely nested and combined with dictionaries or any other types.
+Array type schemas may be infinitely nested and combined with dictionaries or any other types.  When validating vs. an array type schema, RTTC first checks that the corresponding value is an array (a la [`_.isArray()`](http://lodash.org)), then also recursively checks each of its items vs. the expected **pattern**.  For example, given the exemplar `['Margaret']`, we can infer that the type schema is `['string']`, and therefore that it would accept any array of strings.
 
-Runtime arrays being validated/coerced against array type schemas will be homogeneous (meaning every item in the array will have the same type).
 
-Undefined items will always be stripped out of arrays.
-
-> Also note that, because of this, when providing a type schema or type-inference-able example for an array, you only need to provide one item in the array, e.g.:
-
+When providing an array exemplar or type schema, you only need to provide one item in the array:
 ```javascript
 [
   {
@@ -252,6 +243,13 @@ Undefined items will always be stripped out of arrays.
   }
 ]
 ```
+
+
+> Note:
+> When validating or coercing a value vs. an array exemplar or type schema, `undefined` items in the array _will always be stripped out_.  For example, coercing `['Jerry', undefined, undefined, 'Robin']` vs. the type schema `['string']` would result in `['Jerry', 'Robbin']`.  This ensures consistency with the behavior of the native JSON.stringify() and JSON.parse() methods in browser-side JavaScript and Node.js.
+
+
+
 
 ### Generic JSON
 
