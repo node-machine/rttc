@@ -131,7 +131,7 @@ the result would be `{name: 'Lynda', age: 0}` (because the base value for the nu
 
 
 
-#### Strings
+## Strings
 
 | Exemplar               | RTTC Display Type      | Display Type Label            | Base Value   |
 |:-----------------------|:-----------------------|:------------------------------|:-------------|
@@ -141,7 +141,7 @@ The **string** type accepts any string.
 
 
 
-#### Numbers
+## Numbers
 
 | Exemplar               | RTTC Display Type      | Display Type Label            | Base Value   |
 |:-----------------------|:-----------------------|:------------------------------|:-------------|
@@ -149,7 +149,7 @@ The **string** type accepts any string.
 
 The **number** type accepts numbers like `0`, `-4`, or `235.3`.  Anathemas like `Infinity`, `-Infinity`, `NaN`, and `-0` are all coerced to zero.
 
-#### Booleans
+## Booleans
 
 | Exemplar               | RTTC Display Type      | Display Type Label            | Base Value   |
 |:-----------------------|:-----------------------|:------------------------------|:-------------|
@@ -158,7 +158,7 @@ The **number** type accepts numbers like `0`, `-4`, or `235.3`.  Anathemas like 
 The **boolean** type accepts `true` or `false`.
 
 
-#### Functions (aka "lamdas")
+## Functions (aka "lamdas")
 
 | Exemplar               | RTTC Display Type      | Display Type Label            | Base Value     |
 |:-----------------------|:-----------------------|:------------------------------|:---------------|
@@ -168,7 +168,7 @@ The **boolean** type accepts `true` or `false`.
 The **lamda** type accepts any function.
 
 
-##### Base Value
+#### Base Value
 
 The base value for the lamda type is the following automatically-generated function:
 
@@ -181,7 +181,7 @@ function () {
 
 
 
-#### Generic dictionaries
+## Generic dictionaries
 
 | Exemplar               | RTTC Display Type      | Display Type Label            | Base Value                  |
 |:-----------------------|:-----------------------|:------------------------------|:----------------------------|
@@ -201,7 +201,7 @@ Dictionaries that have been validated/coerced against the generic dictionary typ
 + null items in nested arrays may be present
 
 
-##### What about keys with `undefined` values?
+#### What about keys with `undefined` values?
 
 When validating or coercing a value vs. a generic dictionary exemplar or type schema, keys with `undefined` values _will always be stripped out_.  For example, coercing `{ name: 'Rob', age: undefined, weight: undefined }` vs. the type schema `{}` would result in `{ name: 'Rob' }`. This ensures consistency with the behavior of the native JSON.stringify() and JSON.parse() methods in browser-side JavaScript and Node.js.  
 
@@ -209,7 +209,7 @@ When validating or coercing a value vs. a generic dictionary exemplar or type sc
 
 
 
-#### JSON-Compatible Values
+## JSON-Compatible Values
 
 | Exemplar          | Rttc Display Type     | Display Type Label            | Base Value    |
 |:------------------|:----------------------|:------------------------------|:--------------|
@@ -220,7 +220,7 @@ This works pretty much like the generic dictionary type, with one major differen
 
 
 
-#### Mutable references (aka "ref")
+## Mutable references (aka "ref")
 
 | Exemplar               | RTTC Display Type      | Display Type Label            | Base Value    |
 |:-----------------------|:-----------------------|:------------------------------|:--------------|
@@ -230,7 +230,7 @@ This special type allows anything except `undefined` at the top level (undefined
 
 
 
-#### Faceted dictionaries
+## Faceted dictionaries
 
 | Exemplar               | RTTC Display Type      | Display Type Label            | Base Value            |
 |:-----------------------|:-----------------------|:------------------------------|:----------------------|
@@ -264,7 +264,7 @@ Dictionary type schemas (i.e. plain old JavaScript objects nested like `{a:{}}`)
 }
 ```
 
-##### Base Value
+#### Base Value
 
 The base value for the faceted dictionary type is a dictionary which consists of a key for every expected facet, each with _its own_ base value (recursively deep).
 
@@ -289,7 +289,8 @@ For example, for the type schema described above, the base value is:
 ```
 
 
-##### What about keys with `undefined` values?
+
+#### What about keys with `undefined` values?
 
 When validating or coercing a value vs. a faceted dictionary exemplar or type schema, if a required key exists, but has an `undefined` value, it is _considered the same thing as if the key did not exist at all_. This is a deliberate decision designed to prevent you to normalize the use of `null` vs. `undefined` in your application, and avoid the error-prone pitfalls of `==` vs. `===` equality comparisons and `hasOwnProperty` checks. Based on this author's experiences, and the best practices my team developed building JavaScript apps, this approach prevents countless bugs and makes it much easier to hunt down the sources of problems when they occur.
 
@@ -339,18 +340,21 @@ console.log(alfred);
 ```
 
 
-##### Can I have facets that could be vastly different types?
+#### Can I have facets that could be vastly different types?
 
 The best way to implement [union facets](https://en.wikipedia.org/wiki/Union_type), or facets that could be more than one type, is to use a more generic type (such as `{}`, `'*'`, or `'==='`), and then add additional specificity through custom code.
 
 
-> **Note:**
-> Another way you can go about implementing optional facets _OR_ facets that could be multiple different types is by forgoing the faceted dictionary type _altogether_-- and instead using a generic dictionary exemplar/type schema, then implementing validations on top of it in custom code. But be careful: this approach has the problem of introducing human error into the equation.  In most cases, the best, safest, and most foolproof approach is to use a faceted dictionary, to always ensure your runtime dictionaries include key/value pairs for _all_ facets, with each value set to the corresponding base value expected by the facet.
+#### What if I don't need to validate every key recursively deep?
+
+Even if you don't need to validate every key recursively deep, to use the faceted dictionary exemplar, you still need to declare every facet you plan to use.  Alternately, to indicate _any_ dictionary of JSON-compatible values, just use the generic dictionary (`{}`) type / exemplar instead.  Then, implement any additional validation or coercion logic you need on top of that by writing it into your code.
+
+> This is another way you can go about validating dictionaries with keys that may or may not exist, and keys that could be multiple different types.  Just be careful: this approach has the problem of introducing human error into the equation.  If possible, the best, safest, and most foolproof approach is to use a faceted dictionary.  This ensures your runtime dictionaries always include the key/value pairs you expect them to, and it reduces the number of times you have to squint at the computer screen and read `Cannot read property "foo" of undefined`.
 
 
 
 
-#### Arrays
+## Arrays
 
 | Exemplar               | RTTC Display Type      | Display Type Label            | Base Value             |
 |:-----------------------|:-----------------------|:------------------------------|:-----------------------|
@@ -379,7 +383,7 @@ An array type schema or exemplar may be _infinitely nested_ simply by using anot
 ]
 ```
 
-##### What if I don't need to validate array items recursively deep?
+#### What if I don't need to validate array items recursively deep?
 
 Even if you don't need to validate array items, you still need a pattern.  But luckily, there's another RTTC type (`'==='`) that you can easily use to accept _any value_.  To indicate an array of _anything_, just use the mutable reference type as your pattern:
 
@@ -391,13 +395,15 @@ Even if you don't need to validate array items, you still need a pattern.  But l
 ['===']
 ```
 
-##### What about `undefined`?
+#### What about `undefined`?
 
 When validating or coercing a value vs. an array exemplar or type schema, `undefined` items in the array _will always be stripped out_.  For example, coercing `['Jerry', undefined, undefined, 'Robin']` vs. the type schema `['string']` would result in `['Jerry', 'Robbin']`. This ensures consistency with the behavior of the native JSON.stringify() and JSON.parse() methods in browser-side JavaScript and Node.js.  
 
 > Note that `undefined` array items are stripped out _even if you are using `['===']`_.
 
 &nbsp;
+
+
 
 
 
