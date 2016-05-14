@@ -125,11 +125,11 @@ the result would be `{name: 'Lynda', age: 0}` (because the base value for the nu
 > ##### Compatibility Note
 > RTTC also supports an 11th type, sometimes called the "generic array" and represented by the exemplar (`[]`).
 > However, if an exemplar is specified as `[]`, it is really just an alias for `['*']`, an array
-> exemplar with a `*` (json) pattern.  This just means it accepts any array consisting only of
-> JSON-compatible contents. The `[]` alias is for consistency with the generic dictionary type (`{}`),
-> as well as for backwards compatibility. While future versions of RTTC will likely continue to maintain
-> support for the `[]` exemplar for some time to come, for clarity, you should switch to using `['*']` in
-> new code and documentation and migrate `[]` to `['*']` in existing code at your earliest convenience.
+> exemplar with a `*` (json) pattern.  That means it accepts any array of JSON-compatible items.
+>
+> The `[]` alias is for consistency with the generic dictionary type (`{}`), as well as for backwards compatibility.
+> While future versions of RTTC will likely continue to maintain support for the `[]` exemplar, for clarity, you should
+> switch to using `['*']` in new code and documentation and migrate `[]` to `['*']` in existing code at your earliest convenience.
 
 
 
