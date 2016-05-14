@@ -329,6 +329,8 @@ This package exposes a number of different utility methods.  If you're intereste
 
 > The low-level reference below assumes you are willing/able to dig into the source code of this module for more information.  So continue at your own risk!
 
+
+
 ### Validation
 
 ##### .validateStrict(expectedTypeSchema, actualValue)
@@ -339,6 +341,20 @@ Throws if the provided value is not the right type (recursive).
 ##### .validate(expectedTypeSchema, actualValue)
 
 Either returns a (potentially "lightly" coerced) version of the value that was accepted, or it throws.  The "lightly" coerced value turns `"3"` into `3`, `"true"` into `true`, `-4.5` into `"-4.5"`, etc.
+
+
+##### .isEqual(firstValue, secondValue, [_expectedTypeSchema_=`undefined`])
+
+Determine whether two values are equivalent using `_.isEqual()`.
+
+This is the method used by `rttc`'s own tests to validate that expected values and actual values match.
+
+
+> Experimental:
+> If the third argument was provided, also look for expected `lamda` values in the optional type schema and call `toString()` on functions before comparing them.  The third argument SHOULD NOT BE RELIED UPON.
+
+
+
 
 
 
@@ -365,7 +381,7 @@ This takes care of a few serialization edge-cases, such as:
 + strips keys and array items with `undefined` or `null` values. If `allowNull` is set to true, `null` values will not be stripped from the encoded string.
 
 
-
+<!--
 ##### .parse(stringifiedValue, [_typeSchema_=`undefined`], [_unsafeMode_=`false`])
 
 Parse a stringified value back into a usable value.
@@ -378,7 +394,7 @@ This is basically just a variation on JSON.parse that calls `rttc.hydrate()` fir
 Encode a value into a string.
 
 This is basically just a variation on JSON.stringify that calls `rttc.dehydrate()` first.
-
+-->
 
 ##### .parseHuman(stringFromHuman, [_typeSchema_=`undefined`], [_unsafeMode_=`false`])
 
@@ -391,60 +407,17 @@ The inverse of `.parseHuman()`, this function encodes a string that, if run thro
 
 
 
-### Assertions
+##### .rebuild(val, transformLeaf)
 
-##### .isEqual(firstValue, secondValue, [_expectedTypeSchema_=`undefined`])
+Recursively rebuild (non-destructively) the specified value using the provided transformer function to change each primitive or function therein. Transformer function is provided the value as the first argument, and an rttc display type as the second (either 'string', 'number', 'boolean', 'lamda', or 'null').  The transformer function is not run for dictionaries or arrays, since they're recursed into automatically (in the rebuilt value, they will be normal dictionary and array literals, so any stuff about getters/setters/non-enumerable properties like prototypal methods and constructor information is all stripped out.  `.rebuild()` also protects against endless recursion due to circular references.
 
-Determine whether two values are equivalent using `_.isEqual()`.
-
-This is the method used by `rttc`'s own tests to validate that expected values and actual values match.
-
-
-> Experimental:
-> If the third argument was provided, also look for expected `lamda` values in the optional type schema and call `toString()` on functions before comparing them.  The third argument SHOULD NOT BE RELIED UPON.
-
-
-
-##### .infer(exampleValue)
-
-Guess the type schema from an example value.
-
-##### .isSpecific(typeSchemaOrExemplar, [recursive=false], [isExemplar=false])
-
-Determine whether the given type schema is "specific".  String, number, boolean, lamda, faceted dictionary, or patterned array types are "specific".  Everything else is "generic".
-
-If the second argument (`recursive`) is set to `true`, then also recursively check the subkeys of faceted dictionaries and patterns of arrays in the type schema.
-
-If the third argument (`isExemplar`) is set to `true`, then treat the provided schema as an rttc example rather than a type schema.
-
-For reference
-
-| type                    | is specific?          |
-|-------------------------|---------------------|
-| string                  | yes _(always)_ |
-| number                  | yes _(always)_ |
-| boolean                 | yes _(always)_ |
-| lamda                   | yes _(always)_ |
-| `{}` (generic)          | no                 |
-| `[]` (generic)          | no                 |
-| `{...}` (faceted)       | yes _(maybe recursively)_  |
-| `[...]` (patterned)     | yes _(maybe recursively)_  |
-| json                    | no                 |
-| ref                     | no                 |
-
-
-### Utilities
-
-
-##### .sample(typeSchema, [n=2])
-
-Given a type schema, return an array of up to `n` unique sample values that would validate against it (in random order).  `n` defaults to 2 if left undefined.
-
-
-##### .getDisplayType(value)
-
-Given a value, return its type as a human-readable string (this is not limited to rttc types-- it can return strings like `"Error"` and `"Date"`).
-If special rttc exemplar syntax is used, it is respected.
+Example usage:
+```javascript
+return res.json(rttc.rebuild(someData, function transformLeaf(val, type){
+  if (type === 'string') { return val + ' (a grass-type Pokemon)'; }
+  else { return val; }
+}));
+```
 
 
 ##### .compile(value)
@@ -485,46 +458,66 @@ Finally, here's a table listing notable differences between `util.inspect()` and
 > Note that undefined values in arrays and undefined values of keys in dictionaries will be stripped out, and circular references will be handled as they are in `util.inspect(val, {depth: null})`.
 
 
-##### .union(schema0, schema1, [isExemplar=false], [isStrict=false])
 
-Given two rttc schemas (e.g. `A` and `B`), return the most specific schema that would accept the superset of what both schemas accept normally (`A ∪ B`).
+### Meta
 
-+ _schema0_ - the first schema
-+ _schema1_ - the second schema (order doesn't matter)
-+ _isExemplar_ - if set, the schemas will be treated as exemplars (rather than type schemas)
-+ _isStrict_ - if set, the schemas will be unioned using strict validation rules (i.e. like `validateStrict()`)
+> Methods for working w/ exemplars, type schemas, and display types
 
 
-##### .intersection(schema0, schema1, [isExemplar=false], [isStrict=false])
+##### .inferDisplayType(exemplar)
 
-Given two rttc schemas, return the most specific schema that accepts the shared subset of values accepted by both. Formally, this subset is the intersection of A and B (A ∩ B), where A is the set of values accepted by `schema0` and B is the set of values accepted by `schema1`.  If `A ∩ B` is the empty set, then this function will return `null`.  Otherwise it will return the schema that precisely accepts `A ∩ B`.
+Compute the **display type** (aka "typeclass") for an RTTC exemplar.
 
-+ _schema0_ - the first schema
-+ _schema1_ - the second schema (order doesn't matter)
-+ _isExemplar_ - if set, the schemas will be treated as exemplars (rather than type schemas)
-+ _isStrict_ - if set, the schemas will be intersected using strict validation rules (i.e. like `validateStrict()`)
+Always returns one of the standard RTTC display types:
+  + string
+  + number
+  + boolean
+  + lamda
+  + dictionary
+  + array
+  + json
+  + ref
+
+Or `''` (empty string) if the exemplar is unrecognized or invalid; e.g. `null`.
 
 
-
-### Experimental
-
-The following functions are newly implemented, experimental, and tend to be a bit more advanced. They may undergo frequent changes over the coming months, so use with care.  You have been warned!
-
-##### .rebuild(val, transformLeaf)
-
-Recursively rebuild (non-destructively) the specified value using the provided transformer function to change each primitive or function therein. Transformer function is provided the value as the first argument, and an rttc display type as the second (either 'string', 'number', 'boolean', 'lamda', or 'null').  The transformer function is not run for dictionaries or arrays, since they're recursed into automatically (in the rebuilt value, they will be normal dictionary and array literals, so any stuff about getters/setters/non-enumerable properties like prototypal methods and constructor information is all stripped out.  `.rebuild()` also protects against endless recursion due to circular references.
-
-Example usage:
 ```javascript
-return res.json(rttc.rebuild(someData, function transformLeaf(val, type){
-  if (type === 'string') { return val + ' (a grass-type Pokemon)'; }
-  else { return val; }
-}));
+rttc.inferDisplayType({foo: 'bar'});
+// => 'dictionary'
+
+
+rttc.inferDisplayType('->');
+// => 'lamda'
 ```
 
-##### .getDefaultExemplar(typeSchema)
 
-Given a type schema, return a random exemplar which accepts precisely the same set of values.
+##### .getDisplayTypeLabel(display)
+
+Get the appropriate human-readable label for a given RTTC "display type" (aka "typeclass") string.
+
+```js
+rttc.getDisplayTypeLabel('ref');
+//   => 'Anything'
+
+rttc.getDisplayTypeLabel('string');
+//   => 'String'
+```
+
+> Useful for error messages, user interfaces, etc.
+
+
+<!--
+##### .getDisplayType(value)
+
+Given a value, return its type as a human-readable string (this is not limited to rttc types-- it can return strings like `"Error"` and `"Date"`).
+If special rttc exemplar syntax is used, it is respected.
+
+> May be deprecated in an upcoming release.
+
+-->
+
+
+
 
 ##### .coerceExemplar(value, [allowSpecialSyntax=false])
 
@@ -559,22 +552,6 @@ rttc.coerceExemplar({x:'*'}, true)
 //   =>   { x: '*' }
 ```
 
-##### .isInvalidExample(exemplar)
-
-Return truthy if the provided value is NOT a valid rttc exemplar (e.g. `null`).
-
-
-##### .getDisplayTypeLabel(type)
-
-Given an RTTC "display type" aka "typeclass" string, return the appropriate human-readable label for that type. Useful for error messages, user interfaces, etc.
-
-```js
-rttc.getDisplayTypeLabel('ref');
-//   => 'Anything'
-
-rttc.getDisplayTypeLabel('string');
-//   => 'String'
-```
 
 ##### .getPathInfo(exemplar, path)
 
@@ -609,11 +586,132 @@ rttc.getPathInfo(SOME_EXEMPLAR, 'medicalInfo.latestBloodWork.whiteBloodCellCount
 ```
 
 
+##### .infer(exemplar)
+
+Infer the type schema from the given exemplar.
+
+```javascript
+rttc.infer([
+  {
+    name: 'Rachael',
+    age: 27,
+    filesBeingUploaded: ['==='],
+    friends: [
+      {
+        name: 'Mr. Bailey',
+        species: 'cat',
+        getClawSharpness: '->'
+      }
+    ]
+  }
+]);
+
+/* =>
+[
+  {
+    name: 'string'
+    age: 'number',
+    filesBeingUploaded: [
+      'ref'
+    ],
+    friends: [
+      {
+        name: 'string',
+        species: 'string',
+        getClawSharpness: 'lamda'
+      }
+    ]
+  }
+]
+*/
+
+```
+
+
+
+##### .union(schema0, schema1, [isExemplar=false], [isStrict=false])
+
+Given two rttc schemas (e.g. `A` and `B`), return the most specific schema that would accept the superset of what both schemas accept normally (`A ∪ B`).
+
++ _schema0_ - the first schema
++ _schema1_ - the second schema (order doesn't matter)
++ _isExemplar_ - if set, the schemas will be treated as exemplars (rather than type schemas)
++ _isStrict_ - if set, the schemas will be unioned using strict validation rules (i.e. like `validateStrict()`)
+
+
+##### .intersection(schema0, schema1, [isExemplar=false], [isStrict=false])
+
+Given two rttc schemas, return the most specific schema that accepts the shared subset of values accepted by both. Formally, this subset is the intersection of A and B (A ∩ B), where A is the set of values accepted by `schema0` and B is the set of values accepted by `schema1`.  If `A ∩ B` is the empty set, then this function will return `null`.  Otherwise it will return the schema that precisely accepts `A ∩ B`.
+
++ _schema0_ - the first schema
++ _schema1_ - the second schema (order doesn't matter)
++ _isExemplar_ - if set, the schemas will be treated as exemplars (rather than type schemas)
++ _isStrict_ - if set, the schemas will be intersected using strict validation rules (i.e. like `validateStrict()`)
+
+
+##### .sample(typeSchema, [n=2])
+
+Given a type schema, return an array of up to `n` unique sample values that would validate against it (in random order).  `n` defaults to 2 if left undefined.
+
+
+
+
+
+
+
+
+### Experimental
+
+The following functions are newly implemented, experimental, and tend to be a bit more advanced. They may undergo frequent changes over the coming months, so use with care.  You have been warned!
+
+
+##### .isSpecific(typeSchemaOrExemplar, [recursive=false], [isExemplar=false])
+
+Determine whether the given type schema is "specific".  String, number, boolean, lamda, faceted dictionary, or patterned array types are "specific".  Everything else is "generic".
+
+If the second argument (`recursive`) is set to `true`, then also recursively check the subkeys of faceted dictionaries and patterns of arrays in the type schema.
+
+If the third argument (`isExemplar`) is set to `true`, then treat the provided schema as an rttc example rather than a type schema.
+
+For reference
+
+| type                    | is specific?          |
+|-------------------------|---------------------|
+| string                  | yes _(always)_ |
+| number                  | yes _(always)_ |
+| boolean                 | yes _(always)_ |
+| lamda                   | yes _(always)_ |
+| `{}` (generic)          | no                 |
+| `[]` (generic)          | no                 |
+| `{...}` (faceted)       | yes _(maybe recursively)_  |
+| `[...]` (patterned)     | yes _(maybe recursively)_  |
+| json                    | no                 |
+| ref                     | no                 |
+
+
+
+##### .getDefaultExemplar(typeSchema)
+
+Given a type schema, return a random exemplar which accepts precisely the same set of values.
+
+
+<!--
+##### .isInvalidExample(exemplar)
+
+Return truthy if the provided value is NOT a valid rttc exemplar (e.g. `null`).
+
+> May be deprecated in an upcoming release
+-->
+
+
+<!--
+
 ##### .reify(typeSchema)
 
 > **DEPRECATED**.  This method will become an alias for `coerceExemplar` in future versions of rttc, and its current implementation will be removed.
 
 Given a type schema, strip out generics ("ref", "json", {}, and []) to convert it into a "specific" type. In other words, the result of this function always passes `rttc.isSpecific()`.
+-->
 
 
 ##### .getBaseVal(exemplar)
