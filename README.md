@@ -553,7 +553,7 @@ This function will use the provided `typeSchema` to figure out where "lamda" val
 
 Parse a human-readable string (typically entered by a human into some kind of UI or CLI application) and return a buest guess at the JavaScript value it represents.
 
-+ If provided, `typeSchema` will be used to make a more educated guess.  If you are calling `parseHuman()` in order to parse a human-readable string that was generated using `stringifyHuman()`, then be sure to use the same type schema.
++ If provided, `typeSchema` will be used to make a more educated guess.  If you are calling `parseHuman()` in order to parse a string that was generated using `stringifyHuman()`, then be sure to use the same type schema.
 + If the `unsafeMode` flag is enabled, lamda functions will be hydrated.
 
 
@@ -638,11 +638,7 @@ var result = rttc.parseHuman('{"name":"Mr. Tumnus","friends":[{"name":"Broderick
 
 ##### .stringifyHuman(value, typeSchema)
 
-Convert a JavaScript value into a human-readable string.
-
-Specifically, this method is an inverse operation of `.parseHuman()`. If you take the stringified
-result from this function and pass that in to `.parseHuman()` using the same type schema, you'll
-end up back where you started: with the original JavaScript value you passed in to `rttc.stringifyHuman()`.
+Convert a JavaScript value into a string that can be parsed by `stringifyHuman()`.  Specifically, this method is an inverse operation of `.parseHuman()`; that is, if you take the stringified result from this function and pass that in to `.parseHuman()` using the same type schema, you'll end up back where you started: with the original JavaScript value you passed in to `rttc.stringifyHuman()`.
 
 > This losslessness is guaranteed by two factors: that `stringifyHuman()` (1) enforces _strict_ RTTC validation
 > rules (i.e. `rttc.validateStrict(typeSchema, value)`) and (2) the fact that it rejects values which cannot be safely
