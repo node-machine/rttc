@@ -381,7 +381,6 @@ This takes care of a few serialization edge-cases, such as:
 + strips keys and array items with `undefined` or `null` values. If `allowNull` is set to true, `null` values will not be stripped from the encoded string.
 
 
-<!--
 ##### .parse(stringifiedValue, [_typeSchema_=`undefined`], [_unsafeMode_=`false`])
 
 Parse a stringified value back into a usable value.
@@ -394,26 +393,195 @@ This is basically just a variation on JSON.parse that calls `rttc.hydrate()` fir
 Encode a value into a string.
 
 This is basically just a variation on JSON.stringify that calls `rttc.dehydrate()` first.
--->
+
 
 ##### .parseHuman(stringFromHuman, [_typeSchema_=`undefined`], [_unsafeMode_=`false`])
 
-Parse a string from a human into something usable.  If provided, `typeSchema` will be used to make a better guess.  If `unsafeMode` is enabled, lamda functions will be hydrated.
+Parse a human-readable string (typically entered by a human into some kind of UI or CLI application) and return a buest guess at the JavaScript value it represents.
+
++ If provided, `typeSchema` will be used to make a more educated guess.  If you are calling `parseHuman()` in order to parse a human-readable string that was generated using `stringifyHuman()`, then be sure to use the same type schema.
++ If the `unsafeMode` flag is enabled, lamda functions will be hydrated.
+
+
+For example:
+
+```js
+var result;
+
+
+result = rttc.parseHuman('hi');
+// result === 'hi'
+
+result = rttc.parseHuman('"hi"', 'string');
+// result === '"hi"'
+
+result = rttc.parseHuman('"hi"', 'json');
+// result === 'hi'
+// typeof result === 'string'
+
+
+
+
+result = rttc.parseHuman('3');
+// result === '3'
+// typeof result === 'string'
+
+result = rttc.parseHuman('3', 'number');
+// result === 3
+// typeof result === 'number'
+
+result = rttc.parseHuman('3', 'json');
+// result === 3
+// typeof result === 'number'
+
+
+// JSON is not parsed by default:
+result = rttc.parseHuman('{"foo":"100"}')
+// result === '{"foo":"100"}'
+// typeof result === 'string'
+
+// But it will be, if given the proper type schema:
+// e.g. either one of these:
+result = rttc.parseHuman('{"foo":"100"}', 'json')
+result = rttc.parseHuman('{"foo":"100"}', {})
+// assert.deepEqual(result, { foo: '100' })
+// typeof result === 'object'
+// typeof result.foo === 'string'
+
+// But:
+result = rttc.parseHuman('{"foo":"100"}', { foo: 'number' })
+// assert.deepEqual(result, { foo: 100 })
+// typeof result === 'object'
+// typeof result.foo === 'number'
+```
+
+
+
+Another example, this time using a more complex type schema:
+
+```js
+var result = rttc.parseHuman('{"name":"Mr. Tumnus","friends":[{"name":"Broderick","age":13},{"name":"Ashley","age":8000}]}',{
+  name: 'string',
+  friends: [
+    {
+      name: 'string',
+      age: 'number'
+    }
+  ]
+});
+
+// Results in the following dictionary:
+//
+// { name: 'Mr. Tumnus',
+//   friends:
+//    [ { name: 'Broderick', age: 13 },
+//      { name: 'Ashley', age: 8000 } ] }
+```
+
+
+
 
 
 ##### .stringifyHuman(value, typeSchema)
 
-The inverse of `.parseHuman()`, this function encodes a string that, if run through `.parseHuman()` would result in the given value.
+Convert a JavaScript value into a human-readable string.
+
+Specifically, this method is an inverse operation of `.parseHuman()`. If you take the stringified
+result from this function and pass that in to `.parseHuman()` using the same type schema, you'll
+end up back where you started: with the original JavaScript value you passed in to `rttc.stringifyHuman()`.
+
+> This losslessness is guaranteed by two factors: that `stringifyHuman()` (1) enforces _strict_ RTTC validation
+> rules (i.e. `rttc.validateStrict(typeSchema, value)`) and (2) the fact that it rejects values which cannot be safely
+> stringified in a reversible way (e.g. JavaScript Dates, Errors, streams, prototypal objects, dictionaries and arrays
+> with circular references, etc.).  If either of these checks fails, `stringifyHuman()` throws an error.
+>
+> So even though `parseHuman()` is quite forgiving (it uses `rttc.coerce()`), you can rest assured that _any_ string you
+> generate using `stringifyHuman()` will be properly deserialized by `parseHuman()`, provided it is passed in with the same type schema.
+
+
+For example:
+```js
+var result;
+
+// Basic usage:
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+result = rttc.stringifyHuman(100, 'number');
+// result === 100
+// typeof result === 'number'
+
+
+// The method performs strict validation, so the value must be compatible with the provided type schema:
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+result = rttc.stringifyHuman('100', 'number');
+// Error: rttc.stringifyHuman() failed: the provided value does not match the expected type schema.
+// Details:
+// Error: 1 error validating value:
+//  • Specified value (a string: '100') doesn't match the expected type: 'number'
+//     at consolidateErrors (/Users/mikermcneil/code/rttc/lib/helpers/consolidate-errors.js:45:13)
+//     ...
+
+
+// And even if you specify the `ref` type, non-serializable things are not allowed:
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+result = rttc.stringifyHuman(new Date(), 'ref');
+// Error: rttc.stringifyHuman() failed: the provided value cannot be safely stringified in a reversible way.
+//    at Object.stringifyHuman (/Users/mikermcneil/code/rttc/lib/stringify-human.js:49:11)
+//    at repl:1:15
+//    ...
+
+
+// One more normal-case usage scenario, this time using the same more complex value and type schema
+// from the `parseHuman()` example above:
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+```js
+var result = rttc.stringifyHuman({
+  name: 'Mr. Tumnus',
+  friends: [
+    { name: 'Broderick', age: 13 },
+    { name: 'Ashley', age: 8000 }
+  ]
+},
+{
+  name: 'string',
+  friends: [
+    {
+      name: 'string',
+      age: 'number'
+    }
+  ]
+});
+// result === '{"name":"Mr. Tumnus","friends":[{"name":"Broderick","age":13},{"name":"Ashley","age":8000}]}'
+// typeof result === 'string'
+```
 
 
 
-##### .rebuild(val, transformLeaf)
+##### .rebuild(value, handlePrimitive, [handleComposite])
 
-Recursively rebuild (non-destructively) the specified value using the provided transformer function to change each primitive or function therein. Transformer function is provided the value as the first argument, and an rttc display type as the second (either 'string', 'number', 'boolean', 'lamda', or 'null').  The transformer function is not run for dictionaries or arrays, since they're recursed into automatically (in the rebuilt value, they will be normal dictionary and array literals, so any stuff about getters/setters/non-enumerable properties like prototypal methods and constructor information is all stripped out.  `.rebuild()` also protects against endless recursion due to circular references.
+Recursively rebuild (non-destructively) the specified `value` using the provided transformer function (`handlePrimitive`)
+to potentially modify each primitive (`null`, string, number, boolean, or function) therein.  Values like JavaScript Dates,
+Errors, streams, etc. are coerced to strings before being passed in to `handlePrimitive`.
+
+The `handlePrimitive` transformer function is not run for dictionaries or arrays, since they're recursed into automatically
+by default-- unless the `handleComposite` transformer is provided.  If provided, the `handleComposite` transformer function
+is called once for each array and once for each dictionary in `value`.  It is expected to return a modified dictionary or array
+that will then continue to be recursively iterated into by `rebuild()`.
+
+In any case, arrays and dictionaries end up as normal array and dictionary literals in the rebuilt value, meaning that any
+JavaScript-language-specific metadata such as getters/setters/non-enumerable properties like prototypal methods and constructor
+information are all stripped out.  `.rebuild()` also protects against endless recursion due to circular references, whether or
+not the `handleComposite` transformer function is being used (since even if it is provided, JSON-serializability is ensured _before_
+it is called).
+
+Both transformer functions should be written expecting the particular primitive, dictionary or array value as their first argument
+and an RTTC display type string as the second argument.  For `handlePrimitive`, that second argument is either 'string', 'number',
+'boolean', 'lamda', or 'null'.  For `handleComposite`, it is either 'dictionary' or 'array'.
+
+> If you need further technical specifics, see the implementation of `rebuild()` in `lib/rebuild.js` in this repo.
 
 Example usage:
 ```javascript
-return res.json(rttc.rebuild(someData, function transformLeaf(val, type){
+return res.json(rttc.rebuild(someData, function handlePrimitive(val, type){
   if (type === 'string') { return val + ' (a grass-type Pokemon)'; }
   else { return val; }
 }));
