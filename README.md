@@ -87,25 +87,49 @@ rttc.infer([{ upstream: '===', fieldName: 'photos', files: [{getFile: '->', file
 
 ## Types &amp; terminology
 
-> Each type can be validated or coerced against.  If coercion fails, the "base value" for the type will be used.
+There are 10 different types recognized by `rttc`, each of which is uniquely expressed by special notation called **RTTC exemplar syntax**.
+For example, if we were to interpret `'hello world'` as an **exemplar**, we would be able to infer that it represents a string data type.
+Exemplars make it easier to write out intricate data structures and validation rules because they allow us to reason about our data types
+using representative _examples_.  It also means that when working with exemplar schemas programatically, you have access to a much richer
+set of information about any given data type.  But most importantly: writing data types as examples makes it easier for ourselves and other
+_humans_ to read and understand our intentions.
 
-> Also note that all types below may be expressed recursively within faceted dictionaries and patterned arrays. If those words don't make sense, keep reading, you'll see what I mean.
+Exemplars can be mixed and matched with varying levels of specificity, up to any imaginable depth, by using the recursive
+array and faceted dictionary types. For example, we can infer from the exemplar `['Rover']` that its _type schema_ is `['string']`,
+indicates that it accepts any array of strings.  Similarly, given the exemplar `[{ name: 'Rover' }]`, we can infer that its
+type schema (`[{name: 'string'}]`) indicates that it accepts any array of dictionaries, so long as all of those dictionaries have a
+key called `name` and the corresponding value is a string.
 
+The table below gives each of the RTTC types, the exemplar notation used to describe it, as well as its _base value_:
 
-There are 10 different types recognized by `rttc`:
-
-| type                    | rttc example notation    | base value                          |
+| type                    | rttc exemplar syntax     | base value                          |
 |-------------------------|--------------------------|-------------------------------------|
 | string                  | `'any string like this'` | `''`
 | number                  | `1337` _(any number)_    | `0`
 | boolean                 | `false` _(or `true`)_    | `false`
-| lamda                   | `'->'`                   | `function () { throw new Error('Not implemented! (this function was automatically created by `rttc`'); };`
-| generic dictionary      | `{}`           | `{}` _(empty dictionary)_
-| generic array           | `[]`          | `[]` _(empty array)_
+| lamda (aka function)    | `'->'`                   | `function () { throw new Error('Not implemented! (this function was automatically created by `rttc`'); };`
+| generic dictionary      | `{}`                     | `{}` _(empty dictionary)_
 | json                    | `'*'`                    | `null`
 | ref                     | `'==='`                  | `null`
-| faceted dictionary  (recursive)       | `{...}` _(i.e. w/ keys)_  | `{...}` (w/ all expected keys and _their_ base values)
-| pattern array (recursive)    | `[...]` _(i.e. w/ 1 item)_  | `[]` _(empty array)_
+| faceted dictionary  _(recursive)_       | `{...}` _(i.e. w/ keys)_  | `{...}` (w/ all expected keys and _their_ base values)
+| array _(recursive)_       | `[...]` _(i.e. w/ 1 item)_  | `[]` _(empty array)_
+
+
+A type's "base value" is its minimum empty state. When coercing some data vs. an exemplar, if coercion fails
+at a particular path within that exemplar, then the "base value" for the type will be used at that path instead.
+For example, if you are coercing the value `{name:'Lynda'}` vs. the exemplar `{name: 'Angela', age: 47}`, then
+the result would be `{name: 'Lynda', age: 0}` (because the base value for the number type is zero).
+
+
+
+> ##### Compatibility Note
+> RTTC also supports an 11th type, sometimes called the "generic array" and represented by the exemplar (`[]`).
+> However, if an exemplar is specified as `[]`, it is really just an alias for `['*']`, an array
+> exemplar with a `*` (json) pattern.  This just means it accepts any array consisting only of
+> JSON-compatible contents. The `[]` alias is for consistency with the generic dictionary type (`{}`),
+> as well as for backwards compatibility. While future versions of RTTC will likely continue to maintain
+> support for the `[]` exemplar for some time to come, for clarity, you should switch to using `['*']` in
+> new code and documentation and migrate `[]` to `['*']` in existing code at your earliest convenience.
 
 
 
@@ -233,9 +257,9 @@ Undefined items will always be stripped out of arrays.
 
 `example: '*'`
 
-This works pretty much like the generic array or generic dictionary type, with one major difference: the top-level value can be a string, boolean, number, dictionary, array, or null value.
+This works pretty much like the generic dictionary type, with one major difference: the top-level value can be a string, boolean, number, dictionary, array, or `null` value.
 
-Other than the aforementioned exception for `null`, the generic JSON type follows the JSON-serializability rules from generic arrays and generic dictionaries.
+Other than the aforementioned exception for `null`, the generic JSON type follows the JSON-serializability rules from generic dictionaries.
 
 
 
@@ -267,7 +291,7 @@ The following is a high-level overview of important conventions used by the `rtt
 
 ##### Instances of ECMAScript core classes
 
-When coerced against the generic dictionary, generic array, or the generic json types, the following is true:
+When coerced against the generic dictionary or generic json types, the following is true:
 + `Error` instances are coerced to the string value of their `.stack` property (i.e. the message + stack trace you're used to seeing in the terminal)
 + `Date` instances are coerced to the string value of running their `.toJSON()` method (a ISO-8601 timestamp, e.g. `'2015-05-24T15:16:48.999Z'`.  This reflects the Date in GMT/UTC time, so is therefore timezone-agnostic).
 + `RegExp` instances are coerced to the string value you get from running their `.toString()` method (e.g. `'/foo/'` or `'/^bar/gi'`)
@@ -276,7 +300,7 @@ When coerced against the generic dictionary, generic array, or the generic json 
 ##### Instances of Node.js core classes
 
 + `Stream` and `Buffer` instances (from Node.js) are only valid against the mutable reference type.
-+ Streams and Buffers are coerced to `null` against the generic dictionary, generic array, or the generic json types.
++ Streams and Buffers are coerced to `null` against the generic dictionary or the generic json types.
 
 
 
@@ -289,7 +313,7 @@ As mentioned above, every type has a base value.
 + For the "boolean" type, base value is `false`
 + For the "lamda" type (`'->'`), base value is a function that uses the standard machine fn signature and triggers its "error" callback w/ a message about being the rttc default (e.g. `function(inputs,exits,env) { return exits.error(new Error('not implemented')); }`)
 + For the generic dictionary type (`{}`) or a faceted dictionary type (e.g. `{foo:'bar'}`), the base value is `{}`.
-+ For the generic array type (`[]`), or a faceted/homogenous array type (e.g. `[3]` or `[{age:48,name: 'Nico'}]`), the base value is `[]`
++ For the array type (e.g. `[3]` or `[{age:48,name: 'Nico'}]`), the base value is `[]` (an empty array)
 + For the "json" type (`'*'`), base value is `null`.
 + For the "ref" type (`'==='`), base value is `null`.
 
