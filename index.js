@@ -27,6 +27,7 @@ module.exports = {
   rebuild: require('./lib/rebuild'),
   getDisplayTypeLabel: require('./lib/get-display-type-label'),
   inferDisplayType: require('./lib/infer-display-type'),
+  validateExemplarStrict: require('./lib/validate-exemplar-strict'),
 };
 
 
