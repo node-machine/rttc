@@ -19,13 +19,13 @@ $ npm install rttc --save
 
 ## Basic Usage
 
+```javascript
+var rttc = require('rttc');
+```
+
 The `rttc` package has lots of different methods, but the most common use cases are validation and coercion:
 
 ```javascript
-var rttc = require('rttc');
-
-// Validation and coercion:
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 rttc.validateStrict('number', 999);
 // (If the value is valid vs. the specified type schema, then `.validateStrict()` simply returns undefined)
 
@@ -48,17 +48,17 @@ rttc.coerce('number', '999');
 rttc.coerce('number', { x: 32, y: 79 });
 // => 0
 // (when confronted with **major** differences, `.coerce()` returns the _base value_ for the given type)
+```
+
+Unless otherwise stated, all RTTC methods support recursive (or "deep") traversal of values.
+In other words, they iterate over the keys of **dictionaries** (aka plain old JavaScript
+objects) and the indices of **arrays**-- and if those dictionary properties and array items
+are _themselves_ dictionaries or arrays, then `rttc` recursively dives into them too (and
+so on and so forth). 
 
 
-// Recursive (or "deep") validation and coercion:
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-// Unless otherwise stated, all RTTC methods support recursive ("deep") traversal of values.
-// In other words, they iterate over the keys of **dictionaries** (aka plain old JavaScript
-// objects) and the indices of **arrays**-- and if those dictionary properties and array items
-// are _themselves_ dictionaries or arrays, then `rttc` recursively dives into them too (and
-// so on and so forth).
-//
-// For example:
+For example:
+```javascript
 rttc.coerce([ { name: 'string', age: 'number', friends: [ 'string' ] } ], [
   { name: 'Karl', age: 258 },
   { name: 'Samantha', age: '937' },
@@ -80,7 +80,8 @@ rttc.coerce([ { name: 'string', age: 'number', friends: [ 'string' ] } ], [
 For a quick tour of common use cases, as well as some additional examples, check out [the RTTC quick start guide](https://gist.github.com/mikermcneil/8d20ba78b248ac9f5644fcdd0bb96b74).  Then keep reading for complete reference documentation; or if you already know what you're doing, feel free to skip ahead to the [Methods](#Methods) section below.
 
 
-
+&nbsp;
+&nbsp;
 
 ## Types &amp; Exemplars
 
@@ -130,33 +131,49 @@ the result would be `{name: 'Lynda', age: 0}` (because the base value for the nu
 
 
 
-### Strings
+#### Strings
 
-`example: 'stuff'`
+| Exemplar               | RTTC Display Type      | Display Type Label            |
+|:-----------------------|:-----------------------|:------------------------------|
+| `'foo'` _(any string)_ | `'string'`             | `'String'`                    |
 
 The **string** type accepts any string.
 
-### Numbers
 
-`example: 323`
+
+#### Numbers
+
+| Exemplar               | RTTC Display Type      | Display Type Label            |
+|:-----------------------|:-----------------------|:------------------------------|
+| `32` _(any number)_    | `'number'`             | `'Number'`                    |
 
 The **number** type accepts numbers like `0`, `-4`, or `235.3`.  Anathemas like `Infinity`, `-Infinity`, `NaN`, and `-0` are all coerced to zero.
 
-### Booleans
+#### Booleans
 
-`example: false`
+| Exemplar               | RTTC Display Type      | Display Type Label            |
+|:-----------------------|:-----------------------|:------------------------------|
+| `true` _(or `false`)_  | `'boolean'`            | `'Boolean'`                   |
 
 The **boolean** type accepts `true` or `false`.
 
-### Lamdas
 
-`example: '->'`
+#### Functions (aka "lamdas")
+
+| Exemplar               | RTTC Display Type      | Display Type Label            |
+|:-----------------------|:-----------------------|:------------------------------|
+| `'->'`                 | `'lamda'`              | `'Function'`                  |
 
 The **lamda** type accepts any function.
 
-### Generic dictionaries
 
-`example: {}`
+
+
+#### Generic dictionaries
+
+| Exemplar               | RTTC Display Type      | Display Type Label            |
+|:-----------------------|:-----------------------|:------------------------------|
+| `{}`                   | `'dictionary'`         | `'Dictionary'`                |
 
 The **generic dictionary** type accepts any JSON-serializable dictionary.
 
@@ -171,9 +188,34 @@ Dictionaries that have been validated/coerced against the generic dictionary typ
 + keys with null values may be present
 + null items in nested arrays may be present
 
-### Faceted dictionaries
 
-`example: {...}`
+
+#### JSON-Compatible Values
+
+| Exemplar          | Rttc Display Type     | Display Type Label            |
+|:------------------|:----------------------|:------------------------------|
+| `'*'`             | `'json'`              | `'JSON-Compatible Value'`     |
+
+
+This works pretty much like the generic dictionary type, with one major difference: the top-level value can be a string, boolean, number, dictionary, array, or `null` value.  Other than the aforementioned exception for `null`, the generic JSON type follows the JSON-serializability rules as described above in the section on generic dictionaries.
+
+
+
+#### Mutable references (aka "ref")
+
+| Exemplar               | RTTC Display Type      | Display Type Label            |
+|:-----------------------|:-----------------------|:------------------------------|
+| `'==='`                | `'ref'`                | `'Anything'`                  |
+
+This special type allows anything except `undefined` at the top level (undefined is permitted at any other level).  It also _does not rebuild objects_, which means it maintains the original reference (i.e. is `===`).  It does not guarantee JSON-serializability.
+
+
+
+#### Faceted dictionaries
+
+| Exemplar               | RTTC Display Type      | Display Type Label            |
+|:-----------------------|:-----------------------|:------------------------------|
+| `{...}` _(recursive)_  | `'dictionary'`         | `'Dictionary'`                |
 
 The **faceted dictionary** type is any dictionary type schema with at least one key.  Extra keys in the actual value that are not in the type schema will be stripped out. Missing keys will cause `.validate()` to throw.
 
@@ -196,33 +238,15 @@ Dictionary type schemas (i.e. plain old JavaScript objects nested like `{a:{}}`)
 ```
 
 
-<!--
-### Generic arrays
 
-`example: []`
+#### Arrays
 
-Arrays that have been validated/coerced against the generic array type:
-+ _may_ be heterogeneous (have items with different types) - but it is generally best practice to avoid heterogeneous arrays in general.
-+ are guaranteed to be JSON-serializable, with a few additional affordances:
-  + normally, `Error` instances get stringified into empty objects.  Instead, rttc turns them into human-readable strings by reducing them to their `.stack` property (this includes the error message and the stack trace w/ line numbers)
-  + normally, `RegExp` instances get stringified into empty objects.  Instead, rttc turns them into human-readable strings like `'/some regexp/gi'`
-  + normally, `function()` instances get stringified into empty objects.  Instead, rttc turns them into human-readable strings like `'function doStuff (a,b) { console.log(\'wow I can actually read this!\'); }'`
-+ keys of nested dictionaries with undefined values will be stripped out
-+ undefined array items at any level will be stripped out
-+ keys of nested dictionaries with null values may be present
-+ null items in arrays at any level may be present
+| Exemplar               | RTTC Display Type      | Display Type Label            |
+|:-----------------------|:-----------------------|:------------------------------|
+| `[...]` _(recursive)_  | `'array'`              | `'Array'`                     |
 
-> Note: Generic array exemplar syntax is really just another way to write `['*']`.  The special empty array syntax will continue to be supported for backwards compatibility, but it may eventually be removed from documentation and tests to avoid potential confusion.
 
--->
-
-### Arrays
-
-`example: ['Margaret']`
-`example: [123]`
-`example: [true]`
-`example: [[...]]`
-`example: [{...}]`
+The **array** type accepts any array, so long as all of that array's items are also valid (recursively deep). Every array exemplar and type schema must declare a **pattern**: a nested exemplar or type schema which indicates the expected type of array items.  This pattern is how the array type is able to validate nested values.
 
 Array type schemas may be infinitely nested and combined with dictionaries or any other types.  When validating vs. an array type schema, RTTC first checks that the corresponding value is an array (a la [`_.isArray()`](http://lodash.org)), then also recursively checks each of its items vs. the expected **pattern**.  For example, given the exemplar `['Margaret']`, we can infer that the type schema is `['string']`, and therefore that it would accept any array of strings.
 
@@ -247,29 +271,21 @@ When providing an array exemplar or type schema, you only need to provide one it
 ]
 ```
 
+To indicate an array of _anything_, use the mutable reference type as the pattern:
+```js
+// Type schema that indicates an array of anything:
+['ref']
+
+// Same thing, but as an exemplar:
+['===']
+```
+
 
 > Note:
-> When validating or coercing a value vs. an array exemplar or type schema, `undefined` items in the array _will always be stripped out_.  For example, coercing `['Jerry', undefined, undefined, 'Robin']` vs. the type schema `['string']` would result in `['Jerry', 'Robbin']`.  This ensures consistency with the behavior of the native JSON.stringify() and JSON.parse() methods in browser-side JavaScript and Node.js.
+> When validating or coercing a value vs. an array exemplar or type schema, `undefined` items in the array _will always be stripped out_.  For example, coercing `['Jerry', undefined, undefined, 'Robin']` vs. the type schema `['string']` would result in `['Jerry', 'Robbin']`.  This ensures consistency with the behavior of the native JSON.stringify() and JSON.parse() methods in browser-side JavaScript and Node.js.  This is occurs even when using `['===']`.
 
 
-
-
-### Generic JSON
-
-`example: '*'`
-
-This works pretty much like the generic dictionary type, with one major difference: the top-level value can be a string, boolean, number, dictionary, array, or `null` value.
-
-Other than the aforementioned exception for `null`, the generic JSON type follows the JSON-serializability rules from generic dictionaries.
-
-
-
-### Mutable reference ("ref")
-
-`example: '==='`
-
-This special type allows anything except `undefined` at the top level (undefined is permitted at any other level).  It also _does not rebuild objects_, which means it maintains the original reference (i.e. is `===`).  It does not guarantee JSON-serializability.
-
+&nbsp;
 
 
 
