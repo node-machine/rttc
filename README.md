@@ -1,7 +1,13 @@
 # rttc
 Runtime (recursive) type-checking for JavaScript.
 
-This package is the official SDK for working with the RTTC type system.  It includes a lot of methods that suitable for everyday use, as well as some low-level methods that are intended for developers building tools on top of the [machine specification](http://node-machine.org).  RTTC is a simplified abstraction that sits on top of basic JavaScript and Node.js concepts, and while some of the terminology may seem unfamiliar at first, you will likely recognize the underlying principles at work.
+This package is the official SDK for working with the RTTC type system.  It includes a lot of methods that suitable for everyday use, as well as some lower-level methods that are intended for developers building tools which leverage the [machine specification](http://node-machine.org).  
+
+## What is RTTC?
+
+Throwing errors in an asynchronous callback can be [dangerous](http://stackoverflow.com/questions/5999373/how-do-i-prevent-node-js-from-crashing-try-catch-doesnt-work), particularly in Node.js.  Too often, these types of errors and crashes occur because of a trivial mistake or miscommunication about the data type of a variable; particularly when you're working on a team with other developers.
+
+RTTC is a lightweight type system that provides a safety net for JavaScript code. It provides flexible, performant type guarantees on an as-needed basis; without messing with your development stack or build tools. Instead, RTTC builds on top of the existing data structures and programming concepts from JavaScript and Node.js to validate and coerce data _at runtime_.  This allows you to add as much or as little type-checking as you like, in any new _or_ existing Node.js/Sails.js application.
 
 RTTC semantics are used by:
 + the Node-Machine project's core utility packages, including the [`machine` runner](https://github.com/node-machine/machine)
@@ -9,7 +15,6 @@ RTTC semantics are used by:
 + in [Waterline drivers](https://github.com/node-machine/driver-interface)
 + in every [machinepack published on NPM](http://node-machine.org/machinepacks), and
 + in the [Treeline](https://treeline.io) standard library
-
 
 
 ## Installation
@@ -79,7 +84,7 @@ rttc.coerce([ { name: 'string', age: 'number', friends: [ 'string' ] } ], [
 
 #### Next Steps
 
-For a quick rundown of common use cases, as well as some additional examples, check out [the RTTC quick start guide](https://gist.github.com/mikermcneil/8d20ba78b248ac9f5644fcdd0bb96b74).  Keep reading for a brief overview of how RTTC works and a tour of each data types.  Or, if this isn't your first rodeo, feel free to skip ahead to the complete reference documentation in the [Methods](#Methods) section below.
+For a quick rundown of common use cases, as well as some additional examples, check out [the RTTC quick start guide](https://gist.github.com/mikermcneil/8d20ba78b248ac9f5644fcdd0bb96b74).  Keep reading for a brief overview of how RTTC works and a tour of each of its data types.  Or, if this isn't your first rodeo, feel free to skip ahead to the complete [reference documentation](https://github.com/node-machine/rttc#methods) below.
 
 
 &nbsp;
@@ -218,7 +223,7 @@ When validating or coercing a value vs. a generic dictionary exemplar or type sc
 | `'*'`             | `'json'`              | `'JSON-Compatible Value'`     | `null`        |
 
 
-This works pretty much like the generic dictionary type, with one major difference: the top-level value can be a string, boolean, number, dictionary, array, or `null` value.  Other than the aforementioned exception for `null`, the generic JSON type follows the JSON-serializability rules as described above in the section on generic dictionaries.
+This works pretty much like the generic dictionary type, with one major difference: the top-level value can be a string, boolean, number, dictionary, array, or `null` value.  When faced with a dictionary or array that contains nested values, the generic JSON type follows the same JSON-serializability as the generic dictionary type (see above).
 
 
 
@@ -670,7 +675,6 @@ result = rttc.stringifyHuman(new Date(), 'ref');
 // One more normal-case usage scenario, this time using the same more complex value and type schema
 // from the `parseHuman()` example above:
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-```js
 var result = rttc.stringifyHuman({
   name: 'Mr. Tumnus',
   friends: [
@@ -1023,13 +1027,17 @@ Given a type schema, strip out generics ("ref", "json", {}, and []) to convert i
 
 A convenience method to return the base value for the given exemplar.  This is effectively the same thing as calling `rttc.infer()` to get its type schema, then coercing `undefined` to match (i.e. passing the type schema to `rttc.coerce()` without a second argument).
 
+
 ##### .cast(exemplar, actualValue)
 
 A convenience method that calls `rttc.infer()` on the provided exemplar to get the type schema, then uses it to `rttc.coerce()` the `actualValue` provided.
+
+
+
 
 
 ## License
 
 MIT
 
-&copy; 2014 Mike McNeil, Cody Stoltman;  &copy; 2015 The Treeline Company
+&copy; 2014 Mike McNeil, Cody Stoltman;  &copy; 2015-2016 The Treeline Company
