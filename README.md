@@ -96,9 +96,9 @@ _humans_ to read and understand our intentions.
 
 Exemplars can be mixed and matched with varying levels of specificity, up to any imaginable depth, by using the recursive
 array and faceted dictionary types. For example, we can infer from the exemplar `['Rover']` that its _type schema_ is `['string']`,
-indicates that it accepts any array of strings.  Similarly, given the exemplar `[{ name: 'Rover' }]`, we can infer that its
-type schema (`[{name: 'string'}]`) indicates that it accepts any array of dictionaries, so long as all of those dictionaries have a
-key called `name` and the corresponding value is a string.
+indicating that it accepts any array of strings.  Similarly, given the exemplar `[{ name: 'Rover' }]`, we can infer the type schema
+`[{name: 'string'}]`.  This indicates that it accepts any array of dictionaries, so long as each of those dictionaries has a
+key called `name` with any string value.
 
 The table below gives each of the RTTC types, the exemplar notation used to describe it, as well as its _base value_:
 
