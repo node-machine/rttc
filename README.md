@@ -52,23 +52,26 @@ rttc.coerce('number', { x: 32, y: 79 });
 
 // Recursive (or "deep") validation and coercion:
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-// Unless otherwise stated, all RTTC methods support recursive ("deep") traversal of values and type schemas.
-// In other words, they iterate over the keys of **dictionaries** (aka plain old JavaScript objects) and the indices of arrays.
+// Unless otherwise stated, all RTTC methods support recursive ("deep") traversal of values.
+// In other words, they iterate over the keys of **dictionaries** (aka plain old JavaScript
+// objects) and the indices of **arrays**-- and if those dictionary properties and array items
+// are _themselves_ dictionaries or arrays, then `rttc` recursively dives into them too (and
+// so on and so forth).
 //
 // For example:
-rttc.coerce([ { name: 'string', age: 'number' } ], [
+rttc.coerce([ { name: 'string', age: 'number', friends: [ 'string' ] } ], [
   { name: 'Karl', age: 258 },
   { name: 'Samantha', age: '937' },
-  { name: 'Lupé', age: 82 },
+  { name: 'Lupé', age: 82, friends: ['Henry', 'Mario', undefined] },
   { name: 'Andres', age: '22' },
   { age: ['nonsense!'] }
 ]);
 // => [
-//  { name: 'Karl', age: 258 },
-//  { name: 'Samantha', age: 937 },
-//  { name: 'Lupé', age: 82 },
-//  { name: 'Andres', age: 22 },
-//  { name: '', age: 0 },
+//  { name: 'Karl', age: 258, friends: [] },
+//  { name: 'Samantha', age: 937, friends: [] },
+//  { name: 'Lupé', age: 82, friends: ['Henry', 'Mario'] },
+//  { name: 'Andres', age: 22, friends: [] },
+//  { name: '', age: 0, friends: [] },
 // ]
 //
 ```
