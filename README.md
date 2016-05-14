@@ -11,6 +11,7 @@ RTTC semantics are used by:
 + in the [Treeline](https://treeline.io) standard library
 
 
+
 ## Installation
 
 ```sh
@@ -23,7 +24,7 @@ $ npm install rttc --save
 var rttc = require('rttc');
 ```
 
-The `rttc` package has lots of different methods, but the most common use cases are validation and coercion:
+The `rttc` package has many different methods for working with fixtures, examples, type schemas, and runtime data in JavaScript.  But the most commonly-used RTTC methods are related to validation and coercion of runtime data:
 
 ```javascript
 rttc.validateStrict('number', 999);
@@ -76,8 +77,9 @@ rttc.coerce([ { name: 'string', age: 'number', friends: [ 'string' ] } ], [
 //
 ```
 
+#### Next Steps
 
-For a quick tour of common use cases, as well as some additional examples, check out [the RTTC quick start guide](https://gist.github.com/mikermcneil/8d20ba78b248ac9f5644fcdd0bb96b74).  Then keep reading for complete reference documentation; or if you already know what you're doing, feel free to skip ahead to the [Methods](#Methods) section below.
+For a quick rundown of common use cases, as well as some additional examples, check out [the RTTC quick start guide](https://gist.github.com/mikermcneil/8d20ba78b248ac9f5644fcdd0bb96b74).  Keep reading for a brief overview of how RTTC works and a tour of each data types.  Or, if this isn't your first rodeo, feel free to skip ahead to the complete reference documentation in the [Methods](#Methods) section below.
 
 
 &nbsp;
