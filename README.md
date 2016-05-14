@@ -12,9 +12,9 @@ RTTC is a lightweight type system that provides a safety net for JavaScript code
 RTTC semantics are used by:
 + the Node-Machine project's core utility packages, including the [`machine` runner](https://github.com/node-machine/machine)
 + throughout the [Sails.js framework](http://sailsjs.org)
-+ in [Waterline drivers](https://github.com/node-machine/driver-interface)
-+ in every [machinepack published on NPM](http://node-machine.org/machinepacks), and
-+ in the [Treeline](https://treeline.io) standard library
++ every [Waterline driver](https://github.com/node-machine/driver-interface)
++ every [machinepack published on NPM](http://node-machine.org/machinepacks), and
++ the [Treeline](https://treeline.io) standard library
 
 
 ## Installation
