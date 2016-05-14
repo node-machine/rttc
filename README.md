@@ -467,10 +467,7 @@ As mentioned above, every type has a base value.
 
 ## Methods
 
-This package exposes a number of different utility methods.  If you're interested in using any of these directly, we highly recommend you consider looking at [machinepack-rttc](http://node-machine.org/machinepack-rttc), which provides a higher-level abstraction with better documentation.
-
-> The low-level reference below assumes you are willing/able to dig into the source code of this module for more information.  So continue at your own risk!
-
+This package exposes a number of different methods, some of which are much more likely to be relevant than others for your everyday development needs.  The methods in this reference documentation are listed roughly in descending order of familiarity, starting with the most commonly-used and ending with the more bizarre.
 
 
 ### Validation
@@ -490,13 +487,7 @@ Either returns a (potentially "lightly" coerced) version of the value that was a
 Determine whether two values are equivalent using `_.isEqual()`.
 
 This is the method used by `rttc`'s own tests to validate that expected values and actual values match.
-
-
-> Experimental:
-> If the third argument was provided, also look for expected `lamda` values in the optional type schema and call `toString()` on functions before comparing them.  The third argument SHOULD NOT BE RELIED UPON.
-
-
-
+If the third argument was provided, also look for expected `lamda` values in the optional type schema and call `toString()` on functions before comparing them.
 
 
 
@@ -505,12 +496,40 @@ This is the method used by `rttc`'s own tests to validate that expected values a
 
 ##### .coerce(expectedTypeSchema, actualValue)
 
-ALWAYS returns an acceptable version of the value, even if it has to mangle it to get there (i.e. by using the "base value" for the expected type.  More on that below.)
+ALWAYS returns an acceptable version of the value, even if it has to mangle it to get there (i.e. by using the "base value" for the expected type schema).
 
 
-##### .hydrate(value, [_typeSchema_=`undefined`])
 
-This function will use the provided `typeSchema` to figure out where "lamda" values (functions) are expected, then will use `eval()` to bring them back to life.  Use with care.
+##### .rebuild(value, handlePrimitive, [handleComposite])
+
+Recursively rebuild (non-destructively) the specified `value` using the provided transformer function (`handlePrimitive`)
+to potentially modify each primitive (`null`, string, number, boolean, or function) therein.  Values like JavaScript Dates,
+Errors, streams, etc. are coerced to strings before being passed in to `handlePrimitive`.
+
+The `handlePrimitive` transformer function is not run for dictionaries or arrays, since they're recursed into automatically
+by default-- unless the `handleComposite` transformer is provided.  If provided, the `handleComposite` transformer function
+is called once for each array and once for each dictionary in `value`.  It is expected to return a modified dictionary or array
+that will then continue to be recursively iterated into by `rebuild()`.
+
+In any case, arrays and dictionaries end up as normal array and dictionary literals in the rebuilt value, meaning that any
+JavaScript-language-specific metadata such as getters/setters/non-enumerable properties like prototypal methods and constructor
+information are all stripped out.  `.rebuild()` also protects against endless recursion due to circular references, whether or
+not the `handleComposite` transformer function is being used (since even if it is provided, JSON-serializability is ensured _before_
+it is called).
+
+Both transformer functions should be written expecting the particular primitive, dictionary or array value as their first argument
+and an RTTC display type string as the second argument.  For `handlePrimitive`, that second argument is either 'string', 'number',
+'boolean', 'lamda', or 'null'.  For `handleComposite`, it is either 'dictionary' or 'array'.
+
+> If you need further technical specifics, see the implementation of `rebuild()` in `lib/rebuild.js` in this repo.
+
+Example usage:
+```javascript
+return res.json(rttc.rebuild(someData, function handlePrimitive(val, type){
+  if (type === 'string') { return val + ' (a grass-type Pokemon)'; }
+  else { return val; }
+}));
+```
 
 
 ##### .dehydrate(value, [_allowNull_=`false`], [_dontStringifyFunctions_=`false`])
@@ -523,18 +542,11 @@ This takes care of a few serialization edge-cases, such as:
 + strips keys and array items with `undefined` or `null` values. If `allowNull` is set to true, `null` values will not be stripped from the encoded string.
 
 
-##### .parse(stringifiedValue, [_typeSchema_=`undefined`], [_unsafeMode_=`false`])
 
-Parse a stringified value back into a usable value.
+##### .hydrate(value, [_typeSchema_=`undefined`])
 
-This is basically just a variation on JSON.parse that calls `rttc.hydrate()` first if `unsafeMode` is enabled.
+This function will use the provided `typeSchema` to figure out where "lamda" values (functions) are expected, then will use `eval()` to bring them back to life.  Use with care.
 
-
-##### .stringify(value, [_allowNull_=`false`])
-
-Encode a value into a string.
-
-This is basically just a variation on JSON.stringify that calls `rttc.dehydrate()` first.
 
 
 ##### .parseHuman(stringFromHuman, [_typeSchema_=`undefined`], [_unsafeMode_=`false`])
@@ -697,38 +709,6 @@ var result = rttc.stringifyHuman({
 
 
 
-##### .rebuild(value, handlePrimitive, [handleComposite])
-
-Recursively rebuild (non-destructively) the specified `value` using the provided transformer function (`handlePrimitive`)
-to potentially modify each primitive (`null`, string, number, boolean, or function) therein.  Values like JavaScript Dates,
-Errors, streams, etc. are coerced to strings before being passed in to `handlePrimitive`.
-
-The `handlePrimitive` transformer function is not run for dictionaries or arrays, since they're recursed into automatically
-by default-- unless the `handleComposite` transformer is provided.  If provided, the `handleComposite` transformer function
-is called once for each array and once for each dictionary in `value`.  It is expected to return a modified dictionary or array
-that will then continue to be recursively iterated into by `rebuild()`.
-
-In any case, arrays and dictionaries end up as normal array and dictionary literals in the rebuilt value, meaning that any
-JavaScript-language-specific metadata such as getters/setters/non-enumerable properties like prototypal methods and constructor
-information are all stripped out.  `.rebuild()` also protects against endless recursion due to circular references, whether or
-not the `handleComposite` transformer function is being used (since even if it is provided, JSON-serializability is ensured _before_
-it is called).
-
-Both transformer functions should be written expecting the particular primitive, dictionary or array value as their first argument
-and an RTTC display type string as the second argument.  For `handlePrimitive`, that second argument is either 'string', 'number',
-'boolean', 'lamda', or 'null'.  For `handleComposite`, it is either 'dictionary' or 'array'.
-
-> If you need further technical specifics, see the implementation of `rebuild()` in `lib/rebuild.js` in this repo.
-
-Example usage:
-```javascript
-return res.json(rttc.rebuild(someData, function handlePrimitive(val, type){
-  if (type === 'string') { return val + ' (a grass-type Pokemon)'; }
-  else { return val; }
-}));
-```
-
-
 ##### .compile(value)
 
 Given a value, return a human-readable string which represents it.  This string is equivalent to a JavaScript code snippet which would accurately represent the value in code.
@@ -768,131 +748,26 @@ Finally, here's a table listing notable differences between `util.inspect()` and
 
 
 
+##### .parse(stringifiedValue, [_typeSchema_=`undefined`], [_unsafeMode_=`false`])
+
+Parse a stringified value back into a usable value.
+
+This is basically just a variation on JSON.parse that calls `rttc.hydrate()` first if `unsafeMode` is enabled.
+
+
+##### .stringify(value, [_allowNull_=`false`])
+
+Encode a value into a string.
+
+This is basically just a variation on JSON.stringify that calls `rttc.dehydrate()` first.
+
+
+
+
 ### Meta
 
 > Methods for working w/ exemplars, type schemas, and display types
 
-
-##### .inferDisplayType(exemplar)
-
-Compute the **display type** (aka "typeclass") for an RTTC exemplar.
-
-Always returns one of the standard RTTC display types:
-  + string
-  + number
-  + boolean
-  + lamda
-  + dictionary
-  + array
-  + json
-  + ref
-
-Or `''` (empty string) if the exemplar is unrecognized or invalid; e.g. `null`.
-
-
-```javascript
-rttc.inferDisplayType({foo: 'bar'});
-// => 'dictionary'
-
-
-rttc.inferDisplayType('->');
-// => 'lamda'
-```
-
-
-##### .getDisplayTypeLabel(display)
-
-Get the appropriate human-readable label for a given RTTC "display type" (aka "typeclass") string.
-
-```js
-rttc.getDisplayTypeLabel('ref');
-//   => 'Anything'
-
-rttc.getDisplayTypeLabel('string');
-//   => 'String'
-```
-
-> Useful for error messages, user interfaces, etc.
-
-
-<!--
-##### .getDisplayType(value)
-
-Given a value, return its type as a human-readable string (this is not limited to rttc types-- it can return strings like `"Error"` and `"Date"`).
-If special rttc exemplar syntax is used, it is respected.
-
-> May be deprecated in an upcoming release.
-
--->
-
-
-
-
-##### .coerceExemplar(value, [allowSpecialSyntax=false])
-
-Convert a normal value into an exemplar representative of the _most specific_ type schema which would accept it.  In most cases, this leaves the value untouched-- however it does take care of a few special cases:
-
-+ Empty dictionaries become generic dictionaries (`{}`).  The most specific exemplar which can accept an empty dictionary is the generic dictionary.
-+ Empty arrays become generic arrays (`[]`).  Since we don't know the contents, we have to assume this array could be heterogeneous (i.e. have items with different types).
-+ Multi-item arrays become pattern arrays, and any extra items (other than the first one) are lopped off.
-+ Functions become '->'.
-+ `null` becomes '*'.
-+ If the top-level value is `undefined`, it becomes '==='. (however this behavior is subject to change in an upcoming release; since `undefined` is not supported by any exemplar)
-+ '->' becomes the string: `'an arrow symbol'`.
-+ '*' becomes the string: `'a star symbol'`.
-+ '===' becomes the string: `'3 equal signs'`.
-+ `NaN`, `Infinity`, `-Infinity`, and `-0` become 0.
-+ Nested array items and keys with `undefined` values are stripped.
-+ Other than the exceptions mentioned above, non-JSON-serializable things (like circular references) are boiled away when this calls `dehydrate` internally.
-
-If the `allowSpecialSyntax` flag is enabled, then `*`, `->`, and `===` will be left untouched (allowing them to be intperpreted as special rttc exemplar syntax) instead of being replaced with string samples (e.g. "a star symbol" or "an arrow symbol").
-
-```js
-rttc.coerceExemplar([{a:null}, {b: [[74,39,'surprise string!']] }])
-//   =>   [ {} ]
-
-rttc.coerceExemplar([74,39,'surprise string!'])
-//   =>   [ 'surprise string!' ]
-
-rttc.coerceExemplar({x:'*'})
-//   =>   { x: 'a star symbol' }
-
-rttc.coerceExemplar({x:'*'}, true)
-//   =>   { x: '*' }
-```
-
-
-##### .getPathInfo(exemplar, path)
-
-Given an exemplar schema and a keypath, return information about the specified segment.  If the path is inside of a generic, then the exemplar is '*',  and this path is optional. If the path is inside of a `ref`,  then the exemplar is '===', and this path is optional.  If the path is not reachable (i.e. inside of a string, or lamda... or something) then throw an error.
-
-> WARNING: Since hops in keypaths are represented by `.` (dots), this method is not safe to use on exemplars which contain any keys which contain dots.  This may be improved in future versions.
-
-```js
-var SOME_EXEMPLAR = {
-  salutation: 'Mr.',
-  hobbies: ['knitting'],
-  medicalInfo: {
-    numYearsBlueberryAbuse: 12.5,
-    latestBloodWork: {}
-  }
-};
-
-rttc.getPathInfo(SOME_EXEMPLAR, 'hobbies.238');
-// =>
-//     {
-//       exemplar: 'knitting',
-//       optional: false
-//     }
-
-
-rttc.getPathInfo(SOME_EXEMPLAR, 'medicalInfo.latestBloodWork.whiteBloodCellCount');
-// =>
-//     {
-//       exemplar: '*',
-//       optional: true
-//     }
-```
 
 
 ##### .infer(exemplar)
@@ -933,9 +808,136 @@ rttc.infer([
   }
 ]
 */
-
 ```
 
+
+##### .inferDisplayType(exemplar)
+
+Compute the **display type** (aka "typeclass") for an RTTC exemplar.
+
+Always returns one of the standard RTTC display types:
+  + string
+  + number
+  + boolean
+  + lamda
+  + dictionary
+  + array
+  + json
+  + ref
+
+Or `''` (empty string) if the exemplar is unrecognized or invalid; e.g. `null`.
+
+
+```javascript
+rttc.inferDisplayType({foo: 'bar'});
+// => 'dictionary'
+
+
+rttc.inferDisplayType('->');
+// => 'lamda'
+```
+
+
+##### .getDisplayTypeLabel(displayType)
+
+Get the appropriate human-readable label for a given RTTC "display type" (aka "typeclass") string.
+
+Useful for error messages, user interfaces, etc.
+
+```js
+rttc.getDisplayTypeLabel('ref');
+//   => 'Anything'
+
+rttc.getDisplayTypeLabel('string');
+//   => 'String'
+
+rttc.getDisplayTypeLabel('dictionary');
+//   => 'Dictionary'
+```
+
+
+##### .coerceExemplar(value, [allowSpecialSyntax=false])
+
+Build a reasonable-looking exemplar from a normal value-- specifically, the _most specific_ exemplar which would accept that value.
+
+> Note: This is particularly useful for inferring RTTC exemplar schemas from fixture data.
+
+
+In most cases, this leaves the value untouched-- however it does take care of a few special cases:
+
++ Empty dictionaries become generic dictionaries (`{}`).  The most specific exemplar which can accept an empty dictionary is the generic dictionary.
++ Empty arrays become generic arrays (`[]`).  Since we don't know the contents, we have to assume this array could be heterogeneous (i.e. have items with different types).
++ Multi-item arrays become pattern arrays, and any extra items (other than the first one) are lopped off.
++ Functions become '->'.
++ `null` becomes '*'.
++ If the top-level value is `undefined`, it becomes '==='. (however this behavior is subject to change in an upcoming release; since `undefined` is not supported by any exemplar)
++ '->' becomes the string: `'an arrow symbol'`.
++ '*' becomes the string: `'a star symbol'`.
++ '===' becomes the string: `'3 equal signs'`.
++ `NaN`, `Infinity`, `-Infinity`, and `-0` become 0.
++ Nested array items and keys with `undefined` values are stripped.
++ Other than the exceptions mentioned above, non-JSON-serializable things (like circular references) are boiled away when this calls `dehydrate` internally.
+
+If the `allowSpecialSyntax` flag is enabled, then `*`, `->`, and `===` will be left untouched (allowing them to be intperpreted as special rttc exemplar syntax) instead of being replaced with string samples (e.g. "a star symbol" or "an arrow symbol").
+
+```js
+rttc.coerceExemplar([{a:null}, {b: [[74,39,'surprise string!']] }])
+//   =>   [ {} ]
+
+rttc.coerceExemplar([74,39,'surprise string!'])
+//   =>   [ 'surprise string!' ]
+
+rttc.coerceExemplar({x:'*'})
+//   =>   { x: 'a star symbol' }
+
+rttc.coerceExemplar({x:'*'}, true)
+//   =>   { x: '*' }
+```
+
+
+
+<!--
+##### .getDisplayType(value)
+
+Given a value, return its type as a human-readable string (this is not limited to rttc types-- it can return strings like `"Error"` and `"Date"`).
+If special rttc exemplar syntax is used, it is respected.
+
+> May be deprecated in an upcoming release.
+
+-->
+
+
+##### .getPathInfo(exemplar, path)
+
+Given an exemplar schema and a keypath, return information about the specified segment.  If the path is inside of a generic, then the exemplar is '*',  and this path is optional. If the path is inside of a `ref`,  then the exemplar is '===', and this path is optional.  If the path is not reachable (i.e. inside of a string, or lamda... or something) then throw an error.
+
+> WARNING: Since hops in keypaths are represented by `.` (dots), this method is not safe to use on exemplars which contain any keys which contain dots.  This may be improved in future versions.
+
+```js
+var SOME_EXEMPLAR = {
+  salutation: 'Mr.',
+  hobbies: ['knitting'],
+  medicalInfo: {
+    numYearsBlueberryAbuse: 12.5,
+    latestBloodWork: {}
+  }
+};
+
+rttc.getPathInfo(SOME_EXEMPLAR, 'hobbies.238');
+// =>
+//     {
+//       exemplar: 'knitting',
+//       optional: false
+//     }
+
+
+rttc.getPathInfo(SOME_EXEMPLAR, 'medicalInfo.latestBloodWork.whiteBloodCellCount');
+// =>
+//     {
+//       exemplar: '*',
+//       optional: true
+//     }
+```
 
 
 ##### .union(schema0, schema1, [isExemplar=false], [isStrict=false])
@@ -1025,14 +1027,25 @@ Given a type schema, strip out generics ("ref", "json", {}, and []) to convert i
 
 ##### .getBaseVal(exemplar)
 
-A convenience method to return the base value for the given exemplar.  This is effectively the same thing as calling `rttc.infer()` to get its type schema, then coercing `undefined` to match (i.e. passing the type schema to `rttc.coerce()` without a second argument).
+A convenience method to return the base value for the given exemplar.  This is effectively the same thing as calling `rttc.infer()` to get the exemplar's type schema, then coercing `undefined` to match it (i.e. passing the type schema to `rttc.coerce()` without a second argument).
+
+```js
+rttc.getBaseVal(exemplar);
+// ... is just a shorcut for doing:
+rttc.coerce(rttc.infer(exemplar), undefined);
+```
 
 
 ##### .cast(exemplar, actualValue)
 
 A convenience method that calls `rttc.infer()` on the provided exemplar to get the type schema, then uses it to `rttc.coerce()` the `actualValue` provided.
 
+```js
+rttc.cast(exemplar, actualValue);
 
+// ... is just a shorcut for doing:
+rttc.coerce(rttc.infer(exemplar), actualValue);
+```
 
 
 
