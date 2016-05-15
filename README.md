@@ -299,7 +299,7 @@ For example, for the type schema described above, the base value is:
 
 #### What about keys with `undefined` values?
 
-When validating or coercing a value vs. a faceted dictionary exemplar or type schema, if a required key exists, but has an `undefined` value, it is _considered the same thing as if the key did not exist at all_. This is a deliberate decision designed to prevent you to normalize the use of `null` vs. `undefined` in your application, and avoid the error-prone pitfalls of `==` vs. `===` equality comparisons and `hasOwnProperty` checks. Based on this author's experiences, and the best practices my team developed building JavaScript apps, this approach prevents countless bugs and makes it much easier to hunt down the sources of problems when they occur.
+When validating or coercing a value vs. a faceted dictionary exemplar or type schema, if a required key exists, but has an `undefined` value, it is _considered the same thing as if the key did not exist at all_. This is a deliberate decision designed to normalize the use of `null` vs. `undefined` in your application, and to avoid the pitfalls of `==` vs. `===` equality comparisons and `hasOwnProperty` checks. This approach prevents countless bugs and makes it much easier to hunt down the sources of problems when they occur.
 
 
 ##### Can I have optional facets?
@@ -551,7 +551,7 @@ This function will use the provided `typeSchema` to figure out where "lamda" val
 
 ##### .parseHuman(stringFromHuman, [_typeSchema_=`undefined`], [_unsafeMode_=`false`])
 
-Parse a human-readable string (typically entered by a human into some kind of UI or CLI application) and return a buest guess at the JavaScript value it represents.
+Parse a human-readable string (typically entered by a human into some kind of UI or CLI application) and return a best guess at the JavaScript value it represents.
 
 + If provided, `typeSchema` will be used to make a more educated guess.  If you are calling `parseHuman()` in order to parse a string that was generated using `stringifyHuman()`, then be sure to use the same type schema.
 + If the `unsafeMode` flag is enabled, lamda functions will be hydrated.
