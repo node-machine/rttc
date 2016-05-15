@@ -92,15 +92,10 @@ For a quick rundown of common use cases, as well as some additional examples, ch
 
 ## Types &amp; Exemplars
 
-There are 10 different types recognized by `rttc`, each of which is uniquely expressed by special notation called **RTTC exemplar syntax**.
-For example, if we were to interpret `'hello world'` as an **exemplar**, we would be able to infer that it represents a string data type.
-Exemplars make it easier to write out intricate data structures and validation rules because they allow us to reason about our data types
-using representative _examples_.  It also means that when working with exemplar schemas programatically, you have access to a much richer
-set of information about any given data type.  But most importantly: writing data types as examples makes it easier for ourselves and other
-_humans_ to read and understand our intentions.
+There are 10 different types recognized by `rttc`, each of which is uniquely expressed by special notation called **RTTC exemplar syntax**. For example, if we were to interpret `'hello world'` as an **exemplar**, we would be able to infer that it represents a string data type. Exemplars make it easier to write out intricate data structures and validation rules, because they allow us to reason about our data types using representative _examples_.  Plus, when working with exemplars programatically, you have access to a much richer set of information about any given API.  But most importantly: writing data types as examples makes it easier for other _humans_ to read and understand our intentions.
 
 Exemplars can be mixed and matched with varying levels of specificity, up to any imaginable depth, by using the recursive
-array and faceted dictionary types. For example, we can infer from the exemplar `['Rover']` that its _type schema_ is `['string']`,
+array and faceted dictionary types. For example, we can infer from the exemplar `['Rover']` that its **type schema** is `['string']`,
 indicating that it accepts any array of strings.  Similarly, given the exemplar `[{ name: 'Rover' }]`, we can infer the type schema
 `[{name: 'string'}]`.  This indicates that it accepts any array of dictionaries, so long as each of those dictionaries has a
 key called `name` with any string value.
