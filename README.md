@@ -482,7 +482,7 @@ Either return a (potentially "lightly" coerced) version of the value that was ac
 Determine whether two values are equivalent using `_.isEqual()`.
 
 This is the method used by `rttc`'s own tests to validate that expected values and actual values match.
-If the third argument is provided, also looks for expected `lamda` values in the optional type schema and calls `toString()` on functions before comparing them.
+If the third argument is provided, `.isEqual` also looks for expected `lamda` values in the optional type schema and calls `toString()` on functions before comparing them.
 
 
 
