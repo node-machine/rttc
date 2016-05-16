@@ -531,10 +531,10 @@ return res.json(rttc.rebuild(someData, function handlePrimitive(val, type){
 
 Prepare a value for serialization by taking care of a few edge-cases, such as:
 
-+ stringifies regexps, errors (grabs the `.stack` property), and functions (unless `dontStringifyFunctions` is set)
++ stringifying regexps, errors (grabs the `.stack` property), and functions (unless `dontStringifyFunctions` is set)
 + replacing circular references with a string (e.g. `[Circular]`)
-+ replaces `-Infinity`, `Infinity`, and `NaN` with 0
-+ strips keys and array items with `undefined` or `null` values. If `allowNull` is set to true, `null` values will not be stripped from the encoded string.
++ replacing `-Infinity`, `Infinity`, and `NaN` with 0
++ stripping keys and array items with `undefined` or `null` values. If `allowNull` is set to true, `null` values will not be stripped from the encoded string.
 
 Note that arrays, dictionaries and literals are _not_ stringified by `dehydrate`.  Rather, `dehydrate` prepares a value for stringification (see `rttc.stringify()` below).
 
