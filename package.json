@@ -4,7 +4,8 @@
   "description": "Runtime type-checking for JavaScript.",
   "main": "index.js",
   "scripts": {
-    "test": "node ./node_modules/mocha/bin/mocha --recursive -R dot"
+    "test": "node ./node_modules/mocha/bin/mocha --recursive -R dot",
+    "browserify": "browserify -s rttc -o rttc.browser.js ./"
   },
   "keywords": [
     "type-checking",
