@@ -1,7 +1,7 @@
 # rttc
 Runtime (recursive) type-checking for JavaScript.
 
-This package is the official SDK for working with the RTTC type system.  It includes a lot of methods that suitable for everyday use, as well as some lower-level methods that are intended for developers building tools which leverage the [machine specification](http://node-machine.org).  
+This package is the core SDK for working with the RTTC type system.  It includes a lot of methods that suitable for everyday use, as well as some lower-level methods that are intended for developers building tools which leverage the [machine specification](http://node-machine.org).
 
 ## What is RTTC?
 
@@ -60,7 +60,7 @@ Unless otherwise stated, all RTTC methods support recursive (or "deep") traversa
 In other words, they iterate over the keys of **dictionaries** (aka plain old JavaScript
 objects) and the indices of **arrays**-- and if those dictionary properties and array items
 are _themselves_ dictionaries or arrays, then `rttc` recursively dives into them too (and
-so on and so forth). 
+so on and so forth).
 
 
 For example:
@@ -205,7 +205,7 @@ Dictionaries that have been validated/coerced against the generic dictionary typ
 
 #### What about keys with `undefined` values?
 
-When validating or coercing a value vs. a generic dictionary exemplar or type schema, keys with `undefined` values _will always be stripped out_.  For example, coercing `{ name: 'Rob', age: undefined, weight: undefined }` vs. the type schema `{}` would result in `{ name: 'Rob' }`. This ensures consistency with the behavior of the native JSON.stringify() and JSON.parse() methods in browser-side JavaScript and Node.js.  
+When validating or coercing a value vs. a generic dictionary exemplar or type schema, keys with `undefined` values _will always be stripped out_.  For example, coercing `{ name: 'Rob', age: undefined, weight: undefined }` vs. the type schema `{}` would result in `{ name: 'Rob' }`. This ensures consistency with the behavior of the native JSON.stringify() and JSON.parse() methods in browser-side JavaScript and Node.js.
 
 > Note that `undefined` array items are stripped out _even if you are using `['===']`_.
 
@@ -399,7 +399,7 @@ Even if you don't need to validate array items, you still need a pattern.  But l
 
 #### What about `undefined`?
 
-When validating or coercing a value vs. an array exemplar or type schema, `undefined` items in the array _will always be stripped out_.  For example, coercing `['Jerry', undefined, undefined, 'Robin']` vs. the type schema `['string']` would result in `['Jerry', 'Robbin']`. This ensures consistency with the behavior of the native JSON.stringify() and JSON.parse() methods in browser-side JavaScript and Node.js.  
+When validating or coercing a value vs. an array exemplar or type schema, `undefined` items in the array _will always be stripped out_.  For example, coercing `['Jerry', undefined, undefined, 'Robin']` vs. the type schema `['string']` would result in `['Jerry', 'Robbin']`. This ensures consistency with the behavior of the native JSON.stringify() and JSON.parse() methods in browser-side JavaScript and Node.js.
 
 > Note that `undefined` array items are stripped out _even if you are using `['===']`_.
 

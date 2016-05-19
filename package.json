@@ -12,10 +12,13 @@
     "validation",
     "typed-javascript"
   ],
-  "author": "Cody Stoltman <@particlebanana>",
+  "author": "The Treeline Company",
   "contributors": [
     "Mike McNeil <@mikermcneil>",
-    "Scott Gress <@sgress454>"
+    "Scott Gress <@sgress454>",
+    "Cody Stoltman <@particlebanana>",
+    "Rachael Shaw <@rachaelshaw>",
+    "Irl Nathan <@irlnathan>"
   ],
   "license": "MIT",
   "repository": {
