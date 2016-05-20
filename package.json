@@ -1,20 +1,24 @@
 {
   "name": "rttc",
-  "version": "9.6.1",
+  "version": "9.6.3",
   "description": "Runtime type-checking for JavaScript.",
   "main": "index.js",
   "scripts": {
-    "test": "node ./node_modules/mocha/bin/mocha --recursive -R dot"
+    "test": "node ./node_modules/mocha/bin/mocha --recursive -R dot",
+    "browserify": "browserify -s rttc -o rttc.browser.js ./"
   },
   "keywords": [
     "type-checking",
     "validation",
     "typed-javascript"
   ],
-  "author": "Cody Stoltman <@particlebanana>",
+  "author": "The Treeline Company",
   "contributors": [
     "Mike McNeil <@mikermcneil>",
-    "Scott Gress <@sgress454>"
+    "Scott Gress <@sgress454>",
+    "Cody Stoltman <@particlebanana>",
+    "Rachael Shaw <@rachaelshaw>",
+    "Irl Nathan <@irlnathan>"
   ],
   "license": "MIT",
   "repository": {
