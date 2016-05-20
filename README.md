@@ -1,4 +1,4 @@
-# rttc
+# RTTC
 Runtime (recursive) type-checking for JavaScript.
 
 This package is the official SDK for working with the RTTC type system.  It includes a lot of methods suitable for everyday use, as well as some lower-level methods that are intended for developers building tools which leverage the [machine specification](http://node-machine.org).
@@ -633,7 +633,7 @@ var result = rttc.parseHuman('{"name":"Mr. Tumnus","friends":[{"name":"Broderick
 
 ##### .stringifyHuman(value, typeSchema)
 
-Convert a JavaScript value into a string that can be parsed by `stringifyHuman()`.
+Convert a JavaScript value into a string that can be parsed by `parseHuman()`.
 
 Specifically, this method is an inverse operation of `.parseHuman()`; that is, if you take the stringified result from this function and pass that in to `.parseHuman()` using the same type schema, you'll end up back where you started: with the original JavaScript value you passed in to `rttc.stringifyHuman()`.
 
