@@ -1,7 +1,7 @@
 # rttc
 Runtime (recursive) type-checking for JavaScript.
 
-This package is the core SDK for working with the RTTC type system.  It includes a lot of methods that suitable for everyday use, as well as some lower-level methods that are intended for developers building tools which leverage the [machine specification](http://node-machine.org).
+This package is the official SDK for working with the RTTC type system.  It includes a lot of methods suitable for everyday use, as well as some lower-level methods that are intended for developers building tools which leverage the [machine specification](http://node-machine.org).
 
 ## What is RTTC?
 
@@ -11,7 +11,7 @@ RTTC is a lightweight type system that provides a safety net for JavaScript code
 
 RTTC semantics are used by:
 + the Node-Machine project's core utility packages, including the [`machine` runner](https://github.com/node-machine/machine)
-+ throughout the [Sails.js framework](http://sailsjs.org)
++ the [Sails.js framework core](http://sailsjs.org)
 + every [Waterline driver](https://github.com/node-machine/driver-interface)
 + every [machinepack published on NPM](http://node-machine.org/machinepacks), and
 + the [Treeline](https://treeline.io) standard library
@@ -32,28 +32,29 @@ var rttc = require('rttc');
 The `rttc` package has many different methods for working with fixtures, examples, type schemas, and runtime data in JavaScript.  But the most commonly-used RTTC methods are related to validation and coercion of runtime data:
 
 ```javascript
+// If the value is valid vs. the specified type schema, then `.validateStrict()` simply returns undefined
 rttc.validateStrict('number', 999);
-// (If the value is valid vs. the specified type schema, then `.validateStrict()` simply returns undefined)
+// => undefined
 
+// But if the provided value is **even slightly off**, then `.validateStrict()` throws.
 rttc.validateStrict('number', '999');
 // throws Error
-// (but if the provided value is **even slightly off**, then `.validateStrict()` throws).
 
+// If the provided value is close-ish, `.validate()` coerces as needed to make it fit.
 rttc.validate('number', '999');
 // => 999
-// (if the provided value is close-ish, `.validate()` coerces as needed to make it fit.)
 
+// But when confronted with **major** differences, `.validate()` throws too.
 rttc.validate('number', { x: 32, y: 79 });
 // throws Error
-// (but when confronted with **major** differences, `.validate()` throws too.)
 
+// As long as the provided type schema is valid, `.coerce()` **never** throws
 rttc.coerce('number', '999');
 // => 999
-// (as long as the provided type schema is valid, `.coerce()` **never** throws)
 
+// When confronted with **major** differences, `.coerce()` returns the _base value_ for the given type
 rttc.coerce('number', { x: 32, y: 79 });
 // => 0
-// (when confronted with **major** differences, `.coerce()` returns the _base value_ for the given type)
 ```
 
 Unless otherwise stated, all RTTC methods support recursive (or "deep") traversal of values.
@@ -149,7 +150,7 @@ The **string** type accepts any string.
 |:-----------------------|:-----------------------|:------------------------------|:-------------|
 | `32` _(any number)_    | `'number'`             | `'Number'`                    | `0`          |
 
-The **number** type accepts numbers like `0`, `-4`, or `235.3`.  Anathemas like `Infinity`, `-Infinity`, `NaN`, and `-0` are all coerced to zero.
+The **number** type accepts integers and decimal numbers like `0`, `-4`, or `235.3`.  Number-ish  properties like `Infinity`, `-Infinity` and `NaN` (as well as `-0`) are all coerced to zero.
 
 ## Booleans
 
@@ -192,7 +193,7 @@ function () {
 The **generic dictionary** type accepts any JSON-serializable dictionary.
 
 Dictionaries that have been validated/coerced against the generic dictionary type:
-+ will have no prototypal properties, getters, or setters, as well as a complete deficit of any other sort of deceit, lies, or magic
++ will have no prototypal properties, getters, or setters, as well as a complete deficit of any other sort of dark magic
 + are guaranteed to be JSON-serializable, with a few additional affordances:
   + normally, `Error` instances get stringified into empty objects.  Instead, rttc turns them into human-readable strings by reducing them to their `.stack` property (this includes the error message and the stack trace w/ line numbers)
   + normally, `RegExp` instances get stringified into empty objects.  Instead, rttc turns them into human-readable strings like `'/some regexp/gi'`
@@ -238,7 +239,7 @@ This special type allows anything except `undefined` at the top level (undefined
 |:-----------------------|:-----------------------|:------------------------------|:----------------------|
 | `{...}` _(recursive)_  | `'dictionary'`         | `'Dictionary'`                | `{...}` _(see below)_ |
 
-The **faceted dictionary** type is any dictionary type schema with at least one key.  Extra keys in the actual value that are not in the type schema will be stripped out. Missing keys will cause `.validate()` to throw.
+The **faceted dictionary** type is any dictionary type schema with at least one key.  When coercing a value to a faceted dictionary, any keys in the value that are _not_ in the type schema will be stripped out. Missing keys in the value will cause `.validate()` to throw.
 
 Dictionary type schemas (i.e. plain old JavaScript objects nested like `{a:{}}`) can be infinitely nested.  Type validation and coercion will proceed through the nested objects recursively.
 
@@ -313,7 +314,7 @@ var USER_SCHEMA = {
 
 Then whenever you build a dictionary that you want to validate at runtime, just coerce it first:
 ```js
-var alfred = rttc.coerce(rttc.infer(USER_SCHEMA), {
+var alfred = rttc.cast(USER_SCHEMA, {
   id: 100,
   name: 'Alfred Roberts',
   email: 'alfred@gmail.com',
@@ -422,8 +423,7 @@ The following is a high-level overview of important conventions used by the `rtt
 ##### Weird psuedo-numeric values
 
 + `NaN` is only valid against the mutable reference type (`'==='`)
-+ `Infinity` and `-Infinity` is only valid against the mutable reference type (`'==='`)
-+ `Infinity` and `-Infinity` are only valid against `example: '==='`
++ `Infinity` and `-Infinity` are only valid against the mutable reference type (`'==='`)
 + `+0` and `-0` are always coerced to `0` (except against the mutable reference type)
 
 ##### Instances of ECMAScript core classes
@@ -469,12 +469,12 @@ This package exposes a number of different methods, some of which are much more 
 
 ##### .validateStrict(expectedTypeSchema, actualValue)
 
-Throws if the provided value is not the right type (recursive).
+Throw an error if the provided value is not the right type (recursive).
 
 
 ##### .validate(expectedTypeSchema, actualValue)
 
-Either returns a (potentially "lightly" coerced) version of the value that was accepted, or it throws.  The "lightly" coerced value turns `"3"` into `3`, `"true"` into `true`, `-4.5` into `"-4.5"`, etc.
+Either return a (potentially "lightly" coerced) version of the value that was accepted, or throw an error.  The "lightly" coerced value turns `"3"` into `3`, `"true"` into `true`, `-4.5` into `"-4.5"`, etc.
 
 
 ##### .isEqual(firstValue, secondValue, [_expectedTypeSchema_=`undefined`])
@@ -482,7 +482,7 @@ Either returns a (potentially "lightly" coerced) version of the value that was a
 Determine whether two values are equivalent using `_.isEqual()`.
 
 This is the method used by `rttc`'s own tests to validate that expected values and actual values match.
-If the third argument was provided, also look for expected `lamda` values in the optional type schema and call `toString()` on functions before comparing them.
+If the third argument is provided, `.isEqual` also looks for expected `lamda` values in the optional type schema and calls `toString()` on functions before comparing them.
 
 
 
@@ -491,7 +491,7 @@ If the third argument was provided, also look for expected `lamda` values in the
 
 ##### .coerce(expectedTypeSchema, actualValue)
 
-ALWAYS returns an acceptable version of the value, even if it has to mangle it to get there (i.e. by using the "base value" for the expected type schema).
+ALWAYS return an acceptable version of the value, even if it has to be mangled (i.e. by using the "base value" for the expected type schema).
 
 
 
@@ -529,18 +529,18 @@ return res.json(rttc.rebuild(someData, function handlePrimitive(val, type){
 
 ##### .dehydrate(value, [_allowNull_=`false`], [_dontStringifyFunctions_=`false`])
 
-This takes care of a few serialization edge-cases, such as:
+Prepare a value for serialization by taking care of a few edge-cases, such as:
 
-+ stringifies regexps, errors (grabs the `.stack` property), and functions (unless `dontStringifyFunctions` is set)
++ stringifying regexps, errors (grabs the `.stack` property), and functions (unless `dontStringifyFunctions` is set)
 + replacing circular references with a string (e.g. `[Circular]`)
-+ replaces `-Infinity`, `Infinity`, and `NaN` with 0
-+ strips keys and array items with `undefined` or `null` values. If `allowNull` is set to true, `null` values will not be stripped from the encoded string.
++ replacing `-Infinity`, `Infinity`, and `NaN` with 0
++ stripping keys and array items with `undefined` or `null` values. If `allowNull` is set to true, `null` values will not be stripped from the encoded string.
 
-
+Note that arrays, dictionaries and literals are _not_ stringified by `dehydrate`.  Rather, `dehydrate` prepares a value for stringification (see `rttc.stringify()` below).
 
 ##### .hydrate(value, [_typeSchema_=`undefined`])
 
-This function will use the provided `typeSchema` to figure out where "lamda" values (functions) are expected, then will use `eval()` to bring them back to life.  Use with care.
+Use the provided `typeSchema` to figure out where "lamda" values (functions) are expected, then  use `eval()` to bring them back to life.  Use with care.
 
 
 
@@ -633,7 +633,9 @@ var result = rttc.parseHuman('{"name":"Mr. Tumnus","friends":[{"name":"Broderick
 
 ##### .stringifyHuman(value, typeSchema)
 
-Convert a JavaScript value into a string that can be parsed by `stringifyHuman()`.  Specifically, this method is an inverse operation of `.parseHuman()`; that is, if you take the stringified result from this function and pass that in to `.parseHuman()` using the same type schema, you'll end up back where you started: with the original JavaScript value you passed in to `rttc.stringifyHuman()`.
+Convert a JavaScript value into a string that can be parsed by `stringifyHuman()`.
+
+Specifically, this method is an inverse operation of `.parseHuman()`; that is, if you take the stringified result from this function and pass that in to `.parseHuman()` using the same type schema, you'll end up back where you started: with the original JavaScript value you passed in to `rttc.stringifyHuman()`.
 
 > This losslessness is guaranteed by two factors: that `stringifyHuman()` (1) enforces _strict_ RTTC validation
 > rules (i.e. `rttc.validateStrict(typeSchema, value)`) and (2) the fact that it rejects values which cannot be safely
