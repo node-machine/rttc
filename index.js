@@ -26,6 +26,7 @@ module.exports = {
   cast: require('./lib/cast'),
   rebuild: require('./lib/rebuild'),
   getDisplayTypeLabel: require('./lib/get-display-type-label'),
+  getNounPhrase: require('./lib/get-noun-phrase'),
   inferDisplayType: require('./lib/infer-display-type'),
   validateExemplarStrict: require('./lib/validate-exemplar-strict'),
 };
