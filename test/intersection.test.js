@@ -186,9 +186,13 @@ describe('.intersection()', function() {
 
 
 
+    // TODO: come up with a more repeatable solution to test every case
+
+
+
     // // Every type except "ref" and "lamda" intersects with "json", with an identity result.
     // describe('when intersected with "json"', function (){
-    //   it('every type except "ref" and "lamda" should result in an identity result', function (){
+    //   describe('every type except "ref" and "lamda" should result in an identity result', function (){
     //     // "string"     ∩  "json"          <====> "string"
     //     // "number"     ∩  "json"          <====> "number"
     //     // "boolean"    ∩  "json"          <====> "boolean"
@@ -196,8 +200,8 @@ describe('.intersection()', function() {
     //     // []           ∩  "json"          <====> []
     //     // {x:"string"} ∩  "json"          <====> {x:"string"}
     //     // ["string"]   ∩  "json"          <====> ["string"]
-    //   });
-    // });
+    //   });//</every type except "ref" and "lamda" should result in an identity result>
+    // });//</when intersected with "json">
 
 
     // // // Strings, numbers, booleans, and lamdas do not intersect with each other,
