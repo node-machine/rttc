@@ -38,6 +38,8 @@ function describeAndExecuteTest(test, runTestFn){
     else {
       msg += ' ';
     }
+
+
     if (!_.isUndefined(test.example)) {
       msg += 'with a '+getDisplayType(test.example)+' example ('+getDisplayVal(test.example)+')';
     }

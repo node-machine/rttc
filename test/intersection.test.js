@@ -51,7 +51,7 @@ describe('.intersection()', function() {
   //  ┌┬┐┌─┐┌─┐┌┬┐┌─┐
   //   │ ├┤ └─┐ │ └─┐
   //   ┴ └─┘└─┘ ┴ └─┘
-  describe('Type intersection: (using strict validation rules)', function() {
+  describe('using exemplars & loose validation rules', function() {
 
 
     // Types always intersect with themselves, with an identity result.
@@ -186,8 +186,21 @@ describe('.intersection()', function() {
 
 
 
-    // TODO: come up with a more repeatable solution to test every case
 
+
+    // Now run the suite of tests in the specification directory (`spec/`).
+    var TEST_SUITE = require('../spec/intersection.spec');
+    _.each(TEST_SUITE, function (testDef){
+      it('`'+util.inspect(testDef.e0, {depth: null})+'`    ∩   `'+util.inspect(testDef.e1, {depth: null})+'`', function (){
+        given(testDef.e0, testDef.e1).expect(testDef.result);
+      });
+    });
+
+
+
+
+
+    // TODO: come up with a more repeatable solution to test every case
 
 
     // // Every type except "ref" and "lamda" intersects with "json", with an identity result.
@@ -266,6 +279,6 @@ describe('.intersection()', function() {
     // });//</special cases>
 
 
-  });//</Type intersection: (using strict validation rules)>
+  });//</using exemplars & loose validation rules>
 
 });//</.intersection()>
