@@ -75,9 +75,9 @@ module.exports = [
 
   { e0: 'foo',       e1: '->',                    result: null               },
 
-  { e0: 'foo',       e1: '*',                     result: null               },
+  { e0: 'foo',       e1: '*',                     result: 'foo'              },
 
-  { e0: 'foo',       e1: '===',                   result: null               },
+  { e0: 'foo',       e1: '===',                   result: 'foo'              },
 
   { e0: 'foo',       e1: {},                      result: null               },
 
@@ -96,8 +96,7 @@ module.exports = [
   { e0: 'foo',       e1: [{foo:'bar'}],           result: null               },
 
 
-
-
-  // TODO: more
+  // Add more tests.
+  // TODO
 
 ];

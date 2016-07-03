@@ -186,8 +186,6 @@ describe('.intersection()', function() {
 
 
 
-
-
     // Now run the suite of tests in the specification directory (`spec/`).
     var TEST_SUITE = require('../spec/intersection.spec');
     _.each(TEST_SUITE, function (testDef){
@@ -197,60 +195,51 @@ describe('.intersection()', function() {
     });
 
 
+    // Additional notes:
 
+    // Every type except "ref" and "lamda" intersects with "json", with an identity result.
+    // "string"     ∩  "json"          <====> "string"
+    // "number"     ∩  "json"          <====> "number"
+    // "boolean"    ∩  "json"          <====> "boolean"
+    // {}           ∩  "json"          <====> {}
+    // []           ∩  "json"          <====> []
+    // {x:"string"} ∩  "json"          <====> {x:"string"}
+    // ["string"]   ∩  "json"          <====> ["string"]
 
+    // Strings, numbers, booleans, and lamdas do not intersect with each other,
+    // or with any sort of dictionary or array type.
+    // "string"  ∩  (anything else)    <==/==> (ERROR)
+    // "number"  ∩  (anything else)    <==/==> (ERROR)
+    // "boolean" ∩  (anything else)    <==/==> (ERROR)
+    // "lamda"   ∩  (anything else)    <==/==> (ERROR)
 
-    // TODO: come up with a more repeatable solution to test every case
+    // Faceted dictionaries intersect with generic dictionaries, with an identity result.
+    // {a:"string"} ∩ {}               <====> {a:"string"}
+    // {a:{}} ∩ {}                     <====> {a:{}}
 
+    // Patterned arrays intersect with generic arrays, with an identity result.
+    // ["string"]  ∩  []               <====> ["string"]
+    // [[{}]]  ∩  []                   <====> [[{}]]
+    // [{}]  ∩  ["string"]             <====> ["string"]
 
-    // // Every type except "ref" and "lamda" intersects with "json", with an identity result.
-    // describe('when intersected with "json"', function (){
-    //   describe('every type except "ref" and "lamda" should result in an identity result', function (){
-    //     // "string"     ∩  "json"          <====> "string"
-    //     // "number"     ∩  "json"          <====> "number"
-    //     // "boolean"    ∩  "json"          <====> "boolean"
-    //     // {}           ∩  "json"          <====> {}
-    //     // []           ∩  "json"          <====> []
-    //     // {x:"string"} ∩  "json"          <====> {x:"string"}
-    //     // ["string"]   ∩  "json"          <====> ["string"]
-    //   });//</every type except "ref" and "lamda" should result in an identity result>
-    // });//</when intersected with "json">
+    // Faceted dictionaries intersect with other faceted dictionaries as long as recursive
+    // types also successfully intersect. The result is the merged schema.
+    // (extra keys are ok, since they'll just be ignored)
+    // {a:"string"} ∩ {a:"string",b:"string"}         <====> {a:"string", b: "string"}
+    // {x:"string"} ∩ {a:"string",b:"string"}         <====> {a:"string", b: "string", x: "string"}
+    // {x:"string", a:"number"} ∩ {a:"string",b:"string"} <==/=> (ERROR)
+    // {x:"string", a:"json"}   ∩ {a:"string",b:"string"} <====> {a:"string", b: "string", x: "string"}
 
+    // Patterned arrays intersect with other patterned arrays as long as the recursive
+    // types also successfully intersect.  The result is the merged schema.
+    // ["number"] ∩ ["json"]           <====> ["number"]
+    // ["number"] ∩ ["string"]         <==/=> (ERROR)
+    // [{a:"number"}] ∩ [{}]           <====> [{a:"number"}]
 
-    // // // Strings, numbers, booleans, and lamdas do not intersect with each other,
-    // // // or with any sort of dictionary or array type.
-    // // "string"  ∩  (anything else)    <==/==> (ERROR)
-    // // "number"  ∩  (anything else)    <==/==> (ERROR)
-    // // "boolean" ∩  (anything else)    <==/==> (ERROR)
-    // // "lamda"   ∩  (anything else)    <==/==> (ERROR)
-
-    // // // Faceted dictionaries intersect with generic dictionaries, with an identity result.
-    // // {a:"string"} ∩ {}               <====> {a:"string"}
-    // // {a:{}} ∩ {}                     <====> {a:{}}
-
-    // // // Patterned arrays intersect with generic arrays, with an identity result.
-    // // ["string"]  ∩  []               <====> ["string"]
-    // // [[{}]]  ∩  []                   <====> [[{}]]
-    // // [{}]  ∩  ["string"]             <====> ["string"]
-
-    // // // Faceted dictionaries intersect with other faceted dictionaries as long as recursive
-    // // // types also successfully intersect. The result is the merged schema.
-    // // // (extra keys are ok, since they'll just be ignored)
-    // // {a:"string"} ∩ {a:"string",b:"string"}         <====> {a:"string", b: "string"}
-    // // {x:"string"} ∩ {a:"string",b:"string"}         <====> {a:"string", b: "string", x: "string"}
-    // // {x:"string", a:"number"} ∩ {a:"string",b:"string"} <==/=> (ERROR)
-    // // {x:"string", a:"json"}   ∩ {a:"string",b:"string"} <====> {a:"string", b: "string", x: "string"}
-
-    // // // Patterned arrays intersect with other patterned arrays as long as the recursive
-    // // // types also successfully intersect.  The result is the merged schema.
-    // // ["number"] ∩ ["json"]           <====> ["number"]
-    // // ["number"] ∩ ["string"]         <==/=> (ERROR)
-    // // [{a:"number"}] ∩ [{}]           <====> [{a:"number"}]
-
-    // // // Exceptions when NOT using strict validation:
-    // // "number"    ∩  "string"        <====> "number"
-    // // "boolean"   ∩  "string"        <====> "boolean"
-    // // "number"    ∩  "boolean"       <====> "boolean"
+    // Exceptions when NOT using strict validation:
+    // "number"    ∩  "string"        <====> "number"
+    // "boolean"   ∩  "string"        <====> "boolean"
+    // "number"    ∩  "boolean"       <====> "boolean"
 
 
     // // Special cases:
