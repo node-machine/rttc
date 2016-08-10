@@ -953,12 +953,32 @@ Given two rttc schemas, return the most specific schema that accepts the shared 
 + _isStrict_ - if set, the schemas will be intersected using strict validation rules (i.e. like `validateStrict()`)
 
 
-##### .sample(typeSchema, [n=2])
 
-Given a type schema, return an array of up to `n` unique sample values that would validate against it (in random order).  `n` defaults to 2 if left undefined.
+### Convenience
+
+> Simple convenience methods that wrap up one or more of the other `rttc` methods for a particular use case.
+
+##### .getBaseVal(exemplar)
+
+A convenience method to return the base value for the given exemplar.  This is effectively the same thing as calling `rttc.infer()` to get the exemplar's type schema, then coercing `undefined` to match it (i.e. passing the type schema to `rttc.coerce()` without a second argument).
+
+```js
+rttc.getBaseVal(exemplar);
+// ... is just a shorcut for doing:
+rttc.coerce(rttc.infer(exemplar), undefined);
+```
 
 
+##### .cast(exemplar, actualValue)
 
+A convenience method that calls `rttc.infer()` on the provided exemplar to get the type schema, then uses it to `rttc.coerce()` the `actualValue` provided.
+
+```js
+rttc.cast(exemplar, actualValue);
+
+// ... is just a shorcut for doing:
+rttc.coerce(rttc.infer(exemplar), actualValue);
+```
 
 
 
@@ -967,6 +987,11 @@ Given a type schema, return an array of up to `n` unique sample values that woul
 ### Experimental
 
 The following functions are newly implemented, experimental, and tend to be a bit more advanced. They may undergo frequent changes over the coming months, so use with care.  You have been warned!
+
+
+##### .sample(typeSchema, [n=2])
+
+Given a type schema, return an array of up to `n` unique sample values that would validate against it (in random order).  `n` defaults to 2 if left undefined.
 
 
 ##### .isSpecific(typeSchemaOrExemplar, [recursive=false], [isExemplar=false])
@@ -1017,28 +1042,6 @@ Return truthy if the provided value is NOT a valid rttc exemplar (e.g. `null`).
 Given a type schema, strip out generics ("ref", "json", {}, and []) to convert it into a "specific" type. In other words, the result of this function always passes `rttc.isSpecific()`.
 -->
 
-
-##### .getBaseVal(exemplar)
-
-A convenience method to return the base value for the given exemplar.  This is effectively the same thing as calling `rttc.infer()` to get the exemplar's type schema, then coercing `undefined` to match it (i.e. passing the type schema to `rttc.coerce()` without a second argument).
-
-```js
-rttc.getBaseVal(exemplar);
-// ... is just a shorcut for doing:
-rttc.coerce(rttc.infer(exemplar), undefined);
-```
-
-
-##### .cast(exemplar, actualValue)
-
-A convenience method that calls `rttc.infer()` on the provided exemplar to get the type schema, then uses it to `rttc.coerce()` the `actualValue` provided.
-
-```js
-rttc.cast(exemplar, actualValue);
-
-// ... is just a shorcut for doing:
-rttc.coerce(rttc.infer(exemplar), actualValue);
-```
 
 
 
