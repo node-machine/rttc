@@ -33,7 +33,7 @@
     "npm": ">= 1.4.0"
   },
   "dependencies": {
-    "lodash": "3.8.0"
+    "lodash": "3.10.1"
   },
   "devDependencies": {
     "mocha": "^2.1.0"
