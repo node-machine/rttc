@@ -866,13 +866,13 @@ module.exports = [
   {
     example: { id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '===' },
     actual: {},
-    result:  { id: 0, title: '', body: '', votes: 0, resolved: false, something: undefined },
+    result:  { id: 0, title: '', body: '', votes: 0, resolved: false, something: null },
     isNew: true
   },
   {
     example: { id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '===' },
     actual: {a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]},
-    result:  { id: 0, title: '', body: '', votes: 0, resolved: false, something: undefined },
+    result:  { id: 0, title: '', body: '', votes: 0, resolved: false, something: null },
     isNew: true
   },
   {
@@ -919,7 +919,7 @@ module.exports = [
   {
     example: [{ id: 123, title: 'Scott', body: 'Scott', votes: 33, resolved: true, something: '===' }],
     actual: [{a:23,b:'asdg',c:true,d: {x:32,y:'sagd',z: [{a:2,b:'gsda',c:false}]}, e: [2]}],
-    result:  [{ id: 0, title: '', body: '', votes: 0, resolved: false, something: undefined }],
+    result:  [{ id: 0, title: '', body: '', votes: 0, resolved: false, something: null }],
     isNew: true
   },
   {
