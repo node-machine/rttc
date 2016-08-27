@@ -642,7 +642,7 @@ Specifically, this method is an inverse operation of `.parseHuman()`; that is, i
 > stringified in a reversible way (e.g. JavaScript Dates, Errors, streams, prototypal objects, dictionaries and arrays
 > with circular references, etc.).  If either of these checks fails, `stringifyHuman()` throws an error.
 >
-> So even though `parseHuman()` is quite forgiving (it uses `rttc.coerce()`), you can rest assured that _any_ string you
+> So even though `parseHuman()` is quite forgiving (it uses RTTC loose validation), you can rest assured that _any_ string you
 > generate using `stringifyHuman()` will be properly deserialized by `parseHuman()`, provided it is passed in with the same type schema.
 
 

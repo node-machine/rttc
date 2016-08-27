@@ -48,13 +48,28 @@ describe('.parseHuman()', function() {
 
   describe('with a type schema', function (){
 
-    it('should coerce things to match the type schema', function() {
+    it('should perform loose validation on things, causing them to be potentially coerced such that they match the type schema', function() {
       assert.strictEqual(  rttc.parseHuman('foo', 'string'), 'foo');
       assert.strictEqual(  rttc.parseHuman('', 'string'), '');
       assert.strictEqual(  rttc.parseHuman('4', 'number'), 4);
       assert.strictEqual(  rttc.parseHuman('-99', 'number'), -99);
       assert.strictEqual(  rttc.parseHuman('false', 'boolean'), false);
       assert.strictEqual(  rttc.parseHuman('true', 'boolean'), true);
+      assert.strictEqual(  rttc.parseHuman('-0', 'number'), 0);
+      assert.strictEqual(  rttc.parseHuman('0', 'number'), 0);
+      assert.strictEqual(  rttc.parseHuman('', 'string'), '');
+    });
+
+    it('should perform loose validation on things, throwing an error if they cannot be coerced to match the type schema', function() {
+      assert.throws(function (){  rttc.parseHuman('foo', 'number');             });
+      assert.throws(function (){  rttc.parseHuman('foo', 'boolean');             });
+      assert.throws(function (){  rttc.parseHuman('4', 'boolean');             });
+      assert.throws(function (){  rttc.parseHuman('null', 'boolean');             });
+      assert.throws(function (){  rttc.parseHuman('null', 'number');             });
+      assert.throws(function (){  rttc.parseHuman('Infinity', 'number');             });
+      assert.throws(function (){  rttc.parseHuman('-Infinity', 'number');             });
+      assert.throws(function (){  rttc.parseHuman('', 'number');             });
+      assert.throws(function (){  rttc.parseHuman('', 'boolean');             });
     });
 
     it('should hydrate functions in `unsafeMode`', function() {
