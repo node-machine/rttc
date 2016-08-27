@@ -104,7 +104,7 @@ key called `name` with any string value.
 The table below gives each of the RTTC types, the exemplar notation used to describe it, as well as its _base value_:
 
 | type                    | rttc exemplar syntax     | base value                          |
-|-------------------------|--------------------------|-------------------------------------|
+|:------------------------|:-------------------------|:------------------------------------|
 | string                  | `'any string like this'` | `''`
 | number                  | `1337` _(any number)_    | `0`
 | boolean                 | `false` _(or `true`)_    | `false`
