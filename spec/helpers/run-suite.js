@@ -3,7 +3,7 @@
  */
 
 var util = require('util');
-var _ = require('lodash');
+var _ = require('@sailshq/lodash');
 var getDisplayType = require('../../lib/get-display-type');
 
 module.exports = function runSuite( testSuite, runTestFn ){

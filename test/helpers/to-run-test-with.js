@@ -3,7 +3,7 @@
  */
 
 var util = require('util');
-var _ = require('lodash');
+var _ = require('@sailshq/lodash');
 var infer = require('../../lib/infer');
 var getDisplayType = require('../../lib/get-display-type');
 var isEqual = require('../../lib/is-equal');
