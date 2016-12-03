@@ -33,7 +33,7 @@
     "npm": ">= 1.4.0"
   },
   "dependencies": {
-    "lodash": "3.10.1"
+    "@sailshq/lodash": "^3.10.2"
   },
   "devDependencies": {
     "mocha": "^2.1.0"
