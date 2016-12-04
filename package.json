@@ -36,6 +36,6 @@
     "@sailshq/lodash": "^3.10.2"
   },
   "devDependencies": {
-    "mocha": "^2.1.0"
+    "mocha": "3.0.2"
   }
 }
