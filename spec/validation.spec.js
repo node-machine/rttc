@@ -108,7 +108,7 @@ module.exports = [
 
   { example: 123, actual: /some regexp/, error: true },
   { example: 123, actual: function(){}, error: true },
-  { example: 123, actual: new Date('November 5, 1605 GMT'), error: true },
+  { example: 123, actual: new Date('November 5, 1605 GMT'), result: -11491632000000 },
   { example: 123, actual: new (require('stream').Readable)(), error: true },
   { example: 123, actual: new Buffer('asdf'), error: true },
   { example: 123, actual: new Error('asdf'), error: true },

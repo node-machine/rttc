@@ -18,9 +18,14 @@
 module.exports = [
 
 
-  ////////////////////////////////////////////
+  ////////////////////////////////////////////////////
   // null   ∩   ...
-  ////////////////////////////////////////////
+  //
+  // > `null` is not actually a valid exemplar,
+  // > rather it's a special value used for
+  // > indicating that the set of values that
+  // > validate against this is Ø (the empty set).
+  ////////////////////////////////////////////////////
 
   { e0: null,       e1: null,                    result: null               },
 
@@ -59,7 +64,7 @@ module.exports = [
 
 
   ////////////////////////////////////////////
-  // "string"   ∩   ...
+  // "some string"   ∩   ...
   ////////////////////////////////////////////
 
   { e0: 'foo',       e1: 'bar',                   result: 'bar'              },

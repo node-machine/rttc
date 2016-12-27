@@ -104,7 +104,7 @@ module.exports = [
 
   { example: 123, actual: /some regexp/, result: 0 },
   { example: 123, actual: function(){}, result: 0 },
-  { example: 123, actual: new Date('November 5, 1605 GMT'), result: 0 }, // TODO: consider enhancing this to return an epoch timestamp (number of miliseconds since Jan 1, 1970). In this case, would be: -11491606800000
+  { example: 123, actual: new Date('November 5, 1605 GMT'), result: -11491632000000 },
   { example: 123, actual: new (require('stream').Readable)(), result: 0 }, // TODO: ??? maybe num bytes read so far?
   { example: 123, actual: new Buffer('asdf'), result: 0 },  // TODO: ??? maybe size of the buffer in bytes?
   { example: 123, actual: new Error('asdf'), result: 0 }, // TODO: ??? maybe `.status`?
