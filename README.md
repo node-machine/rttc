@@ -103,17 +103,17 @@ key called `name` with any string value.
 
 The table below gives each of the RTTC types, the exemplar notation used to describe it, as well as its _base value_:
 
-| type                    | rttc exemplar syntax     | base value                          |
-|:------------------------|:-------------------------|:------------------------------------|
-| string                  | `'any string like this'` | `''`
-| number                  | `1337` _(any number)_    | `0`
-| boolean                 | `false` _(or `true`)_    | `false`
-| lamda (aka function)    | `'->'`                   | `function () { throw new Error('Not implemented! (this function was automatically created by `rttc`'); };`
-| generic dictionary      | `{}`                     | `{}` _(empty dictionary)_
-| json                    | `'*'`                    | `null`
-| ref                     | `'==='`                  | `null`
-| faceted dictionary  _(recursive)_       | `{...}` _(i.e. w/ keys)_  | `{...}` (w/ all expected keys and _their_ base values)
-| array _(recursive)_       | `[...]` _(i.e. w/ 1 item)_  | `[]` _(empty array)_
+| type                    | rttc exemplar syntax     | type schema     | base value                          |
+|:------------------------|:-------------------------|:----------------|:-------------------|
+| string                  | `'any string like this'` | `'string'`      | `''`
+| number                  | `1337` _(any number)_    | `'number'`      | `0`
+| boolean                 | `false` _(or `true`)_    | `'boolean'`     | `false`
+| lamda (aka function)    | `'->'`                   | `'lamda'`       | `function () { throw new Error('Not implemented! (this function was automatically created by `rttc`'); };`
+| generic dictionary      | `{}`                     | `{}`            | `{}` _(empty dictionary)_
+| json                    | `'*'`                    | `'json'`        | `null`
+| ref                     | `'==='`                  | `'ref'`         | `null`
+| faceted dictionary  _(recursive, w/ keys called "facets")_  | `{...}` _(i.e. w/ facet:nested-exemplar pairs)_  | `{...}` _(i.e. w/ facet:nested-type-schema pairs)_   | `{...}` _(w/ facet:nested-base-value pairs)_
+| array _(recursive, w/ 1 item called the "pattern")_         | `[...]` _(i.e. w/ pattern exemplar)_ | `[...]` _(i.e. w/ pattern type schema)_ | `[]` _(empty array)_
 
 
 A type's "base value" is its minimum empty state. When coercing some data vs. an exemplar, if coercion fails
@@ -186,9 +186,9 @@ function () {
 
 ## Generic dictionaries
 
-| Exemplar               | RTTC Display Type      | Display Type Label            | Base Value                  |
-|:-----------------------|:-----------------------|:------------------------------|:----------------------------|
-| `{}`                   | `'dictionary'`         | `'Dictionary'`                | `{}` _(empty dictionary)_   |
+| Exemplar               | Type Schema | RTTC Display Type      | Display Type Label            | Base Value                  |
+|:-----------------------|:------------|:-----------------------|:------------------------------|:----------------------------|
+| `{}`                   | `{}`        | `'dictionary'`         | `'Dictionary'`                | `{}` _(empty dictionary)_   |
 
 The **generic dictionary** type accepts any JSON-serializable dictionary.
 
@@ -235,9 +235,9 @@ This special type allows anything except `undefined` at the top level (undefined
 
 ## Faceted dictionaries
 
-| Exemplar               | RTTC Display Type      | Display Type Label            | Base Value            |
-|:-----------------------|:-----------------------|:------------------------------|:----------------------|
-| `{...}` _(recursive)_  | `'dictionary'`         | `'Dictionary'`                | `{...}` _(see below)_ |
+| Exemplar               | Type Schema           | RTTC Display Type      | Display Type Label            | Base Value            |
+|:-----------------------|:----------------------|:-----------------------|:------------------------------|:----------------------|
+| `{...}` _(recursive)_  | `{...}` _(see below)_ | `'dictionary'`         | `'Dictionary'`                | `{...}` _(see below)_ |
 
 The **faceted dictionary** type is any dictionary type schema with at least one key.  When coercing a value to a faceted dictionary, any keys in the value that are _not_ in the type schema will be stripped out. Missing keys in the value will cause `.validate()` to throw.
 
@@ -359,9 +359,9 @@ Even if you don't need to validate every key recursively deep, to use the facete
 
 ## Arrays
 
-| Exemplar               | RTTC Display Type      | Display Type Label            | Base Value             |
-|:-----------------------|:-----------------------|:------------------------------|:-----------------------|
-| `[...]` _(recursive)_  | `'array'`              | `'Array'`                     | `[]` _(empty array)_   |
+| Exemplar               | Type Schema            | RTTC Display Type      | Display Type Label            | Base Value            |
+|:-----------------------|:-----------------------|:-----------------------|:------------------------------|:----------------------|
+| `[...]` _(recursive)_  | `[...]` _(see below)_  | `'array'`              | `'Array'`                     | `[]` _(empty array)_  |
 
 
 The **array** type accepts any array, so long as all of that array's items are also valid (recursively deep). Every array exemplar and type schema must declare a **pattern**: a nested exemplar or type schema which indicates the expected type of array items.  This pattern is how the array type is able to validate nested values. When validating vs. an array type schema, RTTC first checks that the corresponding value is an array (a la [`_.isArray()`](http://lodash.org)), then also recursively checks each of its items vs. the expected pattern.  For example, given the exemplar `['Margaret']`, we can infer that the type schema is `['string']`, and therefore that it would accept any array of strings.  So when designing an array exemplar or type schema, make sure the array has _exactly one item_ to serve as the pattern, which is itself another exemplar or type schema.  This pattern will be used for validating/coercing array items.
