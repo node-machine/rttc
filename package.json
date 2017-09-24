@@ -10,9 +10,10 @@
   "keywords": [
     "type-checking",
     "validation",
+    "static-analysis",
     "typed-javascript"
   ],
-  "author": "The Treeline Company",
+  "author": "The Sails Company",
   "contributors": [
     "Mike McNeil <@mikermcneil>",
     "Scott Gress <@sgress454>",
@@ -36,6 +37,7 @@
     "@sailshq/lodash": "^3.10.2"
   },
   "devDependencies": {
+    "eslint": "3.19.0",
     "mocha": "3.0.2"
   }
 }

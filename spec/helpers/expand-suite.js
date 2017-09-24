@@ -54,7 +54,7 @@ module.exports = function expandSuite ( testSuite ) {
         return _val;
       }
       // Otherwise allow vanilla _.cloneDeep() behavior:
-      else return undefined;
+      else { return undefined; }
     });
   };
 
