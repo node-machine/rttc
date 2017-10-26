@@ -1,6 +1,4 @@
-var util = require('util');
 var assert = require('assert');
-var _ = require('@sailshq/lodash');
 var rttc = require('../');
 
 describe('.parseHuman()', function() {
