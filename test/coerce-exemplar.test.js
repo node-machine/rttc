@@ -17,7 +17,7 @@ describe('.coerceExemplar()', function() {
   // + '->' becomes 'an arrow symbol'.
   // + '*' becomes 'a star symbol'.
   // + '===' becomes '3 equal signs'.
-  // + `NaN`, `Infinity`, `-Infinity`, and `-0` become 0.
+  // + `NaN`, `Infinity`, and `-Infinity` become '===' (or 0 if `useStrict` is disabled)
   // + Nested items and keys with `undefined` values are stripped.
   // + Other than the exceptions mentioned above, non-JSON-serializable things (like circular references) are boiled away when this calls `dehydrate` internally.
 
@@ -83,11 +83,10 @@ describe('.coerceExemplar()', function() {
   });
 
 
-  it('should figgldie-diggle `NaN`, `Infinity`, `-Infinity`, and `-0` to `0`', function (){
-    coerceExemplarAndVerifyDeep(NaN, 0);
-    coerceExemplarAndVerifyDeep(Infinity, 0);
-    coerceExemplarAndVerifyDeep(-Infinity, 0);
-    coerceExemplarAndVerifyDeep(-0, 0);
+  it('should squish `NaN`, `Infinity`, and `-Infinity` to `===`', function (){
+    coerceExemplarAndVerifyDeep(NaN, '===');
+    coerceExemplarAndVerifyDeep(Infinity, '===');
+    coerceExemplarAndVerifyDeep(-Infinity, '===');
   });
 
   it('should coerce Dates, RegExps, and Errors into comparable string exemplars', function (){
@@ -173,6 +172,10 @@ describe('.coerceExemplar()', function() {
       coerceExemplarAndVerifyDeep([false, 7, 4, true, -4, 0, 89], [89], false, false, false);
       coerceExemplarAndVerifyDeep([false, {}, 4, true, -4, 0, 89], ['*'], false, false, false);
       coerceExemplarAndVerifyDeep([{x:false}, [7], {y: {z: 4}}, [[]], 'whatever', true], ['*'], false, false, false);
+
+      coerceExemplarAndVerifyDeep(NaN, 0, false, false, false);
+      coerceExemplarAndVerifyDeep(Infinity, 0, false, false, false);
+      coerceExemplarAndVerifyDeep(-Infinity, 0, false, false, false);
 
       // TODO: come back to this-- seems like it really ought to be ["*"]
       coerceExemplarAndVerifyDeep([
