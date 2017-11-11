@@ -28,6 +28,8 @@ module.exports = {
   rebuild: require('./lib/rebuild'),
   getDisplayTypeLabel: require('./lib/get-display-type-label'),
   getNounPhrase: require('./lib/get-noun-phrase'),
+  GRAMMAR: require('./lib/GRAMMAR'),
+  getInvalidityMessage: require('./lib/get-invalidity-message'),
   inferDisplayType: require('./lib/infer-display-type'),
   validateExemplarStrict: require('./lib/validate-exemplar-strict'),
 };
