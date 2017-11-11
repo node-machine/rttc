@@ -14,6 +14,7 @@ module.exports = {
   sample: require('./lib/sample'),
   getDefaultExemplar: require('./lib/get-default-exemplar'),
   getDisplayType: require('./lib/get-display-type'),
+  getRdt: require('./lib/get-rdt'),
   isSpecific: require('./lib/is-specific'),
   isInvalidExample: require('./lib/is-invalid-example'),
   reify: require('./lib/reify'),
