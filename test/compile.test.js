@@ -124,7 +124,7 @@ describe('.compile()', function() {
   // TODO: make this work
   it.skip('should return string that looks like `null` for Buffer instances`', function() {
     _assertCompiledResultIsCorrect({
-      value: new Buffer('alive with the glory of love'),
+      value: Buffer.from('alive with the glory of love'),
       expected: 'null'
     });
   });

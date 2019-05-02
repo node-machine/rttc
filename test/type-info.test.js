@@ -96,7 +96,7 @@ describe('.typeInfo()', function() {
         typeof rttc.typeInfo(rttc.infer(new Error('wat')));
       });
       assert.throws(function (){
-        typeof rttc.typeInfo(rttc.infer(new Buffer('stuff')));
+        typeof rttc.typeInfo(rttc.infer(Buffer.from('stuff')));
       });
       assert.throws(function (){
         typeof rttc.typeInfo(rttc.infer(new Date('stuff')));

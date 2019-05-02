@@ -16,7 +16,7 @@ describe('.stringify()', function() {
     assert.strictEqual(typeof rttc.stringify(-Infinity), 'string');
     assert.strictEqual(typeof rttc.stringify(NaN), 'string');
     assert.strictEqual(typeof rttc.stringify(new Error('wat')), 'string');
-    assert.strictEqual(typeof rttc.stringify(new Buffer('stuff')), 'string');
+    assert.strictEqual(typeof rttc.stringify(Buffer.from('stuff')), 'string');
     assert.strictEqual(typeof rttc.stringify({x:'foo',z: [{a:4}]}), 'string');
   });
 

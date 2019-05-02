@@ -240,7 +240,7 @@ describe('.stringifyHuman()', function() {
       });
       it('should throw when given a Buffer against type: `ref`',function(){
         assert.throws(function (){
-          rttc.stringifyHuman(new Buffer(), 'ref');
+          rttc.stringifyHuman(Buffer.from(), 'ref');
         });
       });
       it('should throw when given Infinity, -Infinity, or NaN against type: `ref`',function(){
@@ -286,7 +286,7 @@ describe('.stringifyHuman()', function() {
       });
       it('should throw when given a Buffer against type: `json`',function(){
         assert.throws(function (){
-          rttc.stringifyHuman(new Buffer(), 'json');
+          rttc.stringifyHuman(Buffer.from(), 'json');
         });
       });
       it('should throw when given Infinity, -Infinity, or NaN against type: `json`',function(){

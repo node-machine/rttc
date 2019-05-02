@@ -55,7 +55,7 @@ module.exports = [
   { example: 'foo', actual: function(){}, result: '' },
   { example: 'foo', actual: new Date('November 5, 1605 GMT'), result: '1605-11-05T00:00:00.000Z' },
   { example: 'foo', actual: new (require('stream').Readable)(), result: '' }, // TODO: consider buffering into a string..?  needs community discussion
-  { example: 'foo', actual: new Buffer('asdf'), result: '' }, // TODO: consider converting to string
+  { example: 'foo', actual: Buffer.from('asdf'), result: '' }, // TODO: consider converting to string
   { example: 'foo', actual: new Error('asdf'), result: '' }, // TODO: consider converting to error stack trace
 
   ////////////////////////////////////////////
@@ -106,7 +106,7 @@ module.exports = [
   { example: 123, actual: function(){}, result: 0 },
   { example: 123, actual: new Date('November 5, 1605 GMT'), result: -11491632000000 },
   { example: 123, actual: new (require('stream').Readable)(), result: 0 }, // TODO: ??? maybe num bytes read so far?
-  { example: 123, actual: new Buffer('asdf'), result: 0 },  // TODO: ??? maybe size of the buffer in bytes?
+  { example: 123, actual: Buffer.from('asdf'), result: 0 },  // TODO: ??? maybe size of the buffer in bytes?
   { example: 123, actual: new Error('asdf'), result: 0 }, // TODO: ??? maybe `.status`?
 
   ////////////////////////////////////////////
@@ -158,7 +158,7 @@ module.exports = [
   { example: true, actual: function(){}, result: false },
   { example: true, actual: new Date('November 5, 1605 GMT'), result: false },
   { example: true, actual: new (require('stream').Readable)(), result: false },
-  { example: true, actual: new Buffer('asdf'), result: false },
+  { example: true, actual: Buffer.from('asdf'), result: false },
   { example: true, actual: new Error('asdf'), result: false },
 
   ////////////////////////////////////////////
@@ -204,7 +204,7 @@ module.exports = [
 
   // Skip Buffer tests for now since the enumerable properties vary between Node.js versions.
   // TODO: bring back support for this by explicitly filtering properties of buffers in `.exec()`
-  // { example: {}, actual: new Buffer('asdf'), result: {} },
+  // { example: {}, actual: Buffer.from('asdf'), result: {} },
 
   { example: {}, actual: new Error('asdf'), result: {} },  // TODO: consider enhancing this behavior to guarantee e.g. `.message` (string), `.stack` (string), `.code` (string), and `.status` (number).  Needs community discussion
 
@@ -248,7 +248,7 @@ module.exports = [
   // { example: [], actual: new (require('stream').Readable)(), result: [] }, // TODO: consider enhancing this behavior to concat the stream contents? Needs community discussion.
   // Skip Buffer tests for now since the enumerable properties vary between Node.js versions.
   // TODO: bring back support for this by explicitly filtering properties of buffers in `.exec()`
-  // { example: [], actual: new Buffer('asdf'), result: [ 97, 115, 100, 102 ] },
+  // { example: [], actual: Buffer.from('asdf'), result: [ 97, 115, 100, 102 ] },
   { example: [], actual: new Error('asdf'), result: [] },
 
 
@@ -275,7 +275,7 @@ module.exports = [
   // Skip Readable stream tests for now since the enumerable properties vary between Node.js versions.
   // { example: {}, actual: { x: new (require('stream').Readable)() }, result: { x: { _readableState: {},readable: true,_events: {},_maxListeners: 10 } } },
   // Skip Buffer stream tests for now since the enumerable properties vary between Node.js versions.
-  // { example: {}, actual: { x: new Buffer('asdf') } , result: {x: {}} },
+  // { example: {}, actual: { x: Buffer.from('asdf') } , result: {x: {}} },
   (function (){
     // Hard-code a fake `.stack` to avoid differences between computers that would cause tests to fail
     var e = new Error('asdf');
@@ -292,7 +292,7 @@ module.exports = [
   { example: [], actual: [/some regexp/gi], result: ['/some regexp/gi'] },
   { example: [], actual: [new Date('November 5, 1605 GMT')], result: ['1605-11-05T00:00:00.000Z'] },
   // { example: [], actual: [new (require('stream').Readable)()], result: [] },
-  // { example: [], actual: [new Buffer('asdf')], result: [] },
+  // { example: [], actual: [Buffer.from('asdf')], result: [] },
   (function (){
     var e = new Error('asdf');
     e.stack = 'fake_error';
@@ -830,7 +830,7 @@ module.exports = [
   { example: undefined, actual: function (){}, strictEq: true },
   { example: undefined, actual: new Date('November 5, 1605 GMT'), strictEq: true },
   { example: undefined, actual: new (require('stream').Readable)(), strictEq: true },
-  { example: undefined, actual: new Buffer('asdf'), strictEq: true  },
+  { example: undefined, actual: Buffer.from('asdf'), strictEq: true  },
   { example: undefined, actual: new Error('asdf'), strictEq: true },
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
