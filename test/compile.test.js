@@ -57,7 +57,12 @@ describe('.compile()', function() {
     });
   });
 
-  it('should remove any whitespace between function name and arguments declaration', function() {
+  it.skip('formerly would remove any whitespace between function name and arguments declaration (No longer supported in Node ≥10!)', function() {
+    // This is no longer supported after ≥ Node 10 because Node 10 included an
+    // upgrade to V8 ≥ 6.6.  For more info, see:
+    //  • https://v8.dev/blog/v8-release-66
+    //  • https://nodejs.org/en/blog/release/v10.0.0/
+    //  • https://tc39.github.io/Function-prototype-toString-revision/
     _assertCompiledResultIsCorrect({
       value: function foobar   (x,y){ return x+y; },
       expected: 'function foobar(x,y){ return x+y; }'
