@@ -348,7 +348,7 @@ module.exports = [
   { example: '*', actual: /some regexp/gi, result: '/some regexp/gi' },
   { example: '*', actual: new Date('November 5, 1605 GMT'), result: '1605-11-05T00:00:00.000Z' },
   { example: '*', actual: (function(){var err=new Error();err.stack='test';return err;})(), result: 'test' },
-  { example: '*', actual: function(){}, result: 'function (){}' },
+  { example: '*', actual: function(){}, result: 'function(){}' },
   { example: '*', actual: new (require('stream').Readable)(), error: true },
 
 

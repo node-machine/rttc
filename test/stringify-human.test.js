@@ -174,26 +174,26 @@ describe('.stringifyHuman()', function() {
 
   it('should dehydrate functions (if we have a lamda type schema)', function() {
     assert(
-      rttc.isEqual(rttc.stringifyHuman(function foo (){}, 'lamda'), 'function foo(){}', 'lamda')
+      rttc.isEqual(rttc.stringifyHuman(function foo(){}, 'lamda'), 'function foo(){}', 'lamda')
     );
   });
 
 
   it('should dehydrate nested functions (if we have a type schema w/ nested lamdas in the appropriate places)', function() {
     assert.equal(
-      rttc.stringifyHuman({x:function foo (){}}, {x:'lamda'}),
+      rttc.stringifyHuman({x:function foo(){}}, {x:'lamda'}),
       '{"x":"function foo(){}"}'
     );
     assert.equal(
-      rttc.stringifyHuman({x:{y:function foo (){}}}, {x:{y:'lamda'}}),
+      rttc.stringifyHuman({x:{y:function foo(){}}}, {x:{y:'lamda'}}),
       '{"x":{"y":"function foo(){}"}}'
     );
     assert.equal(
-      rttc.stringifyHuman([{x:{y:function foo (){}}}], [{x:{y:'lamda'}}]),
+      rttc.stringifyHuman([{x:{y:function foo(){}}}], [{x:{y:'lamda'}}]),
       '[{"x":{"y":"function foo(){}"}}]'
     );
     assert.equal(
-      rttc.stringifyHuman([function foo (){}], ['lamda']),
+      rttc.stringifyHuman([function foo(){}], ['lamda']),
       '["function foo(){}"]'
     );
   });
