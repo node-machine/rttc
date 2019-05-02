@@ -16,7 +16,9 @@ describe('.parseHuman()', function() {
       assert.strictEqual(  rttc.parseHuman('-54'), -54);
     });
 
-    it('should treat -0 and +0 as 0', function(){
+    // Note: Support for -0 is broken in node 10.
+    // > See https://github.com/nodejs/node/issues/25221#issuecomment-488526457
+    ((process.version.match(/^v10\./)) ? it.skip : it)('should treat -0 and +0 as 0', function(){
       assert.strictEqual(  rttc.parseHuman('0'), 0);
       assert.strictEqual(  rttc.parseHuman('-0'), 0);
       assert.strictEqual(  rttc.parseHuman('+0'), 0);
