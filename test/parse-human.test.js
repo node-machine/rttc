@@ -16,11 +16,12 @@ describe('.parseHuman()', function() {
       assert.strictEqual(  rttc.parseHuman('-54'), -54);
     });
 
-    // Note: Support for -0 is broken in node 10.
-    // > See https://github.com/nodejs/node/issues/25221#issuecomment-488526457
-    ((process.version.match(/^v10\./)) ? it.skip : it)('should treat -0 and +0 as 0', function(){
+    it('should treat "-0" as -0 and "+0" as 0', function(){
+      // Note that prior to Node 10, assert.strictEqual() considered -0 and 0 to
+      // be equal.  That is no longer the case.  For more background, see:
+      // https://github.com/nodejs/node/issues/25221#issuecomment-488526457
       assert.strictEqual(  rttc.parseHuman('0'), 0);
-      assert.strictEqual(  rttc.parseHuman('-0'), 0);
+      assert.strictEqual(  rttc.parseHuman('-0'), -0);
       assert.strictEqual(  rttc.parseHuman('+0'), 0);
     });
 
@@ -55,7 +56,7 @@ describe('.parseHuman()', function() {
       assert.strictEqual(  rttc.parseHuman('-99', 'number'), -99);
       assert.strictEqual(  rttc.parseHuman('false', 'boolean'), false);
       assert.strictEqual(  rttc.parseHuman('true', 'boolean'), true);
-      assert.strictEqual(  rttc.parseHuman('-0', 'number'), 0);
+      assert.strictEqual(  rttc.parseHuman('-0', 'number'), -0);
       assert.strictEqual(  rttc.parseHuman('0', 'number'), 0);
       assert.strictEqual(  rttc.parseHuman('', 'string'), '');
     });
