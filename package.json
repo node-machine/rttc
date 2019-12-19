@@ -34,7 +34,7 @@
     "npm": ">= 1.4.0"
   },
   "dependencies": {
-    "@sailshq/lodash": "^3.10.2"
+    "lodash": "^4.17.15"
   },
   "devDependencies": {
     "eslint": "3.19.0",
